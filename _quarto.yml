@@ -1,0 +1,25 @@
+project:
+  type: website
+
+website:
+  title: "Notes on Quantum Computing"
+  favicon: kika.jpeg
+  navbar:
+    right:
+      - about.qmd
+      - icon: linkedin
+        href: https://www.linkedin.com/in/nikita-nemkov/
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    
+listing:
+  contents: posts
+  type: default
+  image-align: left
+  image-height: 150px
+  fields: [date, title, description, categories, image]
+
+
+
