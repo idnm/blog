@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.319">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-05-17">
+<meta name="description" content="Parameter-shift rule, sequential optimization, average performance – it’s mostly basic trigonometry, really.">
+
+<title>Notes on Quantum Computing - Some analytic facts about variational quantum algorithms</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../kika.jpeg" rel="icon" type="image/jpeg">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-description','listing-categories','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1154MLY31V"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1154MLY31V', { 'anonymize_ip': true});
+</script>
+<script>
+window.MathJax = {
+  tex: {
+    tags: 'ams'
+  }
+};
+</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Notes on Quantum Computing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Some analytic facts about variational quantum algorithms</h1>
+                  <div>
+        <div class="description">
+          Parameter-shift rule, sequential optimization, average performance – it’s mostly basic trigonometry, really.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">QML</div>
+                <div class="quarto-category">VQA</div>
+                <div class="quarto-category">VQE</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 17, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#hi-cos-hi-sin" id="toc-hi-cos-hi-sin" class="nav-link" data-scroll-target="#hi-cos-hi-sin">Hi <span class="math inline">\(\cos\)</span>, hi <span class="math inline">\(\sin\)</span>!</a></li>
+  <li><a href="#a-typical-loss-function" id="toc-a-typical-loss-function" class="nav-link" data-scroll-target="#a-typical-loss-function">A typical loss function</a></li>
+  <li><a href="#parameter-shift-rule" id="toc-parameter-shift-rule" class="nav-link" data-scroll-target="#parameter-shift-rule">Parameter shift rule</a></li>
+  <li><a href="#sequential-optimization" id="toc-sequential-optimization" class="nav-link" data-scroll-target="#sequential-optimization">Sequential optimization</a></li>
+  <li><a href="#average-performance-of-the-vqe" id="toc-average-performance-of-the-vqe" class="nav-link" data-scroll-target="#average-performance-of-the-vqe">Average performance of the VQE</a></li>
+  <li><a href="#loss-landscape-as-charge-density" id="toc-loss-landscape-as-charge-density" class="nav-link" data-scroll-target="#loss-landscape-as-charge-density">Loss landscape as charge density</a></li>
+  <li><a href="#beyond-simple-trigonometry" id="toc-beyond-simple-trigonometry" class="nav-link" data-scroll-target="#beyond-simple-trigonometry">Beyond simple trigonometry</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.circuit <span class="im">import</span> Parameter</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> pi</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Variational quantum algorithms (VQA) is a huge field by now with many prospective applications and a poll of advocates for their potential quantum advantage on the NISQ devices, see e.g.&nbsp;<a href="https://arxiv.org/abs/2012.09265">here</a> for a recent review. I usually think of variational quantum algorithms as analogues of the neural networks with a parametrized quantum circuit playing the role of a trainable model. Here is an example of a parametrized quantum circuit:</p>
+<p><img src="pqc.png" alt="Drawing" style="width: 1000px;"></p>
+<p>Despite certain similarities there are also crucial distinctions between the classical and quantum nets, manifesting both in their functional shapes and trainability properties. Here I will mostly talk about some functional properties of parametrized quantum circuits, and briefly touch on the trainability issues at the end. A whole slew of additional peculiarities arise when you want to run quantum circuits on real quantum hardware and have to deal with errors and stochastic nature of measurements. Here I will ignore these issues completely, effectively assuming that we can run a classical simulation of the quantum circuit.</p>
+</section>
+<section id="hi-cos-hi-sin" class="level1">
+<h1>Hi <span class="math inline">\(\cos\)</span>, hi <span class="math inline">\(\sin\)</span>!</h1>
+<p>For a generic neural net the loss function is a highly non-linear function of each weight, due to non-linear activation functions that connect the layers. In contrast, dependence of the parametrized quantum circuits on each single parameter separately is extremely simple.</p>
+<p>I will denote the unitary matrix of a parametrized quantum circuit by <span class="math inline">\(U(\theta)\)</span>, with <span class="math inline">\(\theta\)</span> standing for all the parameters collectively. A simple observation, and really the basis for all of the following discussion, is the following equation <span class="math display">\[\begin{align}
+U(\theta_i)=U_0 \cos \frac{\theta_i}{2}+U_1\sin\frac{\theta_i}{2} \label{u cos sin} \ .
+\end{align}\]</span> Here <span class="math inline">\(\theta_i\)</span> stands for any parameter of the circuit, other are assumed to be fixed. Matrix coefficients <span class="math inline">\(U_0\)</span> and <span class="math inline">\(U_1\)</span> are given by <span class="math inline">\(U_0=U(0)\)</span> and <span class="math inline">\(U_1 = U(\pi)\)</span>. Relation <span class="math inline">\(\eqref{u cos sin}\)</span> follows from the simple fact that all gates typically considered in VQA are of the form <span class="math display">\[\begin{align*}
+G(\theta) = e^{-i\theta \Sigma /2}
+\end{align*}\]</span> with a generator <span class="math inline">\(\Sigma\)</span> that satisfies <span class="math inline">\(\Sigma^2=1\)</span>. Hence, by a generalization of Euler’s formula <span class="math inline">\(e^{i\phi}=\cos \phi+i\sin\phi\)</span> any gate can be alternatively written as <span class="math display">\[\begin{align*}
+G(\theta) = \cos \frac{\theta}{2}-i\Sigma\sin\frac{\theta}{2} \ .
+\end{align*}\]</span> As an example one take any single-qubit Pauli rotation <a href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.RXGate.html">ref</a>, say <span class="math inline">\(R_X(\theta)=e^{-i \theta X/2}=\cos \frac{\theta}{2}-iX\sin\frac{\theta}{2}\)</span>. Parametric two-qubit gates, e.g.&nbsp;<a href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.RZXGate.html"><span class="math inline">\(R_{ZX}\)</span> gate</a>, usually conform to the same rule. Because of the trigonometric function here the parameters in VQA are often referred to as <em>angles</em>, the terminology which I will follow.</p>
+</section>
+<section id="a-typical-loss-function" class="level1">
+<h1>A typical loss function</h1>
+<p>A subset of the VQA are variational quantum eigensolvers (VQE). A typical loss function in VQE is <em>quadratic</em> in <span class="math inline">\(U(\theta)\)</span>. For instance, one common goal in VQE is to prepare the ground state of some Hamiltonian <span class="math inline">\(H\)</span> using an ansatz <span class="math inline">\(|\psi(\theta)\rangle = U(\theta)|0\rangle\)</span>. The relevant cost function to be minimized is</p>
+<p><span class="math display">\[\begin{align}
+L(\theta)=\langle\psi(\theta)|H|\psi(\theta)\rangle \label{loss VQE} \ .
+\end{align}\]</span></p>
+<p>In the unitary synthesis problem, <a href="https://arxiv.org/abs/2205.01121">that I’ve been recently interested in</a>, the goal is to make the circuit <span class="math inline">\(U(\theta)\)</span> equivalent to some target unitary <span class="math inline">\(V\)</span>. The relevant loss can be defined as</p>
+<p><span class="math display">\[\begin{align*}
+L(\theta)=-|\operatorname{Tr} V^\dagger U(\theta)|^2
+\end{align*}\]</span></p>
+<p>You got the idea. Note that while the circuit <span class="math inline">\(U(\theta)\)</span> has only two terms <span class="math inline">\(\eqref{u cos sin}\)</span> as a function of any angle <span class="math inline">\(\theta_i\)</span>, the quadratic loss function will have three terms (note also the period doubling)</p>
+<p><span class="math display">\[\begin{align*}
+L(\theta_i)=A \cos\theta_i+B \sin \theta_i + C \ .
+\end{align*}\]</span></p>
+<p>Here <span class="math inline">\(A, B, C\)</span> are functions of all the other angles except for <span class="math inline">\(\theta_i\)</span>. They are the only unknowns that specify dependence on any particular angle and can be found with just three evaluations of the loss function, e.g.</p>
+<p><span class="math display">\[\begin{align*}
+A+B = L(0),\qquad A+C=L(\pi/2),\qquad A-C = L(-\pi/2) \Rightarrow\\
+A = \frac{L(\pi/2)+L(-\pi/2)}{2},\qquad C=\frac{L(\pi/2)-L(-\pi/2)}{2},\qquad B = L(0)-A \ .
+\end{align*}\]</span></p>
+</section>
+<section id="parameter-shift-rule" class="level1">
+<h1>Parameter shift rule</h1>
+<p>Perhaps the best known consequence of this property is the parameter shift rule for derivatives. First, a bit of a background. Let’s assume we need to estimate the derivative of some function <span class="math inline">\(f(x)\)</span> that we only have numerical access to. Then, there is nothing much better one can do than to use the finite difference approximations. For example, using two function evaluations it is possible to compute the first derivative up to the second approximation order</p>
+<p><span class="math display">\[\begin{align*}
+f'(x)=\frac{f(x+\epsilon)-f(x-\epsilon)}{2\epsilon}+O(\epsilon^2)
+\end{align*}\]</span> In general, adding one more evaluation point allows to improve the accuracy by one order. However, when you have additional knowledge about the function much more efficient strategy may exists. In particular, for VQE loss functions <span class="math inline">\(\eqref{loss VQE}\)</span>, which are basically simple sinusoidals, an <em>exact</em> derivative computation is possible with just two function evaluations</p>
+<p><span class="math display">\[\begin{align*}
+L'(\theta_i)=-A \sin(\theta_i)+B\cos{\theta_i}=\frac{L(\theta_i+\pi/2)-L(\theta_i-\pi/2)}{2} \ ,
+\end{align*}\]</span> which follows from <span class="math inline">\(\sin(x+\pi/2)=\cos x,\,\,\cos(x+\pi/2)=-\sin x\)</span>. Having access to exact derivatives generally enhances the performance of the gradient-based optimizers.</p>
+</section>
+<section id="sequential-optimization" class="level1">
+<h1>Sequential optimization</h1>
+<p>An interesting extension of this idea, that is apparently much less known than the parameter-shift rule itself, was proposed by several group at roughly the same time (<a href="http://arxiv.org/abs/1903.12166">[1]</a>, <a href="https://arxiv.org/abs/1904.03206">[2]</a>, <a href="https://arxiv.org/abs/1905.09692">[3]</a>, thanks to <a href="https://www.linkedin.com/in/v-vijendran/">Vijendran</a> for additional refs). Instead of using structural properties of <span class="math inline">\(\eqref{loss VQE}\)</span> to just compute derivatives, one can find the exact minimum of <span class="math inline">\(L(\theta_i)\)</span> with respect to any angle <span class="math inline">\(\theta_i\)</span> (assuming other angles are fixed). I.e. instead of a partial derivative one can compute “the partial minimum”.</p>
+<p>Indeed, since just three three evaluations fix <span class="math inline">\(L(\theta_i)\)</span> completely, and the function itself is rather simple, there is no problem finding <span class="math inline">\(\operatorname{argmin}_{\theta_i}L(\theta_i)\)</span> exactly. The explicit formula could be more transparent, but it is a simple trigonometry in the end (double check if you a going to use it!)</p>
+<p><span class="math display">\[\begin{align*}
+\theta^*=\operatorname{argmin}_{\theta}\left(A \cos\theta+B\sin\theta+C\right)=\cases{\arctan \frac{B}{A}+\pi,&amp;A&gt;0\\\arctan \frac{B}{A},&amp; A&lt;0}
+\end{align*}\]</span></p>
+<p>With this trick one can bypass gradient-based optimization as follows. Starting from <span class="math inline">\(L(\theta_1,\theta_2,\dots)\)</span> first optimize with respect to the first angle <span class="math inline">\(L(\theta_1,\theta_2,\dots)\to L(\theta_1^*,\theta_2,\dots)\)</span>. Then optimize with respect to the second <span class="math inline">\(L(\theta_1^*,\theta_2,\dots)\to L(\theta_1^*,\theta_2^*,\dots)\)</span>. Note that after this step the first angle in general no longer is the best choice, because the second angle has changed. Still, one can continue this procedure further until all angles are updated and then start anew. Each step is guaranteed to decrease the value of the loss function. If the loss landscape is nice overall, this sequential gradient-free optimization may in fact even outperform gradient-based methods. Unfortunately, to my understanding the sequential optimization is unlikely to help with the most crucial problems in the VQE loss landscapes: barren plateaus and local minimums.</p>
+</section>
+<section id="average-performance-of-the-vqe" class="level1">
+<h1>Average performance of the VQE</h1>
+<p>Here comes the original contribution of this blog post, I will show how to compute (semi-efficiently) the <em>average loss</em> <span class="math display">\[\begin{align}
+\overline{L}=\frac{1}{(2\pi)^p}\int \prod_{i=1}^p d\theta_i \langle \psi(\theta)|H|\psi(\theta)\rangle \ .
+\end{align}\]</span> where <span class="math inline">\(p\)</span> is the total number of angles in the parametrized circuit. Why would one be interested in such a quantity? Honestly, I do not know, but hey, this is a blog post and not a paper, so I’ll take a recreational attitude. Seriously though, I’ll use this result in the following section, which however is not well justified either:)</p>
+<p>To begin with, let’s make explicit dependence of the parametrized circuit on all of its angles <span class="math display">\[\begin{align}
+U(\theta)=\sum_{I} U_{I}\left(\cos\frac{\theta}{2}\right)^{1-I}\left(\sin\frac{\theta}{2}\right)^I \label{u exp} \ .
+\end{align}\]</span> Here <span class="math inline">\(I\)</span> is a multi-index, a binary string of length <span class="math inline">\(p\)</span>, and <span class="math inline">\(\left(\cos\frac{\theta}{2}\right)^{I}\)</span> is an abbreviation for <span class="math inline">\(\prod_{i=1}^p\left(\cos \frac{\theta_i}{2}\right)^{I_i}\)</span>. For <span class="math inline">\(p=1\)</span> this reduces to <span class="math inline">\(\eqref{u cos sin}\)</span>. For <span class="math inline">\(p=2\)</span> we have <span class="math display">\[\begin{align*}
+U(\theta)=U_{00}\cos\frac{\theta_1}{2}\cos\frac{\theta_2}{2}+U_{01}\cos\frac{\theta_1}{2}\sin\frac{\theta_2}{2}+U_{10}\sin\frac{\theta_1}{2}\cos\frac{\theta_2}{2}+U_{11}\sin\frac{\theta_1}{2}\sin\frac{\theta_2}{2} \ ,
+\end{align*}\]</span> I think you got the idea. There are exactly <span class="math inline">\(2^p\)</span> terms in this sum. Now let us substitute this expression into the loss function <span class="math inline">\(\eqref{loss VQE}\)</span></p>
+<p><span class="math display">\[\begin{align}
+L(\theta)=\sum_{I,J}\left(\cos\frac{\theta}{2}\right)^{1-I}\left(\sin\frac{\theta}{2}\right)^I\left(\cos\frac{\theta}{2}\right)^{1-J}\left(\sin\frac{\theta}{2}\right)^J\langle 0|U_I^\dagger  H U_J |0\rangle \label{loss exp} \ .
+\end{align}\]</span></p>
+<p>When we average, all terms with <span class="math inline">\(I\neq J\)</span> vanish since <span class="math inline">\(\int_0^{2\pi} d\theta \sin\frac{\theta}{2}\cos\frac{\theta}{2}=0\)</span>. At the same time, all terms with <span class="math inline">\(I=J\)</span> give equal angle integrals <span class="math inline">\(\frac{1}{(2\pi)^p}\int \prod_{i=1}^p d\theta_i \left(\cos\frac{\theta_i}{2}\right)^{2 I}\left(\sin\frac{\theta_i}{2}\right)^{2-2 I}=\frac{1}{2^p}\)</span> since <span class="math inline">\(\int d\theta \cos^2\frac{\theta}{2}=\int d\theta \sin^2\frac{\theta}{2}=\pi\)</span>. The results is that <span class="math display">\[\begin{align}
+\overline{L}=\frac1{2^p}\sum_{I}\langle 0|U_I^\dagger H U_I |0\rangle \label{L average} \ .
+\end{align}\]</span> This expression looks simple, but it is a sum with <span class="math inline">\(2^p\)</span> terms, so for any reasonable number of parameters its huuuge. A typical number of parameters is exponential in the number of qubits, so this is the double exponential, not good. I’ve spent multiple hours thinking about how to compute this average more efficiently, but for generic function of the type <span class="math inline">\(\eqref{u exp}\)</span> with arbitrary matrix coefficients <span class="math inline">\(U_I\)</span> I didn’t find a way to compute the average loss in less than an exponential in <span class="math inline">\(p\)</span> number of function calls. However, taking into account that <span class="math inline">\(U_I\)</span> are not arbitrary for parametrized quantum circuits, a computation linear in <span class="math inline">\(p\)</span> is possible. The reason is that among exponentially many <span class="math inline">\(U_I\)</span> there is only polynomially many “independent ones”, in a sense that I will now make precise.</p>
+<p>For concreteness consider the following toy circuit:</p>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>qc.cz(<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>qc.rx(Parameter(<span class="st">'$ </span><span class="ch">\\</span><span class="st">theta_1 $'</span>), <span class="dv">0</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>qc.rx(Parameter(<span class="st">'$ </span><span class="ch">\\</span><span class="st">theta_2 $'</span>), <span class="dv">1</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>qc.rz(Parameter(<span class="st">'$ </span><span class="ch">\\</span><span class="st">theta_3 $'</span>), <span class="dv">0</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>qc.rz(Parameter(<span class="st">'$ </span><span class="ch">\\</span><span class="st">theta_4 $'</span>), <span class="dv">1</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<p><img src="2022-05-17-Some analytic facts about variational algorithms_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Here the entangling gate is the <a href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CZGate.html">Controlled-Z</a>. This circuit has four parameters and <span class="math inline">\(2^4=16\)</span> associated matrix coefficients <span class="math inline">\(U_I\)</span>. What are they, exactly? It is in fact rather simple to understand. If the binary index is <span class="math inline">\(0\)</span> the rotation gate is replaced by the identity, if it is <span class="math inline">\(1\)</span> we insert the generator instead. For example <span class="math inline">\(U_{1110}\)</span> is</p>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>qc.cz(<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">0</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">1</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>qc.z(<span class="dv">0</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>qc.global_phase<span class="op">=</span>pi</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<p><img src="2022-05-17-Some analytic facts about variational algorithms_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The global phase arises because <span class="math inline">\(U(\theta=\pi)=-i \Sigma\)</span> for <span class="math inline">\(U(\theta)=e^{-i\theta\Sigma/2}\)</span>. Next, consider a more realistic circuit like the one below</p>
+<p><img src="myimages/analytic_vqe/pqc_cz.png" alt="Drawing" style="width: 1000px;"></p>
+<p>All coefficients <span class="math inline">\(U_I\)</span> arise as <span class="math inline">\(2^p\)</span> different versions of this circuit where each rotation gate is replaced either by an identity or by a generator, just as at the figure above. Although these circuits might all look different, in fact there is just a handful of independent ones. This is due to the following commutation rules, which are easy to check:</p>
+<p><img src="myimages/analytic_vqe/commutation.png" alt="Drawing" style="width: 400px;"></p>
+<p>These commutation rules allow to move <em>all the pauli matrices</em> past CZ gates and to the beginning of the circuit. For example, the circuit <span class="math inline">\(U_{1101}\)</span> from above can be alternatively be rewritten as</p>
+<div class="cell" data-execution_count="4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">0</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>qc.z(<span class="dv">1</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">1</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>qc.cz(<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>qc.global_phase<span class="op">=</span>pi</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<p><img src="2022-05-17-Some analytic facts about variational algorithms_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Then, any string of Pauli matrices is equal to <span class="math inline">\(I, X, Z\)</span> or <span class="math inline">\(Y\simeq XZ\)</span> up to a global phase. So in the end, up to phase factors there are only <span class="math inline">\(4^n\)</span> linearly independent matrices <span class="math inline">\(U_I\)</span> where <span class="math inline">\(n\)</span> is the number of qubits. The counting <span class="math inline">\(4^n\)</span> follows because after all the generators have been placed at the beginning of the circuit there can be only 4 different operators at each qubit thread. Note also that <span class="math inline">\(4^n\)</span> is precisely the dimension of the unitary group on <span class="math inline">\(n\)</span> qubits. We thus see that all of <span class="math inline">\(2^p\)</span> matrix coefficients can be divided into <span class="math inline">\(4^n\)</span> distinct classes and within each class <span class="math inline">\(U_I=e^{i\phi}U_{I'}\)</span>. This global phase makes no difference for the averages in <span class="math inline">\(\eqref{L average}\)</span> which can therefore be rewritten as</p>
+<p><span class="math display">\[\begin{align*}
+\overline{L}=\frac{1}{4^n}\sum_{c} \langle 0|U_c^\dagger H U_c|0\rangle \ ,
+\end{align*}\]</span> where now the sum is over representatives of distinct classes. So the sum is reduced from <span class="math inline">\(2^p\)</span> to <span class="math inline">\(4^n\)</span> terms. OK, so how does the number of parameters and the number of qubits compare? Is this really a reduction?</p>
+<p>Yes it is! First, if you want your parametrized quantum circuit to cover any unitary transformation on <span class="math inline">\(n\)</span> qubits you need at least <span class="math inline">\(p=4^n\)</span> parameters, because this is the dimension of the unitary group. So in this case we have and exponential reduction from <span class="math inline">\(2^{4^n}\)</span> to <span class="math inline">\(4^n\)</span>. But even if you only put two rotation gates on each qubit you already got yourself <span class="math inline">\(4^n\)</span> parameters. Adding anything beyond that, as you definitely wish to do, makes the reduction from <span class="math inline">\(2^p\)</span> to <span class="math inline">\(4^n\)</span> essential. Note though that it is still exponential in the number of qubits and would be unfeasible to compute exactly for a large system.</p>
+</section>
+<section id="loss-landscape-as-charge-density" class="level1">
+<h1>Loss landscape as charge density</h1>
+<p>OK, here is a brief justification for why I was interested in the average loss in the first place. Generic hamiltonian-agnostic VQE algorithms have in fact lots of trainability issues. One is the presence of the <a href="https://arxiv.org/abs/1803.11173">barren plateaus</a> in certain regimes, which means that large portions of the parameter space have vanishing gradients and are bad places for optimizer to be in. Another issue is the presence of local minimums which <a href="https://arxiv.org/abs/2205.05786">can be just as bad</a>. So I was wondering if it is possible to somehow use the analytic properties of the VQE loss functions to help mitigate these problems. Here is an idea that probably does not work, but I think still is sort of fun.</p>
+<p>Here is an example of a bad loss landscape, sketched in black:</p>
+<p><img src="loss.png" alt="Drawing" style="width: 700px;"></p>
+<p>It has many local minimums and flat parts, and only a single narrow global minimum. If we are only allowed to probe this loss landscape one value at a time we will have really hard time reaching the global minimum. However, if we have additional information we might be able to do better.</p>
+<p>Let’s assume that we know <span class="math inline">\(\Delta^{-1} L(\theta)\)</span> where <span class="math inline">\(\Delta\)</span> is the Laplace operator. <a href="https://en.wikipedia.org/wiki/Poisson%27s_equation">Physics interpretation</a> is the following. If we view the loss landscape as the charge density <span class="math inline">\(\Delta^{-1}L(\theta)\)</span> is the corresponding electric potential, sketched in red. Minimizing the electric potential instead of the charge density might be a much nicer problem because the electric field (the gradient of the potential field) typically stretches far away from localized charges and can attract the probe. Extreme example is the charge density of the point particle, which is impossible to find unless you trip over it. However, if you can probe the electric field of this charge you have an easy way discovering where it comes from. Sounds good, right? Well, not so fast. First, we do not know <span class="math inline">\(\Delta^{-1}L(\theta)\)</span> for a typical VQE loss. Second, my examples were specifically crafted to sell the idea. It is easy to imagine a loss landscape where this does not help.</p>
+<p>But we are not boring nitpickers, are we? Of course not, we are imaginative and brave, so we are going to assume even more. Let’s pretend that each successive application of <span class="math inline">\(\Delta^{-1}\)</span> makes our loss landscape better, so we are really interested in <span class="math display">\[\begin{align*}
+\mathcal{L}(\theta)=\Delta^{-\infty} L(\theta) \ .
+\end{align*}\]</span> Turns out this limiting landscape is very simple and can be found in a similar way to the average considered in the previous section. Indeed, the loss function <span class="math inline">\(\eqref{loss exp}\)</span> can be represented in the following form <span class="math display">\[\begin{align*}
+L(\theta)=const+A_1\cos(\theta_1)+B_1\sin(\theta_1)+A_2\cos(\theta_2)+B_2\sin(\theta_2)+\\A_{12}\cos(\theta_1)\cos(\theta_2)+B_{12}\cos(\theta_1)\sin(\theta_2)+\dots
+\end{align*}\]</span> This is an example with two parameters and several cross-terms are omitted. Here is the key point – each cross-term gets smaller under application of <span class="math inline">\(\Delta^{-1}\)</span>, e.g.&nbsp;<span class="math inline">\(\Delta^{-1} \cos\theta_1=\cos\theta_1\)</span>, <span class="math inline">\(\Delta^{-1} \cos\theta_1\cos\theta_2=\frac12 \cos\theta_1\cos\theta_2\)</span> etc. This means, that under the application of <span class="math inline">\(\Delta^{-\infty}\)</span> only the single-variable terms will survive (we ignore the constant term) <span class="math display">\[\begin{multline*}
+\mathcal{L}(\theta)=\Delta^{-\infty}L(\theta)=\sum_{i=1}^{p}\left(A_i\cos\theta_i+B_i\sin\theta_i\right)\substack{p=2\\=}\\\,\,A_1\cos(\theta_1)+B_1\sin(\theta_1)+A_2\cos(\theta_2)+B_2\sin(\theta_2)
+\end{multline*}\]</span></p>
+<p>These terms are easy to compute if we can compute averages. For example, averaging over all <span class="math inline">\(\theta_i\)</span> except theta <span class="math inline">\(\theta_1\)</span> will only leave the monomials with <span class="math inline">\(\theta_1\)</span> <span class="math display">\[\begin{align*}
+A_1\cos{\theta_1}+B_1\sin{\theta_1}=\frac{1}{(2\pi)^{p-1}}\int_0^{2\pi} \prod_{i=2}^pd\theta_i\,\, L(\theta) \ .
+\end{align*}\]</span> How to perform the average on the rhs was shown in the previous section. Since the limiting loss function <span class="math inline">\(\mathcal{L}(\theta)\)</span> is a sum of single-variable terms it is extremely simple to optimize, and the minumimum is unique</p>
+<p><span class="math display">\[\begin{align*}
+\theta^* = (\theta_1^*, \theta_2^*,\dots) = \operatorname{argmin}_\theta \mathcal{L}(\theta) \ .
+\end{align*}\]</span> The derivation above also gives a different, less exotic, interpretation of <span class="math inline">\(\theta^*\)</span>. Each angle <span class="math inline">\(\theta_i^*\)</span> is the angle that minimizes the average loss function, where average is taken with respect to all other angles. Knowing how to find parameter value that optimizes an average performance does not seem like a completely useless information, does it? Could it help to alleviate the problems with barren plateaus or local minimums? I do not know, but I’m planning on making some numerical experiments along these lines.</p>
+</section>
+<section id="beyond-simple-trigonometry" class="level1">
+<h1>Beyond simple trigonometry</h1>
+<p>I was really impressed with a recent paper <a href="http://arxiv.org/abs/2205.05786/">Beyond Barren Plateaus: Quantum Variational Algorithms Are Swamped With Traps</a>. Adopting some techniques from the study of neural networks the authors provide a random matrix theory description of a generic loss landscape for Hamiltonian-agnostic VQE. They show that for underparametrized circuits (when the number of parameters <span class="math inline">\(p\)</span> is smaller than the dimension of the unitary group <span class="math inline">\(4^n\)</span>, which is basically the only reasonable setup) the loss landscape is really bad, with exponentially many local minimums being located far away (energy-wise) from the global minimum. They even provide an analytic distribution for the expected number of local minimums, which seems to match my numerical experiments rather well: <img src="myimages/analytic_vqe/theorypractice.png" alt="Drawing" style="width: 800px;"></p>
+<p>This is yet another piece of evidence showing that complexity of the classical optimization loop in variational algorithms can not be ignored, as if the problems posed by getting a real quantum device to work were not enough. One possible way to alleviate the issues is to use specifically designed parametrized circuits, which are aware of the symmetries or additional properties of the Hamiltonian. I have a feeling though, that even performance of a generic Hamiltonian-agnostic VQE could be improved by exploiting some structural properties of the loss landscapes. In this blog post I speculated about what could such an approach look like.</p>
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="idnm/blog" data-repo-id="R_kgDOJWB1vg" data-category="General" data-category-id="DIC_kwDOJWB1vs4CVvR7" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

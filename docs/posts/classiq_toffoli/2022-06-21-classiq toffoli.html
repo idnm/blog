@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.319">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-06-21">
+<meta name="description" content="Based on the relative phase Toffoli gates">
+
+<title>Notes on Quantum Computing - Classiq coding competition – Toffoli gate decomposition</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../kika.jpeg" rel="icon" type="image/jpeg">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-description','listing-categories','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1154MLY31V"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1154MLY31V', { 'anonymize_ip': true});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Notes on Quantum Computing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Classiq coding competition – Toffoli gate decomposition</h1>
+                  <div>
+        <div class="description">
+          Based on the relative phase Toffoli gates
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">compilation</div>
+                <div class="quarto-category">paper review</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 21, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#whats-in-here" id="toc-whats-in-here" class="nav-link active" data-scroll-target="#whats-in-here">What’s in here?</a></li>
+  <li><a href="#toffoli-gates" id="toc-toffoli-gates" class="nav-link" data-scroll-target="#toffoli-gates">Toffoli gates</a>
+  <ul class="collapse">
+  <li><a href="#cnot" id="toc-cnot" class="nav-link" data-scroll-target="#cnot">CNOT</a></li>
+  <li><a href="#q-toffoli" id="toc-q-toffoli" class="nav-link" data-scroll-target="#q-toffoli">3q Toffoli</a></li>
+  <li><a href="#n-qubit-toffoli" id="toc-n-qubit-toffoli" class="nav-link" data-scroll-target="#n-qubit-toffoli">n-qubit Toffoli</a></li>
+  <li><a href="#decompositions" id="toc-decompositions" class="nav-link" data-scroll-target="#decompositions">Decompositions</a></li>
+  <li><a href="#ancilla-qubits" id="toc-ancilla-qubits" class="nav-link" data-scroll-target="#ancilla-qubits">Ancilla qubits</a></li>
+  </ul></li>
+  <li><a href="#relative-phase-toffoli-gates" id="toc-relative-phase-toffoli-gates" class="nav-link" data-scroll-target="#relative-phase-toffoli-gates">Relative phase Toffoli gates</a>
+  <ul class="collapse">
+  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
+  <li><a href="#diagonal-gates" id="toc-diagonal-gates" class="nav-link" data-scroll-target="#diagonal-gates">Diagonal gates</a></li>
+  <li><a href="#relative-gates-are-shorter" id="toc-relative-gates-are-shorter" class="nav-link" data-scroll-target="#relative-gates-are-shorter">Relative gates are shorter</a></li>
+  <li><a href="#diagonal-gates-commute-with-controls" id="toc-diagonal-gates-commute-with-controls" class="nav-link" data-scroll-target="#diagonal-gates-commute-with-controls">Diagonal gates commute with controls</a></li>
+  <li><a href="#special-relative-phase-gates" id="toc-special-relative-phase-gates" class="nav-link" data-scroll-target="#special-relative-phase-gates">Special relative phase gates</a></li>
+  <li><a href="#rt4" id="toc-rt4" class="nav-link" data-scroll-target="#rt4"><span class="math inline">\(RT^4\)</span></a></li>
+  <li><a href="#rt5" id="toc-rt5" class="nav-link" data-scroll-target="#rt5"><span class="math inline">\(RT^5\)</span></a></li>
+  <li><a href="#generalization-of-relative-phase-gates" id="toc-generalization-of-relative-phase-gates" class="nav-link" data-scroll-target="#generalization-of-relative-phase-gates">Generalization of relative phase gates</a></li>
+  </ul></li>
+  <li><a href="#solution-to-the-classiq-problem" id="toc-solution-to-the-classiq-problem" class="nav-link" data-scroll-target="#solution-to-the-classiq-problem">Solution to the Classiq problem</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> qiskit</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ImportError</span>:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span>pip install qiskit</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> pylatexenc</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ImportError</span>:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span>pip install pylatexenc</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> transpile, QuantumCircuit, QuantumRegister</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.circuit.library <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> OneQubitEulerDecomposer, random_clifford, Operator, Statevector</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.extensions <span class="im">import</span> UnitaryGate</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.circuit <span class="im">import</span> Instruction</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Union</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><a target="_blank" href="https://colab.research.google.com/github/idnm/blog/blob/master/posts/classiq_toffoli/2022-06-21-Classiq%20Toffoli.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" align="right" alt="Open In Colab"> </a></p>
+<section id="whats-in-here" class="level1">
+<h1>What’s in here?</h1>
+<p>I participated in <a href="https://www.classiq.io/competition">Classiq coding competition</a> and submitted the second best solution to the <a href="https://www.classiq.io/competition/toffoli">Toffoli</a> decomposition problem. The core technical trick to compress the resulting circuit was the use of the relative phase Toffoli gates, popularized by Dmitri Maslov in <a href="https://arxiv.org/abs/1508.03273">this paper</a>.</p>
+<p>In this post I will - briefly recap what are the Toffoli gates - introduce relative phase Toffoli gates - explain why are they useful - illustrate by solving the Classiq problem</p>
+<p>Amusingly, optimizing quantum circuits using an analog device (human brain) was exactly the kind of thing I wanted to avoid when I worked on the automatic compiler <a href="https://arxiv.org/abs/2205.01121">CPFlow</a>. However, our compiler works well only with small circuits, to solve a larger problem one needs to decompose it into digestible pieces. In the end, I found no efficient way to use the computer search in the original problem, but came up with paper-and-pencil solution. The usefulness of the relative phase Toffoli gates, which I will cover in some depth here, of course extends far beyond.</p>
+</section>
+<section id="toffoli-gates" class="level1">
+<h1>Toffoli gates</h1>
+<section id="cnot" class="level2">
+<h2 class="anchored" data-anchor-id="cnot">CNOT</h2>
+<p>The simplest “Toffoli” gate is CNOT gate, also known as controlled NOT or controlled X (CX).</p>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Note, if you draw this interactively and have an error here (happens in Colab), redefine the global variable below.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># output = 'mpl'</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>It flips the value (applies X gate) of the second qubit if the first qubit is in state <span class="math inline">\(|1\rangle\)</span> and does nothing if the first qubit is in state <span class="math inline">\(|0\rangle\)</span>. The first qubit is called the <em>control</em> qubit, the last is called the <em>target</em>. If the target qubit starts in state <span class="math inline">\(|0\rangle\)</span>, than CNOT effectively copies that value of the control qubit to the target.</p>
+</section>
+<section id="q-toffoli" class="level2">
+<h2 class="anchored" data-anchor-id="q-toffoli">3q Toffoli</h2>
+<p>The regular Toffoli gates is defined on three qubits.</p>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>qc.ccx(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>It has two controls and one target. This gate flips the value of the target qubit if and only if both of the control qubits are in state <span class="math inline">\(|1\rangle\)</span>, and does nothing otherwise. If the target qubit starts in state <span class="math inline">\(|0\rangle\)</span> the Toffoli gate effectively stores the logical AND of the control qubits <span class="math inline">\(q_0 \land q_1\)</span> in the target register.</p>
+</section>
+<section id="n-qubit-toffoli" class="level2">
+<h2 class="anchored" data-anchor-id="n-qubit-toffoli">n-qubit Toffoli</h2>
+<p>This construction has a plain generalization to multiple control qubits, e.g.&nbsp;here is the the Toffoli gate on 5 qubits (with 4 control qubits)</p>
+<div class="cell" data-execution_count="4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">5</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>qc.mct([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], <span class="dv">4</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p><span class="math inline">\(n-\)</span>qubit Toffoli gates are very important primitives in quantum computing. For elaboration on this claim I recommend the introduction section in <a href="https://arxiv.org/abs/1508.03273">Maslov’s paper</a>, which starts with</p>
+<p><em>“Multiple control Toffoli gates are the staple of quantum arithmetic and reversible circuits. They are employed widely within quantum algorithms, including inreversible transformations, such as arithmetic circuits and all sorts of Boolean operations over quantum registers, as well as subroutines within other specialized quantum transforms.”</em></p>
+</section>
+<section id="decompositions" class="level2">
+<h2 class="anchored" data-anchor-id="decompositions">Decompositions</h2>
+<p>Although there are intriguing recent suggestions to implement multiple-control Toffoli gates directly (see e.g.&nbsp;<a href="https://arxiv.org/abs/2006.07035">here</a>) most hardware platforms currently require them to be decomposed into 1q+2q gates. This is the same what the Classiq problem asked for, to decompose a multiple-controlled Toffoli gate into CNOT gates and arbitrary 1q gates.</p>
+<p>I will denote Toffoli gates on <span class="math inline">\(n\)</span> qubits (with <span class="math inline">\(n-1\)</span> controls) by <span class="math inline">\(T^n\)</span> (another frequent notation is <span class="math inline">\(C^{n-1}X\)</span>). <span class="math inline">\(T^2\)</span> gate, which is just CNOT, need no further decomposition. <span class="math inline">\(T^3\)</span> gate, the regular Toffoli gate, can be decomposed into CNOT+1q gates as follows.</p>
+<div class="cell" data-execution_count="5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>qc.ccx(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>qc.decompose().draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>This decomposition has 6 CNOT gates as well as depth 6 with respect to CNOT gates. Total depth is 11. We will be looking for similar decompositions of <span class="math inline">\(T^{n}\)</span> with <span class="math inline">\(n\ge3\)</span>. The goal of the Classiq challenge was to find decompositions with the smallest total depth. Other optimization metrics such as CNOT count, CNOT depth or T count and T depth may be preferred for some applications. Here T without a superscript refers to the magic <a href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.TGate.html">T gates</a>, which are important for fault-tolerant circuits. Fortunately, these metrics are not that much decoupled, and a circuit efficient in one respect is also often very efficient in others, see again Maslov’s <a href="https://arxiv.org/abs/1508.03273">paper</a> for examples.</p>
+</section>
+<section id="ancilla-qubits" class="level2">
+<h2 class="anchored" data-anchor-id="ancilla-qubits">Ancilla qubits</h2>
+<p>As CNOT+1q gates set is universal, it can be used to decompose an arbitrary <span class="math inline">\(n-\)</span>qubit gate, including <span class="math inline">\(T^n\)</span>. The efficiency of this decomposition can be greatly enhanced if ancilla qubits are provided. Here is an example using a clean ancilla qubit to decompose <span class="math inline">\(T^4\)</span> into three regular Toffoli gates.</p>
+<p><img src="T4/T4.png" alt="Drawing" style="width: 250px;"></p>
+<p>The first <span class="math inline">\(T^3\)</span> stores <span class="math inline">\(q_0 \land q_1\)</span> in the ancilla qubit. The second <span class="math inline">\(T^3\)</span> combines this with an additional control and applies to the target. The last step is called <em>uncomputation</em>, it is only to restore the state of the ancilla bit to <span class="math inline">\(|0\rangle\)</span> (<span class="math inline">\(T^3\)</span> applied twice is the identity). For a great introduction covering Toffoli gates, their decompositions, various type of ancilla qubits and more see this <a href="https://algassert.com/circuits/2015/06/05/Constructing-Large-Controlled-Nots.html">blog series</a> by Craig Gidney.</p>
+<p>As constructed, the circuit for <span class="math inline">\(T^4\)</span> with one clean ancilla uses three <span class="math inline">\(T^3\)</span> and has CNOT count <span class="math inline">\(3\times6=18\)</span>. I will now show how this can be compressed using relative phase Toffoli gates.</p>
+<p><img src="relative_toffoli.png" alt="Drawing" style="width: 600px;"></p>
+<p>(The wiggly lines are to emphasize the wave nature of quantum mechanics. Seriously though, the words ‘relative phase’ remind me of the phase shifts in signal processing, and I had to come up with some pic for this post anyway.)</p>
+</section>
+</section>
+<section id="relative-phase-toffoli-gates" class="level1">
+<h1>Relative phase Toffoli gates</h1>
+<section id="definition" class="level2">
+<h2 class="anchored" data-anchor-id="definition">Definition</h2>
+<p>Relative phase Toffoli gates <span class="math inline">\(RT^n\)</span> are defined as standard Toffoli gates <span class="math inline">\(T^n\)</span> followed by a diagonal gate <span class="math inline">\(D^n\)</span>. I will draw them as follows.</p>
+<p><img src="RT3/RT3.png" alt="Drawing" style="width: 400px;"></p>
+<p>So, the boxed Toffoli gate stands for the relative phase Toffoli gate. The boxed controlled Z gate (last gate on the right circuit) will be my notation for the diagonal gate itself. Note that this representation is not standard (which I found difficult to typeset), my apologies.</p>
+</section>
+<section id="diagonal-gates" class="level2">
+<h2 class="anchored" data-anchor-id="diagonal-gates">Diagonal gates</h2>
+<p>Diagonal gate is just what it sounds, a gate with only diagonal entries. For instance, a general 2q diagonal gate gate be written as <span class="math inline">\(D=e^{\phi_0}|00\rangle\langle00|+e^{\phi_1}|01\rangle\langle01|+e^{\phi_2}|10\rangle\langle10|+e^{\phi_3}|11\rangle\langle11|\)</span>. The relative phase Toffoli gate is called that way because its elements only differ from the original Toffoli gate by a phase. Crucially, different elements may differ by different phases (so this is not the irrelevant global phase). Diagonal gates themselves are non-trivial objects. For example, up to a conjugation by two Hadamard gates <span class="math inline">\(n-\)</span>qubit Toffoli gate is equivalent to <span class="math inline">\(n-\)</span>qubit controlled Z gate, which is diagonal.</p>
+</section>
+<section id="relative-gates-are-shorter" class="level2">
+<h2 class="anchored" data-anchor-id="relative-gates-are-shorter">Relative gates are shorter</h2>
+<p>Why care about the relative phase gates? First, they can have shorter representations compared to the original gates. This might look unreasonable at first, because we are <em>adding</em> an extra diagonal gate. However, the extra gate can <em>cancel</em> part of the original circuit. So, by appending a suitable diagonal gate one can make the relative phase Toffoli gate <em>shorter</em> than the Toffoli gate itself. Here is an example of <span class="math inline">\(RT^3\)</span> gate.</p>
+<div class="cell" data-execution_count="6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build circuit</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">2</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">2</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">2</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">2</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">2</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">2</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Store to gate</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>RT3 <span class="op">=</span> qc.to_instruction(label<span class="op">=</span><span class="st">'RT3'</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>RT3dg <span class="op">=</span> RT3.inverse()</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>RT3dg.label <span class="op">=</span> <span class="st">'RT3dg'</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Note that it only has 3 CNOT gates, while <span class="math inline">\(T^3\)</span> requires 6 gates. Here is a numeric way to check that this gate is indeed <span class="math inline">\(RT^3\)</span>.</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_relative(U, V):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    D <span class="op">=</span> V.conj().T <span class="op">@</span> U</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If and only if D is unitary and diagonal the check is True.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    check <span class="op">=</span> np.allclose(np.<span class="bu">abs</span>(D), np.eye(U.shape[<span class="dv">0</span>])) </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> check</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that it is indeed the relative phase Toffoli 3 gate</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>u_RT3 <span class="op">=</span> Operator(qc).data</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>qc_T3 <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>qc_T3.ccx(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>u_T3 <span class="op">=</span> Operator(qc_T3).data <span class="co"># Regular Toffoli gate.</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'is RT3:'</span>, is_relative(u_RT3, u_T3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>is RT3: True</code></pre>
+</div>
+</div>
+</section>
+<section id="diagonal-gates-commute-with-controls" class="level2">
+<h2 class="anchored" data-anchor-id="diagonal-gates-commute-with-controls">Diagonal gates commute with controls</h2>
+<p>Second, the relative phase Toffoli gates can be used instead of the standard Toffoli gates in compute-uncompute pairs. For example, <span class="math inline">\(T^4\)</span> with one clean ancilla can be decomposed in the following way.</p>
+<p><img src="T4_with_RT3/T4_with_RT3.png" alt="Drawing" style="width: 250px;"></p>
+<p>Here the second relative gate should be <span class="math inline">\((RT^3)^\dagger\)</span> but I leave it implicit in the notation. OK, but why can we replace <span class="math inline">\(T^3\)</span> by <span class="math inline">\(RT^3\)</span>? Because a diagonal gate commutes with a control.</p>
+<p><img src="D_commute/D_commute.png" alt="Drawing" style="width: 400px;"></p>
+<p>Wires with backslash on them denote a group of several qubits. <span class="math inline">\(U\)</span> can be any operator on <span class="math inline">\(n\)</span> qubits. The diagonal gate can also act on any number of qubits <span class="math inline">\(k+m\)</span>. And they can intersect along any number of controls <span class="math inline">\(m\)</span>. To show this in full generality would be a bit of a notational mess. Here is the idea though. General diagonal gate can be represented as <span class="math inline">\(D=\sum_n P_n e^{i\phi_n}\)</span> where <span class="math inline">\(P_n=|n\rangle\langle n|\)</span> is the projector on <span class="math inline">\(n-\)</span>th basis state. General controlled unitary is <span class="math inline">\(CU = P_0\otimes I+P_1\otimes U\)</span>. The matrix <span class="math inline">\(U\)</span> is only applied to the qubits that are not touched by the diagonal gate, therfore <span class="math inline">\(D\)</span> and <span class="math inline">\(CU\)</span> only intersect along wires containing projectors. Since projectors commute, the whole operators also commute. Here is an illustration for the 2q D and <span class="math inline">\(n\)</span>-qubit U</p>
+<p><span class="math display">\[\Big[\Big(e^{\phi_0}|00\rangle\langle00|+e^{\phi_1}|01\rangle\langle01|+e^{\phi_2}|10\rangle\langle10|+e^{\phi_3}|11\rangle\langle11|\Big)\otimes I_{n+1}, I_1\otimes |0\rangle\langle0|\otimes I_{n}+I_1\otimes |0\rangle\langle0|\otimes U_n\Big]=0\]</span></p>
+<p>Since <span class="math inline">\(RT^3\)</span> contains 3 CNOT gates the new construction for <span class="math inline">\(T^4\)</span> now has only 12 CNOT gates, significantly improving on the preceding 18 CNOT decomposition.</p>
+</section>
+<section id="special-relative-phase-gates" class="level2">
+<h2 class="anchored" data-anchor-id="special-relative-phase-gates">Special relative phase gates</h2>
+<p>Here is another version of <span class="math inline">\(RT^3\)</span>, known as a <em>special</em> relative phase Toffoli gate <span class="math inline">\(SRT^3\)</span>.</p>
+<div class="cell" data-execution_count="8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Similar to the privious circuit but with an additional CZ gate</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">2</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">2</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>qc.append(RT3, [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>])</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.decompose(<span class="st">'RT3'</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> transpile(qc, basis_gates<span class="op">=</span>[<span class="st">'cx'</span>, <span class="st">'t'</span>, <span class="st">'tdg'</span>, <span class="st">'h'</span>], optimization_level<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Store to gate</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>SRT3 <span class="op">=</span> qc.to_instruction(label<span class="op">=</span><span class="st">'SRT3'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>SRT3dg <span class="op">=</span> qc.inverse().to_instruction(label<span class="op">=</span><span class="st">'SRT3dg'</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that it is indeed the relative phase Toffoli 3 gate</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>u_SRT3 <span class="op">=</span> Operator(qc).data</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'is relative:'</span>, is_relative(u_SRT3, u_T3))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>is relative: True</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-9-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>This circuit has one more CNOT gate than <span class="math inline">\(RT^3\)</span> defined above. A special feature of this gate (and the reason it is called special) is that the diagonal gate has a restricted form – it only acts on the first two qubits, graphically</p>
+<p><img src="SRT3/SRT3.png" alt="Drawing" style="width: 400px;"></p>
+</section>
+<section id="rt4" class="level2">
+<h2 class="anchored" data-anchor-id="rt4"><span class="math inline">\(RT^4\)</span></h2>
+<p>As suggested by Maslov, this gate can be used to construct <span class="math inline">\(RT^4\)</span> out of <span class="math inline">\(RT^3\)</span>. Indeed, take a look at the following circuit.</p>
+<p><img src="RT4/RT4.png" alt="Drawing" style="width: 500px;"></p>
+<p>It is obtained from <span class="math inline">\(RT^3\)</span> by adding an extra qubit and replacing the middle CNOT with <span class="math inline">\(SRT^3\)</span>. Why does this work? The new circuit must (1) do what the 3q circuit did when the state of <span class="math inline">\(q_0\)</span> is <span class="math inline">\(|1\rangle\)</span> and (2) do nothing if the state of <span class="math inline">\(q_0\)</span> is <span class="math inline">\(|0\rangle\)</span>. When the new qubit is in state <span class="math inline">\(|1\rangle\)</span>, the <span class="math inline">\(RT^3\)</span> gate behaves just like a CNOT between <span class="math inline">\(q_1\)</span> and <span class="math inline">\(q_3\)</span> and we are back to the 3q circuit behavior. When the new qubit is <span class="math inline">\(|0\rangle\)</span>, the <span class="math inline">\(RT^3\)</span> gate becomes 3q identity, and all gates around it cancel in pairs, so the whole circuit is 4q identity. Good. Finally, the additional diagonal gate acting on <span class="math inline">\(q_0, q_1\)</span> can be moved to the right and combined with the diagonal gate defining <span class="math inline">\(RT^3\)</span>. Note that if we inserted <span class="math inline">\(RT^3\)</span> instead of <span class="math inline">\(SRT^3\)</span> in the middle, this wouldn’t work because 3q diagonal gate would not commute with gates on qubit <span class="math inline">\(q_3\)</span>. This implementation of <span class="math inline">\(RT^4\)</span> has 6 CNOT gates, which is apparently the optimal result.</p>
+<p>Here is an explicit implementation.</p>
+<div class="cell" data-execution_count="9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build circuit</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">4</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">3</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">3</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">3</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>qc.append(SRT3, [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>])</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">3</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">3</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">3</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.decompose(<span class="st">'SRT3'</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Store to gate</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>RT4 <span class="op">=</span> qc.to_instruction(label<span class="op">=</span><span class="st">'RT4'</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>RT4dg <span class="op">=</span> RT4.inverse()</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>RT4dg.label <span class="op">=</span> <span class="st">'RT4dg'</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that it is indeed the relative phase Toffoli 3 gate</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>u_RT4 <span class="op">=</span> Operator(qc).data</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>qc_T4 <span class="op">=</span> QuantumCircuit(<span class="dv">4</span>)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>qc_T4.mct([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>], <span class="dv">3</span>)</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>u_T4 <span class="op">=</span> Operator(qc_T4).data</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'is relative:'</span>, is_relative(u_RT4, u_T4))</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>is relative: True</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-10-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="rt5" class="level2">
+<h2 class="anchored" data-anchor-id="rt5"><span class="math inline">\(RT^5\)</span></h2>
+<p>The final ingredient I will need is <span class="math inline">\(RT^5\)</span>. It is not present in Maslov’s paper and I haven’t found it with a brief search in other literature, but we can use the same idea to build <span class="math inline">\(RT^5\)</span> out of <span class="math inline">\(RT^4\)</span> and <span class="math inline">\(SRT^3\)</span>. Namely, in the diagram above we replace both CNOTs acting between <span class="math inline">\(q_0\)</span> and <span class="math inline">\(q_3\)</span> by <span class="math inline">\(SRT^3\)</span>. This leads to the following circuit.</p>
+<div class="cell" data-execution_count="10">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build circuit</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">5</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">4</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">4</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">4</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">4</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>qc.append(SRT3dg, [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">4</span>])</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">4</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">2</span>, <span class="dv">4</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">4</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>qc.append(SRT3, [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">4</span>])</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">4</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">2</span>, <span class="dv">4</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">4</span>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">4</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">4</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">4</span>)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">4</span>)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.decompose(<span class="st">'RT3'</span>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> transpile(qc, basis_gates<span class="op">=</span>[<span class="st">'cx'</span>, <span class="st">'t'</span>, <span class="st">'tdg'</span>, <span class="st">'h'</span>], optimization_level<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that it is indeed the relative phase Toffoli 3 gate</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>u_RT5 <span class="op">=</span> Operator(qc).data</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>qc_T5 <span class="op">=</span> QuantumCircuit(<span class="dv">5</span>)</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>qc_T5.mct([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], <span class="dv">4</span>)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>u_T5 <span class="op">=</span> Operator(qc_T5).data</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'is relative:'</span>, is_relative(u_RT5, u_T5))</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>is relative: True</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-11-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Subcircuits between barriers are the inserted <span class="math inline">\(SRT^3\)</span> gates. This circuit has 12 CNOT gates. Apparently, by looking at it carefully enough one can find a pair of CNOT gates that cancel each other. I stumbled upon this fact by accident. I tried to substitute shorter <span class="math inline">\(RT^3\)</span> instead of <span class="math inline">\(SRT^3\)</span> here and was sure it would fail, but it worked. The resulting decomposition of <span class="math inline">\(RT^5\)</span> has only 10 CNOT gates. Here is the circuit.</p>
+<div class="cell" data-execution_count="11">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build circuit</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">5</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">4</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">4</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">4</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">4</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>qc.append(RT3, [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">4</span>])</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">4</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">2</span>, <span class="dv">4</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">4</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>qc.append(RT3, [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">4</span>])</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">4</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">2</span>, <span class="dv">4</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">4</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">4</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">4</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">4</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">4</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.decompose(<span class="st">'RT3'</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> transpile(qc, basis_gates<span class="op">=</span>[<span class="st">'cx'</span>, <span class="st">'t'</span>, <span class="st">'tdg'</span>, <span class="st">'h'</span>], optimization_level<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Store to gate</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>RT5 <span class="op">=</span> qc.to_instruction(label<span class="op">=</span><span class="st">'RT5'</span>)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>RT5dg <span class="op">=</span> RT5.inverse()</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>RT5dg.label <span class="op">=</span> <span class="st">'RT5dg'</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that it is indeed the relative phase Toffoli 3 gate</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>u_RT5 <span class="op">=</span> Operator(qc).data</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>qc_T5 <span class="op">=</span> QuantumCircuit(<span class="dv">5</span>)</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>qc_T5.mct([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], <span class="dv">4</span>)</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>u_T5 <span class="op">=</span> Operator(qc_T5).data</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'is relative:'</span>, is_relative(u_RT5, u_T5))</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>is relative: True</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-12-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="generalization-of-relative-phase-gates" class="level2">
+<h2 class="anchored" data-anchor-id="generalization-of-relative-phase-gates">Generalization of relative phase gates</h2>
+<p>It is possible to further generalize relative phase gates by allowing more general operators which cancel in compute-uncompute pairs. See Maslov’s paper for the use of more general gates with dirty ancilla qubits.</p>
+</section>
+</section>
+<section id="solution-to-the-classiq-problem" class="level1">
+<h1>Solution to the Classiq problem</h1>
+<p>Now all of the ingredients are in place. The original problem statement is <a href="https://www.classiq.io/competition/toffoli">here</a>. One needs to decompose a Toffoli gate with 14 controls and one target using no more than 5 clean ancilla qubits, 20 qubits in total. The ancilla must be returned into original state. Best solution is the one with the smallest depth. Here is my solution.</p>
+<p><img src="T15/T15.png" alt="Drawing" style="width: 300px;"></p>
+<p>The intuition is a follows. Having the smallest depth means that we need to perform as many operations in parallel as possible. The first layer in the circuit divides the 14 control qubits into four groups <span class="math inline">\(14=4+4+3+3\)</span>, and stores their logical ANDs in four of the available ancilla qubits. It remains to compute the logical AND of these four ancilla and write it to the target qubit, i.e.&nbsp;to perform <span class="math inline">\(T^5\)</span> gate. To make this operation efficient we have one more clean ancilla available. Layers 2, 3 and 4 thus perform <span class="math inline">\(T^5\)</span> gate with the use of the last clean ancilla. The very last layer uncomputes the first. This circuit works if all of the gates used are plain Toffoli gates. However, using relative phase Toffoli gates in compute-uncompute pairs significantly reduces the depth.</p>
+<p>The expected CNOT depth is <span class="math inline">\(38=2\times 10+2\times 6+6\)</span>, where <span class="math inline">\(10\)</span> is the depth of <span class="math inline">\(RT^5\)</span>, 6 of <span class="math inline">\(RT^4\)</span> and the last 6 is the depth of <span class="math inline">\(T^3\)</span>. The 1q depth should be about twice as much. Note that by the rules of the competition general single-qubit gates can be used, which means that, say, <span class="math inline">\(H\)</span> and <span class="math inline">\(T\)</span> gates can be combined together and count as a single gate.</p>
+<p>After using <code>qiskit</code> transpiler the final CNOT and total depth of the circuit are a bit smaller than estimated above. I am not sure where the optimization comes from, but many thanks to the transpiler! Here is a complete solution coded in <code>qiskit</code>.</p>
+<div class="cell" data-scrolled="true" data-execution_count="12">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>c41 <span class="op">=</span> QuantumRegister(<span class="dv">4</span>, <span class="st">'c41'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>c42 <span class="op">=</span> QuantumRegister(<span class="dv">4</span>, <span class="st">'c42'</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>c31 <span class="op">=</span> QuantumRegister(<span class="dv">3</span>, <span class="st">'c31'</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>c32 <span class="op">=</span> QuantumRegister(<span class="dv">3</span>, <span class="st">'c32'</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [QuantumRegister(<span class="dv">1</span>, <span class="ss">f'a</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">'</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>)]</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> QuantumRegister(<span class="dv">1</span>, <span class="st">'trgt'</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(c41, a[<span class="dv">0</span>], c42, a[<span class="dv">1</span>], c31, a[<span class="dv">2</span>], c32, a[<span class="dv">3</span>], a[<span class="dv">4</span>], t)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>qc.append(RT5, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">5</span>)))</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>qc.append(RT5, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">5</span>, <span class="dv">10</span>)))</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>qc.append(RT4, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">10</span>, <span class="dv">14</span>)))</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>qc.append(RT4, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">14</span>, <span class="dv">18</span>)))</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>qc.append(RT4, [<span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">13</span>, <span class="dv">18</span>])</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>qc.ccx(<span class="dv">17</span>, <span class="dv">18</span>, <span class="dv">19</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>qc.append(RT4dg, [<span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">13</span>, <span class="dv">18</span>])</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>qc.append(RT5dg, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">5</span>)))</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>qc.append(RT5dg, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">5</span>, <span class="dv">10</span>)))</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>qc.append(RT4dg, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">10</span>, <span class="dv">14</span>)))</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>qc.append(RT4dg, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">14</span>, <span class="dv">18</span>)))</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>qc.draw()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre style="word-wrap: normal;white-space: pre;background: #fff0;line-height: 1.1;font-family: &quot;Courier New&quot;,Courier,monospace">       ┌──────┐                       ┌────────┐
+c41_0: ┤0     ├───────────────────────┤0       ├
+       │      │                       │        │
+c41_1: ┤1     ├───────────────────────┤1       ├
+       │      │                       │        │
+c41_2: ┤2 RT5 ├───────────────────────┤2 RT5dg ├
+       │      │                       │        │
+c41_3: ┤3     ├───────────────────────┤3       ├
+       │      │┌──────┐     ┌────────┐│        │
+   a1: ┤4     ├┤0     ├─────┤0       ├┤4       ├
+       ├──────┤│      │     │        │├────────┤
+c42_0: ┤0     ├┤      ├─────┤        ├┤0       ├
+       │      ││      │     │        ││        │
+c42_1: ┤1     ├┤      ├─────┤        ├┤1       ├
+       │      ││      │     │        ││        │
+c42_2: ┤2 RT5 ├┤      ├─────┤        ├┤2 RT5dg ├
+       │      ││      │     │        ││        │
+c42_3: ┤3     ├┤      ├─────┤        ├┤3       ├
+       │      ││      │     │        ││        │
+   a2: ┤4     ├┤1     ├─────┤1       ├┤4       ├
+       ├──────┤│      │     │        │├────────┤
+c31_0: ┤0     ├┤      ├─────┤        ├┤0       ├
+       │      ││      │     │        ││        │
+c31_1: ┤1     ├┤  RT4 ├─────┤  RT4dg ├┤1       ├
+       │  RT4 ││      │     │        ││  RT4dg │
+c31_2: ┤2     ├┤      ├─────┤        ├┤2       ├
+       │      ││      │     │        ││        │
+   a3: ┤3     ├┤2     ├─────┤2       ├┤3       ├
+       ├──────┤│      │     │        │├────────┤
+c32_0: ┤0     ├┤      ├─────┤        ├┤0       ├
+       │      ││      │     │        ││        │
+c32_1: ┤1     ├┤      ├─────┤        ├┤1       ├
+       │  RT4 ││      │     │        ││  RT4dg │
+c32_2: ┤2     ├┤      ├─────┤        ├┤2       ├
+       │      ││      │     │        ││        │
+   a4: ┤3     ├┤      ├──■──┤        ├┤3       ├
+       └──────┘│      │  │  │        │└────────┘
+   a5: ────────┤3     ├──■──┤3       ├──────────
+               └──────┘┌─┴─┐└────────┘          
+ trgt: ────────────────┤ X ├────────────────────
+                       └───┘                    </pre>
+</div>
+</div>
+<p>The CNOT and overall depth of the circuit can be computed as follows.</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>qc_final <span class="op">=</span> transpile(qc, basis_gates<span class="op">=</span>[<span class="st">'cx'</span>, <span class="st">'u'</span>])</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'total depth:'</span>, qc_final.depth())</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'CX depth:'</span>, qc_final.depth(<span class="kw">lambda</span> gate: gate[<span class="dv">0</span>].name <span class="op">==</span> <span class="st">'cx'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>total depth: 70
+CX depth: 36</code></pre>
+</div>
+</div>
+<p>It is of course possible to use other ways of splitting the control qubits into groups and/or using the ancilla qubits differently. I’m really curious to look at solutions submitted by other participants, including the best one due to Soshun Naito. Looking forward to Classiq announcement!</p>
+<p><strong><em>Update</em></strong>: As noted by <a href="https://www.linkedin.com/in/gramolin/">Alexander Gramolin</a>, this decomposition can be improved by using an upgraded version of the Toffoli 3 gate sitting in the middle of the circuit. My implementation above uses standard <code>qiskit</code> decomposition with depth 11. A better option is to use depth-8 Toffoli gate from <a href="https://arxiv.org/abs/1206.0758">this paper</a> (be sure Dmitri Maslov if one of the authors:):</p>
+<div class="cell" data-execution_count="14">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build circuit</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">0</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">1</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">2</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">2</span>, <span class="dv">0</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">0</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">2</span>)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">0</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">2</span>, <span class="dv">0</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>qc.t(<span class="dv">0</span>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>qc.tdg(<span class="dv">2</span>)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">2</span>)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Store to gate</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>T3 <span class="op">=</span> qc.to_instruction(label<span class="op">=</span><span class="st">'T3'</span>)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that it is indeed the relative phase Toffoli 3 gate</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>u_T3 <span class="op">=</span> Operator(qc).data</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>qc_T3_standard <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>qc_T3_standard.ccx(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>u_T3_standard <span class="op">=</span> Operator(qc_T3_standard).data</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'is T3:'</span>, np.allclose(u_T3, u_T3_standard))</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span>output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>is T3: True</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<p><img src="2022-06-21-Classiq Toffoli_files/figure-html/cell-15-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>This reduces <span class="math inline">\(CX\)</span> depth by 1 and total depth by 4!</p>
+<div class="cell" data-execution_count="15">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>c41 <span class="op">=</span> QuantumRegister(<span class="dv">4</span>, <span class="st">'c41'</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>c42 <span class="op">=</span> QuantumRegister(<span class="dv">4</span>, <span class="st">'c42'</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>c31 <span class="op">=</span> QuantumRegister(<span class="dv">3</span>, <span class="st">'c31'</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>c32 <span class="op">=</span> QuantumRegister(<span class="dv">3</span>, <span class="st">'c32'</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [QuantumRegister(<span class="dv">1</span>, <span class="ss">f'a</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">'</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>)]</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> QuantumRegister(<span class="dv">1</span>, <span class="st">'trgt'</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(c41, a[<span class="dv">0</span>], c42, a[<span class="dv">1</span>], c31, a[<span class="dv">2</span>], c32, a[<span class="dv">3</span>], a[<span class="dv">4</span>], t)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>qc.append(RT5, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">5</span>)))</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>qc.append(RT5, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">5</span>, <span class="dv">10</span>)))</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>qc.append(RT4, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">10</span>, <span class="dv">14</span>)))</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>qc.append(RT4, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">14</span>, <span class="dv">18</span>)))</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>qc.append(RT4, [<span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">13</span>, <span class="dv">18</span>])</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>qc.append(T3, [<span class="dv">17</span>, <span class="dv">18</span>, <span class="dv">19</span>])</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>qc.append(RT4dg, [<span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">13</span>, <span class="dv">18</span>])</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>qc.append(RT5dg, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">5</span>)))</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>qc.append(RT5dg, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">5</span>, <span class="dv">10</span>)))</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>qc.append(RT4dg, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">10</span>, <span class="dv">14</span>)))</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>qc.append(RT4dg, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">14</span>, <span class="dv">18</span>)))</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>qc_final <span class="op">=</span> transpile(qc, basis_gates<span class="op">=</span>[<span class="st">'cx'</span>, <span class="st">'u'</span>])</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'total depth:'</span>, qc_final.depth())</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'CX depth:'</span>, qc_final.depth(<span class="kw">lambda</span> gate: gate[<span class="dv">0</span>].name <span class="op">==</span> <span class="st">'cx'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>total depth: 66
+CX depth: 35</code></pre>
+</div>
+</div>
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="idnm/blog" data-repo-id="R_kgDOJWB1vg" data-category="General" data-category-id="DIC_kwDOJWB1vs4CVvR7" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

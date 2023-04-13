@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.319">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-11-15">
+<meta name="description" content="And a couple of words about Euler’s and KAK decompositions">
+
+<title>Notes on Quantum Computing - Decomposition of a general single–qutrit gate</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../kika.jpeg" rel="icon" type="image/jpeg">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-description','listing-categories','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1154MLY31V"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1154MLY31V', { 'anonymize_ip': true});
+</script>
+<script>
+window.MathJax = {
+  tex: {
+    tags: 'ams'
+  }
+};
+</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Notes on Quantum Computing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Decomposition of a general single–qutrit gate</h1>
+                  <div>
+        <div class="description">
+          And a couple of words about Euler’s and KAK decompositions
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">quantum concepts</div>
+                <div class="quarto-category">compilation</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 15, 2022</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">April 13, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#whats-in-here" id="toc-whats-in-here" class="nav-link active" data-scroll-target="#whats-in-here">What’s in here?</a></li>
+  <li><a href="#eulers-decomposition-of-an-arbitrary-single-qubit-gate" id="toc-eulers-decomposition-of-an-arbitrary-single-qubit-gate" class="nav-link" data-scroll-target="#eulers-decomposition-of-an-arbitrary-single-qubit-gate">Euler’s decomposition of an arbitrary single-qubit gate</a>
+  <ul class="collapse">
+  <li><a href="#elementary-single-qubit-rotations" id="toc-elementary-single-qubit-rotations" class="nav-link" data-scroll-target="#elementary-single-qubit-rotations">Elementary single-qubit rotations</a></li>
+  <li><a href="#making-sense-of-eulers-decomposition" id="toc-making-sense-of-eulers-decomposition" class="nav-link" data-scroll-target="#making-sense-of-eulers-decomposition">Making sense of Euler’s decomposition</a></li>
+  <li><a href="#a-word-about-cartan-decomposition-kak" id="toc-a-word-about-cartan-decomposition-kak" class="nav-link" data-scroll-target="#a-word-about-cartan-decomposition-kak">A word about Cartan decomposition (KAK)</a></li>
+  <li><a href="#finding-angles-in-eulers-decomposition" id="toc-finding-angles-in-eulers-decomposition" class="nav-link" data-scroll-target="#finding-angles-in-eulers-decomposition">Finding angles in Euler’s decomposition</a></li>
+  <li><a href="#decomposition-sketch" id="toc-decomposition-sketch" class="nav-link" data-scroll-target="#decomposition-sketch">Decomposition sketch</a></li>
+  <li><a href="#a-word-about-global-phases" id="toc-a-word-about-global-phases" class="nav-link" data-scroll-target="#a-word-about-global-phases">A word about global phases</a></li>
+  <li><a href="#decomposition-refinement" id="toc-decomposition-refinement" class="nav-link" data-scroll-target="#decomposition-refinement">Decomposition refinement</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> unitary_group</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><a target="_blank" href="https://colab.research.google.com/github/idnm/blog/blob/master/posts/qutrit_gate/2022-11-15-Qutrit.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" align="right" alt="Open In Colab"> </a></p>
+<section id="whats-in-here" class="level1">
+<h1>What’s in here?</h1>
+<p>Recently I needed to decompose a general single-qutrit gate into elementary qutrit rotations, but was unable to find a ready-to-use result in the literature. After some time I gave up on searching and came up with a simple decomposition of the following form</p>
+<p><img src="su3su2.png" alt="Drawing" style="width: 400px;"></p>
+<p>The main purpose of this post is to give an explicit algorithm for constructing this decomposition. The procedure I propose is pretty elementary and only uses singular value decomposition, no fancy Cartan’s decompositions. If you want to cut to the chase, proceed to <a href="#summary">summary and implementation</a>. For the backstory start <a href="#qutrit">here</a>. For context I also cover Euler’s decomposition for single-qubit gates and give a brief motivation for the problem, for this read on.</p>
+<blockquote class="blockquote">
+<p><strong><em>NOTE:</em></strong> I’ve got a lot of feedback after sharing this blog post on LinkedIn, see <a href="https://www.linkedin.com/posts/nikita-nemkov_quantumcomputing-activity-6999081658490474496-Wz3_?utm_source=share&amp;utm_medium=member_desktop">here</a> for the discussion. Many papers were pointed out that contain similar results. The most elementary and directly related discussion can be found in App.A of <a href="https://aip.scitation.org/doi/10.1063/1.532911">this paper</a>, as pointed out by Barry Sanders. Other references suggested include</p>
+<ul>
+<li>https://journals.aps.org/pra/abstract/10.1103/PhysRevA.97.022328</li>
+<li>https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.73.58</li>
+<li>https://opg.optica.org/optica/fulltext.cfm?uri=optica-3-12-1460&amp;id=355743</li>
+<li>https://arxiv.org/abs/quant-ph/0511041</li>
+<li>https://arxiv.org/abs/quant-ph/0511019</li>
+<li>https://arxiv.org/abs/2206.03842</li>
+</ul>
+</blockquote>
+<p>So, why care about qutrits? Well, first thing to note is that they exist. Most quantum systems in the real world, in contrast to quantum computing textbooks, are not two-level. Qutrits (three-level systems) and, more generally, qudits (d-dimensional systems) are omnipresent. Trapped ion quantum computers give one example where qudits naturally arise, see e.g.&nbsp;<a href="https://arxiv.org/abs/1907.08569">https://arxiv.org/abs/1907.08569</a>. Another interesting example are superconducting qubits. In fact, a bare superconducting circuit is rather a harmonic oscillator and as such has infinitely many energy levels. Typically, an anharmonicity in the form of a Josephson junction is introduced, which allows to decouple the two lowest energy levels from the rest to give the familiar superconducting qubit. However, the higher energy levels are still there and can be fruitfully exploited.</p>
+<p>For a theorist, more levels is a blessing. More states fit into the system of the same size (for example dimension of the qutrit state space scales as <span class="math inline">\(3^n\)</span> instead of <span class="math inline">\(2^n\)</span> for a qubit system) opening up novel optimization possibilities, here is just one example <a href="https://arxiv.org/abs/1909.08973">https://arxiv.org/abs/1909.08973</a>. An experimentator probably has mixed feelings about higher levels, because they are typically associated more noise and calibration overhead. Exploiting higher levels is therefore an promising yet challenging possibility. There are already many proofs of concept, see e.g.&nbsp;this result on using the third level in a superconducting circuit to improve the fidelity of the Toffoli gate <a href="https://arxiv.org/abs/2109.00558">https://arxiv.org/abs/2109.00558</a>.</p>
+</section>
+<section id="eulers-decomposition-of-an-arbitrary-single-qubit-gate" class="level1">
+<h1>Euler’s decomposition of an arbitrary single-qubit gate</h1>
+<section id="elementary-single-qubit-rotations" class="level2">
+<h2 class="anchored" data-anchor-id="elementary-single-qubit-rotations">Elementary single-qubit rotations</h2>
+<p>Me (and probably you too) usually take for granted that an arbitrary single-qubit gate <span class="math inline">\(U\)</span> can be decomposed into a product of three elementary rotations. The rotations are usually chosen as</p>
+<p><span class="math display">\[\begin{align}
+&amp;R_X(\theta)=e^{-i\theta X/2}=\begin{pmatrix} \cos\frac{\theta}2 &amp; -i\sin\frac{\theta}2 \\  -i\sin\frac{\theta}2 &amp; \cos\frac{\theta}2\end{pmatrix}\\
+&amp;R_Y(\theta)=e^{-i\theta Y/2}=\begin{pmatrix} \cos\frac{\theta}2 &amp; -\sin\frac{\theta}2 \\  \sin\frac{\theta}2 &amp; \cos\frac{\theta}2\end{pmatrix}\\
+&amp;R_Z(\theta)=e^{-i\theta Z/2}=\begin{pmatrix} e^{-i \theta/2} &amp; 0 \\ 0 &amp; e^{i\theta/2}\end{pmatrix}
+\end{align}\]</span></p>
+<p>and a sample decomposition reads</p>
+<p><span class="math display">\[\begin{align}
+U = R_X(\theta_1)R_Z(\theta_2)R_X(\theta_3) \label{XZX} \ .
+\end{align}\]</span></p>
+<p>This one is known as the Euler decomposition. Choosing angles <span class="math inline">\(\theta_i\)</span> appropriately one can obtain any <span class="math inline">\(2\times 2\)</span> special (with unit determinant) unitary matrix <span class="math inline">\(U\in SU(2)\)</span>.</p>
+</section>
+<section id="making-sense-of-eulers-decomposition" class="level2">
+<h2 class="anchored" data-anchor-id="making-sense-of-eulers-decomposition">Making sense of Euler’s decomposition</h2>
+<p><a id="cell2"></a></p>
+<p>Let me make a couple of remarks in an attempt to make relation <span class="math inline">\(\eqref{XZX}\)</span> a bit more intuitive. First of all, the dimension of the group <span class="math inline">\(U(n)\)</span>, i.e.&nbsp;a group of <span class="math inline">\(n\times n\)</span> unitary matrices is equal to <span class="math display">\[\operatorname{dim} U(n)=n^2 \ .\]</span> If you also factor out the global phase, i.e.&nbsp;impose <span class="math inline">\(\operatorname{det}U=1\)</span>, you get the special unitary group <span class="math inline">\(SU(n)\)</span> which has one dimension less <span class="math display">\[\operatorname{dim} SU(n)=n^2-1\ .\]</span> For a single-qubit gate <span class="math inline">\(n=2\)</span> and <span class="math inline">\(\operatorname{dim}=3\)</span>. This implies that the right-hand side in eq.<span class="math inline">\(\eqref{XZX}\)</span> needs to have at least three parameters and hence three elementary rotations. Good, this explains why are there three terms in Euler’s decomposition. (This technique of unsubtle parameter counting in fact extends far more generally. For example, it can be used to deduce a minimum amount of <span class="math inline">\(CNOT\)</span> gates necessary to compile an arbitrary <span class="math inline">\(n\)</span>-qubit unitary, as I discussed <a href="https://idnm.github.io/blog/machine%20learning/compilation/qiskit/paper%20review/2021/07/22/Machine-learning-compilation-of-quantum-circuits.html#Theoretical-lower-bound-and-quantum-Shannon-decomposition">here</a>).</p>
+</section>
+<section id="a-word-about-cartan-decomposition-kak" class="level2">
+<h2 class="anchored" data-anchor-id="a-word-about-cartan-decomposition-kak">A word about Cartan decomposition (KAK)</h2>
+<p>Now, is there anything special about this particular combination of rotations <span class="math inline">\(XZX\)</span>? Well, yes and no. In fact, almost any three single-parameter unitaries would work. Other possible decompositions are <span class="math inline">\(XYX\)</span>, <span class="math inline">\(YZY\)</span> etc, but also less common options exist such as <span class="math inline">\(XYZ\)</span>.</p>
+<p>However, decompositions like <span class="math inline">\(XZX\)</span> are special in a sense that they are examples of Cartan (aka KAK) decompositions, hinging on the structure of the underlying <span class="math inline">\(su(2)\)</span> algebra. Decompositions of two-qubit gates into <span class="math inline">\(CNOT\)</span> gates and single-qubit rotations is another important example where KAK arise. I will not cover the subject here, but can recommend a quite readable introduction with applications to quantum gates <a href="https://arxiv.org/abs/quant-ph/0010100">https://arxiv.org/abs/quant-ph/0010100</a>.</p>
+</section>
+<section id="finding-angles-in-eulers-decomposition" class="level2">
+<h2 class="anchored" data-anchor-id="finding-angles-in-eulers-decomposition">Finding angles in Euler’s decomposition</h2>
+<p>Writing decomposition with generic parameters is one thing, fixing them explicitly for a given matrix <span class="math inline">\(U\)</span> is another. Here how you can do it for Euler’s decomposition. The key observation is that because <span class="math inline">\(XZ=-XZ\)</span> we have <span class="math display">\[X R_Z(\theta)X=R_Z(-\theta),\quad X R_X(\theta)X=R_X(\theta) \ .\]</span> Multiplying <span class="math inline">\(\eqref{XZX}\)</span> by <span class="math inline">\(X\)</span> from left and right we get <span class="math display">\[XUX=R_X(\theta_1)R_Z(-\theta_2)R_X(\theta_3) \ .\]</span> Therefore <span class="math display">\[M:= UXU^\dagger X=R_x(\theta_1)R_Z(2\theta_2)R_x^\dagger(\theta_1) \ .\]</span></p>
+<p>Since <span class="math inline">\(R_Z\)</span> is a diagonal gate, the right hand side is nothing else but a unitary diagonalization of matrix <span class="math inline">\(M\)</span>. Therefore, finding <span class="math inline">\(\theta_1\)</span> and <span class="math inline">\(\theta_2\)</span> reduces to the standard diagonalization procedure. The last parameter <span class="math inline">\(\theta_3\)</span> is then read off from <span class="math inline">\(R_X(\theta_3)=R_Z^\dagger(\theta_2) R_X^\dagger(\theta_1)U\)</span>.</p>
+<p>Here is a quick and dirty code that implements the procedure. It won’t handle some edge cases and may not be the most efficient, but it will work with random unitaries.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define X, RX, and RZ.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">0</span>]])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> RX(theta):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        [[np.cos(theta<span class="op">/</span><span class="dv">2</span>), <span class="op">-</span><span class="ot">1j</span><span class="op">*</span>np.sin(theta<span class="op">/</span><span class="dv">2</span>)],</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>         [<span class="op">-</span><span class="ot">1j</span><span class="op">*</span>np.sin(theta<span class="op">/</span><span class="dv">2</span>), np.cos(theta<span class="op">/</span><span class="dv">2</span>)]])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> RZ(theta):</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        [[np.exp(<span class="op">-</span><span class="ot">1j</span><span class="op">*</span>theta<span class="op">/</span><span class="dv">2</span>), <span class="dv">0</span>],</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>         [<span class="dv">0</span>, np.exp(<span class="ot">1j</span><span class="op">*</span>theta<span class="op">/</span><span class="dv">2</span>)]])</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Recovering angle from cos and sin.</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> angle_from_cos_and_sin(c, s):</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(c<span class="op">**</span><span class="dv">2</span><span class="op">+</span>s<span class="op">**</span><span class="dv">2</span>, <span class="dv">1</span>), <span class="st">'Input does not satisfy c**2+s**2=1'</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    phi <span class="op">=</span> np.arccos(c)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> np.allclose(np.sin(phi), s):</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> phi</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span>phi</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Decomposition routine.</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> XZX_decomposition(U):</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(U.conj().T <span class="op">@</span> U, np.eye(<span class="dv">2</span>)), <span class="st">'Input matrix is not unitary.'</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(np.linalg.det(U), <span class="dv">1</span>), <span class="st">'Input matrix has non-unit determinant.'</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct the matrix to diagonalize.</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> U <span class="op">@</span> X <span class="op">@</span> U.conj().T <span class="op">@</span> X</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Diagonalization.</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    RZ_squared, RX1 <span class="op">=</span> np.linalg.eig(M)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(RX1 <span class="op">@</span> np.diag(RZ_squared) <span class="op">@</span> RX1.conj().T, M)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Matrix RX1 is not necessarily of RX(theta) form yet, but it can be made so by multiplying with a diagonal unitary.</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    phase_00 <span class="op">=</span> RX1[<span class="dv">0</span>, <span class="dv">0</span>]<span class="op">/</span>np.<span class="bu">abs</span>(RX1[<span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    RX1 <span class="op">/=</span> phase_00 <span class="co"># Now RX1[0,0] is real and RX[1,0] has the correct phase.</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    phase_10 <span class="op">=</span> RX1[<span class="dv">1</span>, <span class="dv">0</span>]<span class="op">/</span>np.<span class="bu">abs</span>(RX1[<span class="dv">1</span>, <span class="dv">0</span>])</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    phase_01 <span class="op">=</span> RX1[<span class="dv">0</span>, <span class="dv">1</span>]<span class="op">/</span>np.<span class="bu">abs</span>(RX1[<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    RX1 <span class="op">=</span> RX1 <span class="op">@</span> np.diag([<span class="dv">1</span>, phase_10<span class="op">/</span>phase_01]) <span class="co"># Now RX1[0,1] and RX1[1,1] have the correct phase as well.</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Determine theta_1.</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    cos <span class="op">=</span> RX1[<span class="dv">0</span>, <span class="dv">0</span>]</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    sin <span class="op">=</span> <span class="ot">1j</span><span class="op">*</span>RX1[<span class="dv">0</span>, <span class="dv">1</span>]</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    theta_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>angle_from_cos_and_sin(cos, sin)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(RX(theta_1), RX1)</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Theta_2 from RZ squared.</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    theta_2 <span class="op">=</span> <span class="ot">1j</span><span class="op">*</span>np.log(RZ_squared[<span class="dv">0</span>]) </span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(RZ(theta_2), RZ(theta_2))</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Determine RX(theta_3) and theta_3. </span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    RX2 <span class="op">=</span> RZ(<span class="op">-</span>theta_2) <span class="op">@</span> RX(<span class="op">-</span>theta_1) <span class="op">@</span> U</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    cos <span class="op">=</span> RX2[<span class="dv">0</span>, <span class="dv">0</span>]</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    sin <span class="op">=</span> <span class="ot">1j</span><span class="op">*</span>RX2[<span class="dv">0</span>, <span class="dv">1</span>]</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    theta_3 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>angle_from_cos_and_sin(cos, sin)</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(RX(theta_3), RX2)</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> np.allclose(RX(theta_1) <span class="op">@</span> RZ(theta_2) <span class="op">@</span> RX(theta_3), U):</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> theta_1, theta_2, theta_3</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">TypeError</span>(<span class="st">'Something went wrong during decomposition.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And now let’s test.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw a random unitary and normalize its det to 1.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>U <span class="op">=</span> unitary_group.rvs(<span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">0</span>) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>U <span class="op">=</span> U <span class="op">/</span> np.linalg.det(U)<span class="op">**</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Decompose and check</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>theta_1, theta_2, theta_3 <span class="op">=</span> XZX_decomposition(U)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>check <span class="op">=</span> np.allclose(RX(theta_1) <span class="op">@</span> RZ(theta_2) <span class="op">@</span> RX(theta_3), U)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Does it work? </span><span class="sc">{</span>check<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Does it work? True</code></pre>
+</div>
+</div>
+<p>From <span class="math inline">\(XZX\)</span> decompositions we can get related ones. For example, since conjugating by the Hadamard gate <span class="math inline">\(H\)</span> swaps <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> we can reduce <span class="math inline">\(ZXZ\)</span> decomposition of <span class="math inline">\(U\)</span> to <span class="math inline">\(XZX\)</span> decomposition of <span class="math inline">\(HUH\)</span>.We’ll need it a bit later so let’s implement this one also.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ZXZ_decomposition(U):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    H <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>]])<span class="op">/</span>np.sqrt(<span class="dv">2</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> XZX_decomposition(H<span class="op">@</span>U<span class="op">@</span>H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A simple check.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>U <span class="op">=</span> unitary_group.rvs(<span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>U <span class="op">/=</span> np.sqrt(np.linalg.det(U))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>theta_1, theta_2, theta_3 <span class="op">=</span> ZXZ_decomposition(U)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Check:'</span>, np.allclose(RZ(theta_1) <span class="op">@</span> RX(theta_2) <span class="op">@</span> RZ(theta_3), U))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Check: True</code></pre>
+</div>
+</div>
+<p><a id="qutrit"></a> # Decomposing arbitrary single-qutrit gate ## Elementary qutrit gates Qutrit is an abstraction for any three-level quantum system and it’s is probably less familiar than a qubit. General qutrit gate belongs to <span class="math inline">\(SU(3)\)</span> and elementary rotation gates for a qutrit are commonly chosen as</p>
+<p><span class="math display">\[\begin{align}
+R^{01}_X(\theta)=\begin{pmatrix}\cos\frac{\theta}2&amp;-i\sin\frac{\theta}2&amp;0\\-i\sin\frac{\theta}2&amp;\cos\frac{\theta}2&amp;0\\0&amp;0&amp;1\end{pmatrix},\quad
+R^{01}_Z(\theta)=\begin{pmatrix}e^{-i\theta/2}&amp;0&amp;0\\0&amp;e^{i\theta/2}&amp;0\\0&amp;0&amp;1\end{pmatrix} \ ,
+\end{align}\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\begin{align}
+R^{12}_X(\theta)=\begin{pmatrix}1&amp;0&amp;0\\0&amp;cos\frac{\theta}2&amp;-i\sin\frac{\theta}2\\0&amp;-i\sin\frac{\theta}2&amp;\cos\frac{\theta}2\end{pmatrix},\quad
+R^{12}_Z(\theta)=\begin{pmatrix}1&amp;0&amp;0\\0&amp;e^{-i\theta/2}&amp;0\\0&amp;0&amp;e^{i\theta/2}\end{pmatrix} \ .
+\end{align}\]</span></p>
+<p>Similar expression hold to <span class="math inline">\(R_Y^{01}\)</span> and <span class="math inline">\(R_Y^{12}\)</span> but we won’t need them. So these are basically single-qubit rotation gates which touch only two out of the three levels of a qutrit. By the way, gates that act only on levels 1 and 3 look bit awkward, and here we will do without them. ## Is there an off-the-shelf result? (I’m bad at googling) A general single-qutrit transformation lives in <span class="math inline">\(SU(3)\)</span> and hence has <span class="math inline">\(3^2-1=8\)</span> real parameters. Thus, we expect to have a decomposition which is a product of 8 elementary rotations. But how exactly will it look, and how to determine the parameters? To my surprise, the only explicit result I found is equation (4) in this paper <a href="https://arxiv.org/abs/1105.5485">https://arxiv.org/abs/1105.5485</a> which goes something like <span class="math display">\[U = R_Y^{01}R_Y^{02}R_Y^{01}R_Z^{01}R_Z^{02}R_Y^{01}R_Y^{02}R_Y^{01} \ .\]</span></p>
+<p>The result is based on a particular Cartan decomposition of <span class="math inline">\(SU(3)\)</span> (which is non-unique) and does not look very intuitive. Moreover, apparently no explicit algorithm to find the parameters of these rotations is given.</p>
+</section>
+<section id="decomposition-sketch" class="level2">
+<h2 class="anchored" data-anchor-id="decomposition-sketch">Decomposition sketch</h2>
+<p>I will now construct the explicit decomposition for a general single-qutrit gate advertised in the beginning. First, let us separate a general <span class="math inline">\(U\in SU(3)\)</span> into four blocks <span class="math display">\[U=\begin{pmatrix}A&amp;B\\C&amp;D\end{pmatrix}=\begin{pmatrix} a_{00}&amp; a_{01} &amp; b_0\\ a_{10} &amp; a_{11} &amp; b_1\\ c_0&amp;c_1&amp;d\end{pmatrix} \ .\]</span></p>
+<p>Here <span class="math inline">\(A\)</span> is a <span class="math inline">\(2\times2\)</span> matrix, <span class="math inline">\(B\)</span> and <span class="math inline">\(C^\dagger\)</span> are <span class="math inline">\(2\times1\)</span> column vectors and <span class="math inline">\(D\)</span> is a scalar. Now comes the key point. We factorize matrix <span class="math inline">\(A\)</span> using the <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition">singular value decomposition</a> (SVD) <span class="math display">\[A = V \Sigma W \ . \label{A SVD}\]</span> Here <span class="math inline">\(V\)</span> and <span class="math inline">\(W\)</span> are unitary, while <span class="math inline">\(\Sigma=\operatorname{diag}(\sigma_0,\sigma_1)\)</span> is diagonal with <span class="math inline">\(\sigma_i\ge0\)</span>. SVD is a very useful factorization that works for arbitrary matrices, not necessarily hermitian or unitary (or even square). Using the SVD of <span class="math inline">\(A\)</span> we can factorize <span class="math inline">\(U\)</span> as follows <span class="math display">\[\begin{align}
+U=\begin{pmatrix}V&amp;0\\0&amp;1\end{pmatrix}\begin{pmatrix}\Sigma&amp;V^\dagger B\\ CW^\dagger&amp;D\end{pmatrix}\begin{pmatrix}W&amp;0\\0&amp;1\end{pmatrix}=V^{01}\begin{pmatrix}\Sigma&amp;V^\dagger B\\ CW^\dagger&amp;D\end{pmatrix}W^{01} \label{U part} \ .
+\end{align}\]</span> The left and right matrices act only within the first two levels. The middle matrix looks like it acts on all levels of the qutrit, but in fact it doesn’t. I will leave at as an exercise to show that matrix <span class="math inline">\(A\)</span> necessarily has a unit singular value (Hint: unitarity condition for <span class="math inline">\(U\)</span> implies <span class="math inline">\(A^\dagger A+C^\dagger C=\mathbb{1}\)</span>. Because <span class="math inline">\(C\)</span> is a vector <span class="math inline">\(C^\dagger C\)</span> is not full rank and has a zero eigenvalue). I will assume that <span class="math inline">\(\sigma_{0}=1\)</span>. This has consequences. In a unitary matrix each row and column has a unit norm. Therefore, if some entry in a unitary matrix is equal to one, all other elements in the corresponding row and column must be zero. Thus, the middle matrix in <span class="math inline">\(\eqref{U part}\)</span> in fact looks like <span class="math display">\[H^{12}:=\begin{pmatrix}1&amp;0&amp;0\\ 0&amp;\sigma_{1}&amp; b'\\ 0&amp;c'&amp;d\end{pmatrix}\]</span> and hence only acts on levels 1 and 2. The overall decomposition can be sketched as follows. <img src="qutrit.png" alt="Drawing" style="width: 400px;"> (Here is a catch question. Are the lines on this diagram qubits or qutrit levels? Right, they aren’t qubits.)</p>
+<p>Therefore, we have split a general qutrit gate into three gates touching two levels only. Each of these can be decomposed into the elementary rotations using Euler’s method for single-qubit gates. That’s good. However, as it stands the decomposition is not optimal. So far all matrices <span class="math inline">\(V, H, W\)</span> are generic <span class="math inline">\(U(2)\)</span> matrices. Each comes with 3 parameters and also a global phase. We should be able to do better. Wait, but why is global phase a problem?</p>
+</section>
+<section id="a-word-about-global-phases" class="level2">
+<h2 class="anchored" data-anchor-id="a-word-about-global-phases">A word about global phases</h2>
+<p>Sure, global phases are normally ignored, and rightfully so, but there are situations where they are important. In our case, a global phase for a two-qubit gate leads to a non-trivial transformation when embedded in a qutrit. For example, <span class="math display">\[(e^{i\phi})^{01}=\begin{pmatrix}e^{i\phi}&amp;0&amp;0\\0&amp;e^{i\phi}&amp;0\\0&amp;0&amp;1\end{pmatrix}\]</span> is surely not a global phase for a qutrit. You may try to decompose this gate into the elementary qutrit rotations introduced above+a true global phase gate for a qutrit. The result won’t be trivial and actually involve more than one qutrit rotation. Therefore, we will take extra care to avoid global phases in the two-level gates.</p>
+</section>
+<section id="decomposition-refinement" class="level2">
+<h2 class="anchored" data-anchor-id="decomposition-refinement">Decomposition refinement</h2>
+<p>We would like to have a decomposition where all two-level matrices lie in <span class="math inline">\(SU(2)\)</span>, i.e.&nbsp;have a unit determinant. This can be achieved as follows. First we factor out global phases from matrices <span class="math inline">\(V\)</span> and <span class="math inline">\(W\)</span>, denote <span class="math inline">\(V=e^{i\phi_V}V_0, W=e^{i\phi_W}W_0\)</span>. Then we write <span class="math display">\[A=V'\Sigma' W' \ ,\]</span> where <span class="math display">\[\begin{align}
+&amp;V'=V_0\\
+&amp;\Sigma'=e^{i\phi_V}e^{i\phi_W}\Sigma R_Z(2\phi_V+2\phi_W)\\
+&amp;W'=R_Z(-2\phi_V-2\phi_W)W_0 \ .
+\end{align}\]</span> Unitary matrices <span class="math inline">\(V',W'\)</span> now have unit determinant. Matrix <span class="math inline">\(\Sigma'\)</span> is diagonal and importantly <span class="math inline">\(\Sigma'_{00}=1\)</span>. In order to enforce this constraint we included extra <span class="math inline">\(R_Z\)</span> factors in <span class="math inline">\(\Sigma'\)</span> and <span class="math inline">\(W'\)</span>. Note that <span class="math inline">\(\Sigma'_{11}\)</span> is in general no longer real, but this will not pose a problem.</p>
+<p>We will introduce another factorization of matrix <span class="math inline">\(A\)</span> <span class="math display">\[A=V'\Sigma'W'\]</span> and require <span class="math inline">\(\operatorname{det}V'=\operatorname{det}W'=1\)</span> and also <span class="math inline">\(\Sigma'_{00}=1\)</span>. Note that <span class="math inline">\(\Sigma'_{11}\)</span> can not in general be real in such decomposition, because <span class="math inline">\(\operatorname{det}A\)</span> is not real in general, but this won’t pose a problem. This new factorization of <span class="math inline">\(A\)</span> leads to the following decomposition of <span class="math inline">\(U\)</span> <span class="math display">\[\begin{align} U=(V')^{01} (H')^{12}(W')^{12} \label{U prime} \ . \end{align}\]</span> Because <span class="math inline">\(\operatorname{det}U=1\)</span> it follows <span class="math inline">\(\operatorname{det}H'=1\)</span>. Therefore, the all two-level matrices now lie in <span class="math inline">\(SU(2)\)</span> and can be decomposed into three elementary rotations using e.g.&nbsp;Euler’s method.</p>
+<p>Note that three matrices from the <span class="math inline">\(SU(2)\)</span> have 9 parameters in total, one more than dimension of <span class="math inline">\(SU(3)\)</span>. En extra redundancy can be described as follows</p>
+<p>You can check directly that <span class="math inline">\(\eqref{U prime}\)</span> remains invariant. Using this freedom, we can fix one parameter in any of the three matrices.</p>
+<p><a id="summary"></a> ## Summary and implementation In the end, we get the following decomposition for an arbitrary single-qutrit gate <span class="math display">\[U=(V')^{01} (H')^{12}(W')^{12}\]</span> where <span class="math inline">\(U\in SU(3)\)</span> and <span class="math inline">\(V', H', W'\in SU(2)\)</span>. It can be computed as follows</p>
+<p>The algorithm can be summarized as follows. 1. Cut out of matrix <span class="math inline">\(U\)</span> a <span class="math inline">\(2\times2\)</span> submatrix <span class="math inline">\(A\)</span> and find its singular value decomposition <span class="math inline">\(A=V \Sigma W\)</span>. 1. Factor out global phases from matrices <span class="math inline">\(V\)</span> and <span class="math inline">\(W\)</span> and denote <span class="math inline">\(V=e^{i\phi_V}V_0, W=e^{i\phi_W}W_0\)</span>. 1. Introduce <span class="math display">\[\begin{align}
+&amp;V'=V_0\\
+&amp;\Sigma'=e^{i\phi_V}e^{i\phi_W}\Sigma R_Z(2\phi_V+2\phi_W)\\
+&amp;W'=R_Z(-2\phi_V-2\phi_W)W_0 \ .
+\end{align}\]</span> Now <span class="math inline">\(A=V'\Sigma'W'\)</span> is another factorization of <span class="math inline">\(A\)</span> where <span class="math inline">\(V',W'\in SU(2)\)</span> and <span class="math inline">\(\Sigma'_{00}=1\)</span>. 1. Compute <span class="math inline">\(V'^\dagger U W'^\dagger\)</span>. It will be of the form <span class="math inline">\(\begin{pmatrix}1&amp;0\\0&amp;H'\end{pmatrix}\)</span> for some matrix <span class="math inline">\(H'\in SU(2)\)</span>. 1. Voilà 1. Note also that <span class="math inline">\(U\)</span> does not change under transformation <span class="math inline">\(V'\to V' R_Z(2\phi), W'\to R_Z(-2\phi)W', H'\to R_Z(-\phi) H' R_Z(\phi)\)</span>. This can be used to fix one degree of freedom in either <span class="math inline">\(V', H'\)</span> or <span class="math inline">\(W'\)</span>.</p>
+<p>Let’s go ahead and implement this decomposition. I will use the following decomposition consisting of elementary rotations</p>
+<p><img src="decomposition.png" alt="Drawing" style="width: 600px;"></p>
+<p>I.e. I will decompose all <span class="math inline">\(SU(2)\)</span> matrices using <span class="math inline">\(ZXZ\)</span> Euler decomposition and also choose <span class="math inline">\(W'\)</span> so that <span class="math inline">\(W'=XZ\)</span>. Again, efficiency or potential edge cases will not be a concern.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Embedding qubit gates into qutrit.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> embed(U_qubit, levels):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    U <span class="op">=</span> np.eye(<span class="dv">3</span>, dtype<span class="op">=</span>np.complex64)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> levels <span class="op">==</span> <span class="st">'01'</span>:</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        U[:<span class="dv">2</span>, :<span class="dv">2</span>]<span class="op">=</span>U_qubit</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> levels <span class="op">==</span> <span class="st">'12'</span>:</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        U[<span class="dv">1</span>:, <span class="dv">1</span>:]<span class="op">=</span>U_qubit</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">TypeError</span>(<span class="ss">f'Levels </span><span class="sc">{</span>levels<span class="sc">}</span><span class="ss"> not supported.'</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> U</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Decomposition routine</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> qutrit_decomposition(U):</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(U.conj().T <span class="op">@</span> U, np.eye(<span class="dv">3</span>)), <span class="st">'Input in not unitary.'</span> </span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(np.linalg.det(U), <span class="dv">1</span>), <span class="st">'Input is not special.'</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> U[:<span class="dv">2</span>, :<span class="dv">2</span>] <span class="co"># 2x2 submatrix</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    V, Sigma, W <span class="op">=</span> np.linalg.svd(A) <span class="co"># Basic SVD</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Setting det V = det W = 1</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    phase_V <span class="op">=</span> np.sqrt(np.linalg.det(V))</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    phase_W <span class="op">=</span> np.sqrt(np.linalg.det(W))</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    V <span class="op">/=</span> phase_V</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    W <span class="op">/=</span> phase_W</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># RZ factor to remove from W</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    theta_W1, theta_W2, theta_W3 <span class="op">=</span> ZXZ_decomposition(W)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    ZW1 <span class="op">=</span> RZ(theta_W1)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Computing the middle diagonal matrix</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> phase_V<span class="op">*</span>phase_W<span class="op">*</span>np.diag(Sigma) <span class="op">@</span> ZW1</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    M00_phase <span class="op">=</span> <span class="op">-</span><span class="ot">1j</span><span class="op">*</span>np.log(M[<span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Gauge factor to set M[0,0]=1</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    Z_gauge <span class="op">=</span> RZ(<span class="dv">2</span><span class="op">*</span>M00_phase)</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Final matrices</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    V_prime <span class="op">=</span> V <span class="op">@</span> Z_gauge.conj().T</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    W_prime <span class="op">=</span> RX(theta_W2) <span class="op">@</span> RZ(theta_W3)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    H_prime_full <span class="op">=</span> embed(V_prime.conj().T, <span class="st">'01'</span>) <span class="op">@</span> U <span class="op">@</span> embed(W_prime.conj().T, <span class="st">'01'</span>)</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    H_prime <span class="op">=</span> H_prime_full[<span class="dv">1</span>:, <span class="dv">1</span>:]</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    theta_V1, theta_V2, theta_V3 <span class="op">=</span> ZXZ_decomposition(V_prime)</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    theta_H1, theta_H2, theta_H3 <span class="op">=</span> ZXZ_decomposition(H_prime)</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> theta_V1, theta_V2, theta_V3, theta_H1, theta_H2, theta_H3, theta_W2, theta_W3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And, let’s verify.</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>U <span class="op">=</span> unitary_group.rvs(<span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>U <span class="op">=</span> U<span class="op">/</span>np.linalg.det(U)<span class="op">**</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> qutrit_decomposition(U)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>V01 <span class="op">=</span> embed(RZ(theta[<span class="dv">0</span>]) <span class="op">@</span> RX(theta[<span class="dv">1</span>]) <span class="op">@</span> RZ(theta[<span class="dv">2</span>]), <span class="st">'01'</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>H12 <span class="op">=</span> embed(RZ(theta[<span class="dv">3</span>]) <span class="op">@</span> RX(theta[<span class="dv">4</span>]) <span class="op">@</span> RZ(theta[<span class="dv">5</span>]), <span class="st">'12'</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>W01 <span class="op">=</span> embed(RX(theta[<span class="dv">6</span>]) <span class="op">@</span> RZ(theta[<span class="dv">7</span>]), <span class="st">'01'</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Does it work?'</span>, np.allclose(V01 <span class="op">@</span> H12 <span class="op">@</span> W01, U))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Does it work? True</code></pre>
+</div>
+</div>
+
+
+
+</section>
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="idnm/blog" data-repo-id="R_kgDOJWB1vg" data-category="General" data-category-id="DIC_kwDOJWB1vs4CVvR7" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

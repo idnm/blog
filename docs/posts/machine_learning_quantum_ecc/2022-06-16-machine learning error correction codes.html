@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.319">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-06-16">
+<meta name="description" content="Sweeping conceptual difficulties under the rug with a black-box approach">
+
+<title>Notes on Quantum Computing - Machine learning error correction codes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../kika.jpeg" rel="icon" type="image/jpeg">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-description','listing-categories','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1154MLY31V"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1154MLY31V', { 'anonymize_ip': true});
+</script>
+<script>
+window.MathJax = {
+  tex: {
+    tags: 'ams'
+  }
+};
+</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Notes on Quantum Computing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Machine learning error correction codes</h1>
+                  <div>
+        <div class="description">
+          Sweeping conceptual difficulties under the rug with a black-box approach
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">QML</div>
+                <div class="quarto-category">QEC</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 16, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#classical-repetition-code" id="toc-classical-repetition-code" class="nav-link" data-scroll-target="#classical-repetition-code">Classical repetition code</a></li>
+  <li><a href="#conceptual-difficulties-with-qecc" id="toc-conceptual-difficulties-with-qecc" class="nav-link" data-scroll-target="#conceptual-difficulties-with-qecc">Conceptual difficulties with QECC</a></li>
+  <li><a href="#machine-learning-qecc" id="toc-machine-learning-qecc" class="nav-link" data-scroll-target="#machine-learning-qecc">Machine learning QECC</a></li>
+  <li><a href="#design-choices" id="toc-design-choices" class="nav-link" data-scroll-target="#design-choices">Design choices</a>
+  <ul class="collapse">
+  <li><a href="#projecting-the-final-state" id="toc-projecting-the-final-state" class="nav-link" data-scroll-target="#projecting-the-final-state">Projecting the final state</a></li>
+  <li><a href="#dealing-with-continuum" id="toc-dealing-with-continuum" class="nav-link" data-scroll-target="#dealing-with-continuum">Dealing with continuum</a></li>
+  </ul></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation">Implementation</a></li>
+  <li><a href="#quantum-repetition-code" id="toc-quantum-repetition-code" class="nav-link" data-scroll-target="#quantum-repetition-code">Quantum repetition code</a></li>
+  <li><a href="#standard-description-of-the-quantum-repetition-code" id="toc-standard-description-of-the-quantum-repetition-code" class="nav-link" data-scroll-target="#standard-description-of-the-quantum-repetition-code">Standard description of the quantum repetition code</a></li>
+  <li><a href="#can-we-do-without-a-measurment" id="toc-can-we-do-without-a-measurment" class="nav-link" data-scroll-target="#can-we-do-without-a-measurment">Can we do without a measurment?</a></li>
+  <li><a href="#qubit-code" id="toc-qubit-code" class="nav-link" data-scroll-target="#qubit-code">5 qubit code</a></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="im">import</span> optax</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ImportError</span>:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span>pip install optax</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mynimize <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ImportError</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>git clone https:<span class="op">//</span>github.com<span class="op">/</span>idnm<span class="op">/</span>mynimize</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>git reset <span class="op">--</span>hard e11daa3396ef7682fccf744ce3dce0262cbbfac2</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mynimize.main <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> namedtuple</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> jax.scipy.linalg <span class="im">import</span> expm</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> jax <span class="im">import</span> random</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> unitary_group</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><a target="_blank" href="https://colab.research.google.com/github/idnm/blog/blob/master/posts/machine_learning_quantum_ecc/2022-06-16-Machine%20learning%20error%20correction%20codes.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" align="right" alt="Open In Colab"> </a></p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Quantum error correction codes (QECC) are crucial to the prospects of the quantum technology as well as extremely interesting from a theoretical point of view. Despite similarities to the classical error correction, there are fundamental distinctions, too. A naive attempt to generalize classical codes to work with quantum bits faces several conceptual challenges, such as no-cloning theorem and decoherence induced by a measurement. I got curious how far one can go in constructing a simple quantum ECC without worrying too much about those, using a simple machine learning model with little to no physics assumptions underneath. I think the experiment worked out pretty well, for instance, I’ll show how to get a 5 qubit code. Sure, most things appear to be obvious in retrospect, and rediscovering something that you know is possible is a completely different thing. Still, I found this to be a very interesting exercise with a couple of bonus take-aways, such as:</p>
+<ul>
+<li>Measurements are not a necessary part of the error correction. Decoding can be a unitary operation (at least for some codes).</li>
+<li>You can train the model on unitary errors only, general single-qubit error channels will be accounted for for free.</li>
+</ul>
+</section>
+<section id="classical-repetition-code" class="level1">
+<h1>Classical repetition code</h1>
+<p>Following 99% of error correction tutorials I will start with the classical repetition code. And you know what, I do not even feel guilty, this is a great time-tested warm up. So, we are sending a classical bit along a noisy channel and it is flipped with a probability <span class="math inline">\(p\)</span>. The error probability can be suppressed if we are willing to send more bits. Namely, instead of sending <code>0</code> we send <code>000</code>, instead of <code>1</code> we send <code>111</code>. This is called <em>encoding</em>, we encoded a single <em>logical</em> bit into several <em>physical</em> bits. Due to errors, the message <code>000</code> can be corrupted in several ways: 1. <code>000</code> : no corruption, with probability <span class="math inline">\((1-p)^3\)</span> 2. <code>100</code>, <code>010</code>, <code>001</code>: single corrupted bit, with probability <span class="math inline">\(3 p(1-p)^2\)</span> 3. <code>110</code>, <code>011</code>, <code>101</code>: two corrupted bits, with probability <span class="math inline">\(3 p^2(1-p)\)</span> 4. <code>111</code>: all bits flipped, with probability <span class="math inline">\(p^3\)</span></p>
+<p>Same holds for the <code>111</code> message.</p>
+<p>Now, if the receiver sees any message except <code>000</code> or <code>111</code> he knows there was an error somewhere. He can try to fix the error by taking a majority vote, e.g.&nbsp;he assumes that <code>100</code> means <code>0</code> while <code>101</code> means <code>1</code>. If the single-bit errors are much more likely than two-bit or three-bit errors, this <em>decoding</em> strategy works. More precisely, it succeeds in cases (1) and (2) but fails in cases (3) and (4). The overall success probability is therefore <span class="math inline">\((1-p)^3+3p(1-p)^2\)</span> and for <span class="math inline">\(p&gt;1/2\)</span> it is in fact greater than <span class="math inline">\(1-p\)</span>, the success probability of the unencoded message.</p>
+</section>
+<section id="conceptual-difficulties-with-qecc" class="level1">
+<h1>Conceptual difficulties with QECC</h1>
+<p>Now instead of sending a classical bit we want to send a qubit, also subject to noise. Can we use a similar strategy to protect the quantum bit? Textbooks often mention several apparent problems that make the quantum case sufficiently different from the classical.</p>
+<ol type="1">
+<li>Qubit states are continuous. Instead of sending just <code>0</code> or <code>1</code> we need to be able to send an arbitrary superposition <span class="math inline">\(|\psi\rangle=\alpha|0\rangle+\beta|1\rangle\)</span>.</li>
+<li>As a consequence, errors are also continuous. For example, instead of a full bit flip <span class="math inline">\(X\)</span> we can have ‘just a bit’ of a bit flip <span class="math inline">\(R_X(\theta)=\cos(\theta/2)-i X \sin(\theta/2)\)</span> with very small <span class="math inline">\(\theta\)</span>. There are also additional error types with no classical counterparts, such as the phase flip error <span class="math inline">\(Z\)</span>. General single-qubit unitary error is a linear combination <span class="math inline">\(U=\alpha_0+\alpha_1 X+\alpha_2 Y+\alpha_3 Z\)</span>.</li>
+<li>Quantum states can not be cloned. This means that for an unknown quantum state <span class="math inline">\(|\psi\rangle\)</span> we can not construct and transmit e.g.&nbsp;<span class="math inline">\(|\psi\rangle\otimes|\psi\rangle\otimes|\psi\rangle\)</span> as a plain generalization of the repetition code, although that would definitely help.</li>
+<li>When the message is received, we need to look at it to decide if there was an error and choose a correction. But looking at the quantum states can break the coherence that we were looking to preserve.</li>
+</ol>
+<p>We now know that all these issues can be elegantly resolved and the modern theory of error correction is rich and beautiful. My personal agenda for this small project was to see how far can one go with a black-box approach, sweeping all conceptual problems under the rug. The main two assumptions are - We need to use several physical qubits to safeguard a single logical qubit. - We only try to protect against single-qubit errors.</p>
+<p><img src="black_box.png" alt="Drawing" style="width: 600px;"></p>
+</section>
+<section id="machine-learning-qecc" class="level1">
+<h1>Machine learning QECC</h1>
+<p>Here is an architecture that I have in mind.</p>
+<p><img src="arch.svg" alt="Drawing" style="width: 800px;"></p>
+<p>First, we embed a logical qubit into <span class="math inline">\(n\)</span> physical ones. I will do this in the simplest possible way <span class="math inline">\(|\psi\rangle \to |\psi\rangle\otimes |0\rangle^{n-1}\)</span>, i.e.&nbsp;assuming that the first physical qubit is the logical state to be transmitted while other physical qubits are initialized in <span class="math inline">\(|0\rangle\)</span> states. The initial embedding is in fact irrelevant, because after that I allow for an arbitrary encoding transformation <span class="math inline">\(U_{encoding}\)</span>. It is only required to be unitary. The encoding stage does the heavy lifting, and the encoding unitary is the main variable to be optimized. After that we add an error layer, which can consist of arbitrary single-qubit unitary errors. Then goes the decoding layer, which we will trust to recover the information about the logical qubit (it will also be trained). I will assume that the decoding layer is also a unitary. At the final step, the physical qubit state must somehow be projected onto the single-qubit state which will be our final, received and corrected state.</p>
+<p>If you are familiar with quantum error correction, the assumption that decoding is a unitary operation and hence makes no explicit reference to syndrome measurements and things of that sort may look suspicious. We’ll see that it works, and make some comments afterwards.</p>
+</section>
+<section id="design-choices" class="level1">
+<h1>Design choices</h1>
+<section id="projecting-the-final-state" class="level2">
+<h2 class="anchored" data-anchor-id="projecting-the-final-state">Projecting the final state</h2>
+<p>There are still details to be filled in. One is to specify how to get a single-qubit logical state from the final state of the physical qubits. Similarly to the embedding step, I will assume that the relevant information is contained exclusively in the first physical qubit. Then, successful error correction implies that the first physical qubit is unentangled with the others after the decoding step and has the same state it had before the encoding.</p>
+<p><span class="math display">\[|\psi\rangle\otimes |0\rangle^{n-1} \to \text{Encoding+Error+Decoding} \to |\psi\rangle\otimes |e\rangle_{n-1}\]</span></p>
+<p>Note that the rest of the physical qubits will end up in different states <span class="math inline">\(|e\rangle_{n-1}\)</span> depending on the error that have been corrected. Requiring that the final state is <span class="math inline">\(|\psi\rangle\otimes |0\rangle^{n-1}\)</span> regardless of the error is too strong and can not be satisfied for any interesting set of errors.</p>
+</section>
+<section id="dealing-with-continuum" class="level2">
+<h2 class="anchored" data-anchor-id="dealing-with-continuum">Dealing with continuum</h2>
+<p>Next, how do we deal with the continuum of states and errors? I guess that a truly black-box approach would be to generate a large set of initial states and single-qubit errors and train the model using all this data. If successful, check on the test data to exclude overfitting. I’m sure that would work, but here I will take a shortcut and exploit the linearity of the whole construction. Denote by <span class="math inline">\(U(E)\)</span> the full unitary of the encoding+error+correction process, for some error <span class="math inline">\(E\)</span></p>
+<p><span class="math display">\[U(E)=U_{decoding}\,\, U_{error}(E) \,\, U_{encoding} \ .\]</span></p>
+<p>For a given initial state <span class="math inline">\(|\psi\rangle=\alpha |0\rangle+\beta |1\rangle\)</span> and a fixed error <span class="math inline">\(E\)</span>, the final state can be reconstructed from the action on <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span> states</p>
+<p><span class="math display">\[|\psi\rangle\otimes |0\rangle^{n-1}=\alpha\,\, U(E) |0\rangle\otimes|0\rangle^{n-1}+\beta\,\, U(E)|1\rangle\otimes|0\rangle^{n-1} \ .\]</span></p>
+<p>Similarly, if we can correct errors corresponding to <span class="math inline">\(X, Y\)</span> and <span class="math inline">\(Z\)</span> unitaries on a given qubit, we will be able to correct an arbitrary linear combination of them, which is unitary. Indeed, say we can correct both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> errors <span class="math display">\[\begin{align*}
+|\psi\rangle\otimes |0\rangle^{n-1}\to U(X) \to |\psi\rangle\otimes |x\rangle_{n-1} \ ,\\
+|\psi\rangle\otimes |0\rangle^{n-1}\to U(Y) \to |\psi\rangle\otimes |y\rangle_{n-1} \ .
+\end{align*}\]</span> Then their unitary linear combination will also be corrected in a sence that the state of the first physical qubit is the original encoded state <span class="math display">\[\begin{align*}
+|\psi\rangle\otimes |0\rangle^{n-1}\to U(aX+bY) \to |\psi\rangle\otimes\left(a|x\rangle_{n-1}+b|y\rangle_{n-1}\right) \ .
+\end{align*}\]</span> In fact, correcting <span class="math inline">\(X,Y\)</span> and <span class="math inline">\(Z\)</span> errors on any of the qubits is sufficient to correct their arbitrary linear combination, including non-unitary ones and those acting on different qubits. More on that later.</p>
+</section>
+</section>
+<section id="implementation" class="level1">
+<h1>Implementation</h1>
+<p>Here is a code that implements the model. I do no use any quantum framework and deal with unitary matrices directly. That requires making a few tensor products here and there, but nothing cumbersome. I include the code right below in order to make this notebook/post self-contained, but do not go into detailed explanations. Here are several technical highlights though. - I use <a href="https://jax.readthedocs.io/en/latest/#">JAX</a> as a numerical optimization backend. This why all the <code>jnp</code>s instead of <code>np</code>s. - I take a very low-key approach to optimization over unitary matrices, parametrizing them by Hermitian matrices <span class="math inline">\(U=e^{i H}\)</span>. Basis in Hermitian matrices can be chosen to consist of <span class="math inline">\(e_{ii}, e_{ij}+e_{ji}\)</span> and <span class="math inline">\(i(e_{ij}-e_{ji})\)</span>, where <span class="math inline">\(e_{ij}\)</span> is a matrix with all elements zero except one at position <span class="math inline">\(ij\)</span>. Matrix exponentiation is an expensive procedure and to scale the code to more qubits a better parametrization of the unitary group is required, e.g.&nbsp;as done here <a href="https://github.com/LuchnikovI/QGOpt">QGOPT</a>. - I choose the loss associated with an error correction process <span class="math inline">\(U(E)\)</span> in the following way. Let <span class="math inline">\(|\Psi_0\rangle\)</span> be the image of <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|\Psi_1\rangle\)</span> of <span class="math inline">\(|1\rangle\)</span> <span class="math display">\[|\Psi_0\rangle=U(E)|0\rangle\otimes |0\rangle^{n-1},\quad |\Psi_1\rangle=U(E)|1\rangle\otimes |0\rangle^{n-1}\ \ . \]</span> The loss is <span class="math display">\[L(E) = 2-L_Z-L_X, \qquad L_Z=\langle \Psi_0|Z_1|\Psi_0\rangle, \qquad L_X=\operatorname{Re} \langle \Psi_0|X_1|\Psi_1\rangle \ .\]</span> The term <span class="math inline">\(L_Z\)</span> is maximal <span class="math inline">\(L_Z=1\)</span> when <span class="math inline">\(|\Psi_0\rangle=|0\rangle \otimes |e\rangle_{n}\)</span>, i.e.&nbsp;when the <span class="math inline">\(|0\rangle\)</span> state of the first physical qubit is preserved by the error correction. If <span class="math inline">\(|0\rangle\)</span> is mapped to a mixed state or to a pure state different from <span class="math inline">\(|0\rangle\)</span> we have <span class="math inline">\(L_Z&lt;1\)</span>. The term <span class="math inline">\(L_X\)</span> is maximal when the <span class="math inline">\(|\Psi_1\rangle=X_1 |\Psi_0\rangle\)</span>. If <span class="math inline">\(|0\rangle\otimes|0\rangle^{n-1}\to|0\rangle \otimes |e\rangle_{n}\)</span>, this condition implies that <span class="math inline">\(|1\rangle\otimes|0\rangle^{n-1} \to |1\rangle \otimes |e\rangle_{n}\)</span>. By linearity, this is sufficient for an arbitray input state to be corrected when subject to this error. - The total loss is the sum of individual losses over all <span class="math inline">\(X, Y, Z\)</span> errors acting on each qubit <span class="math display">\[L(E)=\sum_{i=1}^{n}\left(L(X_i)+L(Y_i)+L(Z_i)\right) \ .\]</span> However, we may wish to correct only a subset of errors, say only <span class="math inline">\(X\)</span> errors. Then include only those in the loss function.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Pauli matrices.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x_mat <span class="op">=</span> jnp.array([[<span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                   [<span class="dv">1</span>, <span class="dv">0</span>]])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>y_mat <span class="op">=</span> jnp.array([[<span class="dv">0</span>, <span class="op">-</span><span class="ot">1j</span>],</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                   [<span class="ot">1j</span>, <span class="dv">0</span>]], dtype<span class="op">=</span>jnp.complex64)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>z_mat <span class="op">=</span> jnp.array([[<span class="dv">1</span>, <span class="dv">0</span>],</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                   [<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>]])</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>pauli <span class="op">=</span> (jnp.identity(<span class="dv">2</span>), x_mat, y_mat, z_mat)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Parametrized unitary matrices.</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UnitaryLayer:</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_qubits):</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_qubits <span class="op">=</span> num_qubits</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_params <span class="op">=</span> <span class="dv">4</span><span class="op">**</span>num_qubits</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> hermitian_basis(num_qubits):</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        d <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>num_qubits</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        diag_basis <span class="op">=</span> [jnp.zeros((d, d), dtype<span class="op">=</span>jnp.complex64).at[i, i].<span class="bu">set</span>(<span class="dv">1</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(d)]</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        off_diag_real_basis <span class="op">=</span> [jnp.zeros((d, d), dtype<span class="op">=</span>jnp.complex64).at[i, j].<span class="bu">set</span>(<span class="dv">1</span>).at[j, i].<span class="bu">set</span>(<span class="dv">1</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(d) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i)]</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        off_diag_im_basis <span class="op">=</span> [jnp.zeros((d, d), dtype<span class="op">=</span>jnp.complex64).at[i, j].<span class="bu">set</span>(<span class="ot">1j</span>).at[j, i].<span class="bu">set</span>(<span class="op">-</span><span class="ot">1j</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(d) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i)]</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> jnp.array(diag_basis<span class="op">+</span>off_diag_real_basis<span class="op">+</span>off_diag_im_basis)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> unitary(<span class="va">self</span>, params):</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        generator <span class="op">=</span> jnp.tensordot(<span class="va">self</span>.hermitian_basis(<span class="va">self</span>.num_qubits), params, axes<span class="op">=</span>((<span class="dv">0</span>, ), (<span class="dv">0</span>, )))</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> expm(<span class="ot">1j</span><span class="op">*</span>generator)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Matrices corresponding individual single-qubit errors.    </span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ErrorLayer:</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_qubits, errors<span class="op">=</span>pauli):</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_qubits <span class="op">=</span> num_qubits</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.errors <span class="op">=</span> errors</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> unitary(<span class="va">self</span>, q, e):</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>        error_list <span class="op">=</span> [<span class="va">self</span>.errors[e] <span class="cf">if</span> i<span class="op">==</span>q <span class="cf">else</span> jnp.identity(<span class="dv">2</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.num_qubits)]</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">reduce</span>(jnp.kron, error_list)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> all_error_unitaries(<span class="va">self</span>):</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        single_error_unitaries <span class="op">=</span> [<span class="va">self</span>.unitary(q, e) <span class="cf">for</span> q <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.num_qubits) <span class="cf">for</span> e <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(<span class="va">self</span>.errors))]</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>        id_error <span class="op">=</span> jnp.identity(<span class="dv">2</span><span class="op">**</span><span class="va">self</span>.num_qubits)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> jnp.array([id_error]<span class="op">+</span>single_error_unitaries)</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Model parameters as a namedtuple.    </span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>ecc_params <span class="op">=</span> namedtuple(<span class="st">'ECCparams'</span>, [<span class="st">'encoding_params'</span>, <span class="st">'decoding_params'</span>])</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ECCmodel:</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_qubits, error_layer, params<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_qubits <span class="op">=</span> num_qubits</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.error_layer <span class="op">=</span> error_layer</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.encoding_layer <span class="op">=</span> UnitaryLayer(num_qubits)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.decoding_layer <span class="op">=</span> UnitaryLayer(num_qubits)</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.params <span class="op">=</span> params</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> embed(initial_state, num_qubits):</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Take |psi&gt; and output |psi&gt;|0,0,0, ...&gt; """</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> jnp.kron(initial_state, jnp.zeros(<span class="dv">2</span><span class="op">**</span>(num_qubits<span class="op">-</span><span class="dv">1</span>)).at[<span class="dv">0</span>].<span class="bu">set</span>(<span class="dv">1</span>))</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> final_state(<span class="va">self</span>, initial_state, encoding_unitary, decoding_unitary, error_unitary):</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> decoding_unitary <span class="op">@</span> error_unitary <span class="op">@</span> encoding_unitary <span class="op">@</span> initial_state</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> s</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> loss(<span class="va">self</span>, params, error_unitary):</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>        encoding_unitary <span class="op">=</span> <span class="va">self</span>.encoding_layer.unitary(params.encoding_params)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>        decoding_unitary <span class="op">=</span> <span class="va">self</span>.decoding_layer.unitary(params.decoding_params)</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>        final_states <span class="op">=</span> []</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> initial_state_1q <span class="kw">in</span> [[<span class="dv">1</span>,<span class="dv">0</span>], [<span class="dv">0</span>,<span class="dv">1</span>]]:</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>            initial_state <span class="op">=</span> <span class="va">self</span>.embed(jnp.array(initial_state_1q, dtype<span class="op">=</span>jnp.complex64), <span class="va">self</span>.num_qubits)</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>            final_state <span class="op">=</span> <span class="va">self</span>.final_state(initial_state, encoding_unitary, decoding_unitary, error_unitary)            </span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>            final_states.append(final_state)</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>        Psi_0, Psi_1 <span class="op">=</span> final_states</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>        X1 <span class="op">=</span> <span class="bu">reduce</span>(jnp.kron, [x_mat]<span class="op">+</span>[jnp.identity(<span class="dv">2</span>)]<span class="op">*</span>(<span class="va">self</span>.num_qubits<span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>        Z1 <span class="op">=</span> <span class="bu">reduce</span>(jnp.kron, [z_mat]<span class="op">+</span>[jnp.identity(<span class="dv">2</span>)]<span class="op">*</span>(<span class="va">self</span>.num_qubits<span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>        Z_avg <span class="op">=</span> jnp.real(Psi_0.conj() <span class="op">@</span> Z1 <span class="op">@</span> Psi_0).<span class="bu">sum</span>()</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>        X_off_diag <span class="op">=</span> (Psi_0.conj() <span class="op">@</span> X1 <span class="op">@</span> Psi_1).<span class="bu">sum</span>()</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">2</span><span class="op">-</span>Z_avg<span class="op">-</span>jnp.real(X_off_diag)</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> train(<span class="va">self</span>, opt_options<span class="op">=</span>OptOptions(num_iterations<span class="op">=</span><span class="dv">1000</span>)):</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>        error_unitaries <span class="op">=</span> <span class="va">self</span>.error_layer.all_error_unitaries()</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> loss(params):</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>            losses <span class="op">=</span> vmap(<span class="kw">lambda</span> error_u: <span class="va">self</span>.loss(params, error_u))(error_unitaries)</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> losses.<span class="bu">sum</span>()<span class="op">/</span><span class="bu">len</span>(error_unitaries)</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>        initial_params <span class="op">=</span> random.uniform(random.PRNGKey(opt_options.random_seed), shape<span class="op">=</span>(<span class="dv">2</span>, <span class="va">self</span>.encoding_layer.num_params))</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>        initial_params <span class="op">=</span> [ecc_params(initial_params[<span class="dv">0</span>], initial_params[<span class="dv">1</span>])]</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>        <span class="co"># `mynimize` is just my custom optimization routine with a JAX backend. </span></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>        results <span class="op">=</span> mynimize(loss, initial_params, opt_options)        </span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.params <span class="op">=</span> results.best_result.best_params</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> results.best_result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)</code></pre>
+</div>
+</div>
+</section>
+<section id="quantum-repetition-code" class="level1">
+<h1>Quantum repetition code</h1>
+<p>Now let us put the model to use. It is well known that with three physical qubits one can protect a logical qubit from <span class="math inline">\(X\)</span> erorrs. This is a generalization of the classical repetition code. Let’s see if our model can do that.</p>
+<div class="cell" data-scrolled="true" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>time</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>error_layer <span class="op">=</span> ErrorLayer(num_qubits, errors<span class="op">=</span>[x_mat])</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ECCmodel(num_qubits, error_layer)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.train(OptOptions(num_iterations<span class="op">=</span><span class="dv">1000</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>result.plot_loss_history()<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Iteration'</span>)<span class="op">;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Loss history'</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 15.6 s, sys: 62.7 ms, total: 15.7 s
+Wall time: 15.6 s</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>Text(0.5, 1.0, 'Loss history')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="2022-06-16-Machine learning error correction codes_files/figure-html/cell-4-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+<p>OK, the optimization is clearly successfull. Of course there is always a chance that there are mistakes in the code or in the definition of the loss function itself. I will give a more thorough verification for the 5-qubit code later. By modifying and re-running the cell above you can also do some simple sanity checks – see if the same results can be achieved with fewer qubits (<code>num_qubits</code> <span class="math inline">\(\to\)</span> 2) or if more errors can be corrected (<code>errors</code><span class="math inline">\(\to\)</span><code>[x_mat, y_mat]</code>). Neither works, of course.</p>
+</section>
+<section id="standard-description-of-the-quantum-repetition-code" class="level1">
+<h1>Standard description of the quantum repetition code</h1>
+<p>Now that we have seen that a black-box approach works it is instructive to revisit the usual construction of the error correcting codes. Here is how the quantum repetition code, which is able to correct <span class="math inline">\(X\)</span> errors, works. Encoding is done as follows</p>
+<p><span class="math display">\[|\psi\rangle=\alpha|0\rangle+\beta|1\rangle\to \alpha |000\rangle+\beta|111\rangle \ .\]</span></p>
+<p>This does not violate the no-cloning theorem because the new state is not <span class="math inline">\(|\psi\rangle\otimes|\psi\rangle\otimes|\psi\rangle\)</span>. Coefficients <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>, which define the state, are not copied. This encoding can be done with the following circuit</p>
+<p><img src="ghz.png" alt="Drawing" style="width: 150px;"></p>
+<p>Now say there was an <span class="math inline">\(X\)</span> error acting on the first qubit during the transmission <span class="math display">\[\alpha |000\rangle+\beta|111\rangle\to X_1 \to \alpha |100\rangle+\beta|011\rangle\]</span> Can we detect an correct it? The problem is that measuring any of the qubits individually destroys their coherent superposition. A workaround is to make collective measurements <span class="math inline">\(Z_1Z_2\)</span> and <span class="math inline">\(Z_1Z_3\)</span>, known as parity checks. Both terms in the corrupted decomposition have the same eigenvalues and hence coherence is preserved. Parity checks allow to identify qubit 1 as corrupted, and correct the error by applying <span class="math inline">\(X_1\)</span>.</p>
+</section>
+<section id="can-we-do-without-a-measurment" class="level1">
+<h1>Can we do without a measurment?</h1>
+<p>Measurements and post-selected correction operators were not part of our model, where the decoder is unitary. Is there something wrong with our approach, or measurements are not strictly necessary? I do think they aren’t, but you would not be able to tell from most of the introductory literature. To illustrate the situation for the repetition code, I came up with the following unitary circuit, which can correct/decode any single <span class="math inline">\(X\)</span> error in the repetition code</p>
+<p><img src="dec.png" alt="Drawing" style="width: 200px;"></p>
+<p>It is straightforward to check that it transforms vectors with single <span class="math inline">\(X\)</span> errors as follows. <span class="math display">\[\begin{align*}
+I_{}:\quad |000\rangle\to |000\rangle,\quad |111\rangle\to |100\rangle\\
+X_1:\quad|100\rangle\to |011\rangle,\quad |011\rangle\to |111\rangle\\
+X_2:\quad|010\rangle\to |101\rangle,\quad |010\rangle\to |110\rangle\\
+X_3:\quad|001\rangle\to |001\rangle,\quad |110\rangle\to |101\rangle\\
+\end{align*}\]</span> Important things to note here are that the first qubit value becomes the majority vote, while two other qubit registers agree within the same line. I do not claim that our numerical optimization above discovered exactly this circuit and/or the repetition encoding, but it must be something equivalent.</p>
+</section>
+<section id="qubit-code" class="level1">
+<h1>5 qubit code</h1>
+<p>The smallest amount of physical qubits that can correct against arbitrary single-qubit errors is known to be 5. Let me sketch a proof. Please! No, it’s not needed to make my points, I just like it a lot. OK? Great!</p>
+<p>If a code can correct an arbitrary single-qubit error, it can also recover from the loss of two qubits. If we’d have an ECC with just four qubits, we could separate them into two groups 4=2+2. Each group could recover the encoded state, which produces two copies of it. This violates the no-cloning theorem! Lowering the number of qubits does not help, of course.</p>
+<p>Good, let us try to train the model with 5 physical qubits and the error operators that span all single-qubit errors.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>time</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>error_layer <span class="op">=</span> ErrorLayer(num_qubits, errors<span class="op">=</span>[x_mat, y_mat, z_mat])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ECCmodel(num_qubits, error_layer)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.train(OptOptions(num_iterations<span class="op">=</span><span class="dv">1500</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>result.plot_loss_history()<span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Iteration'</span>)<span class="op">;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Loss history'</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 2min 55s, sys: 1.3 s, total: 2min 56s
+Wall time: 2min 55s</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>Text(0.5, 1.0, 'Loss history')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="2022-06-16-Machine learning error correction codes_files/figure-html/cell-5-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The loss function indicates that our model learns a 5-qubit ECC. You may wish to check that it does not work with fewer qubits, e.g.&nbsp;<code>num_qubits</code>$$4. Another empirical observation is that if the model is trained on <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> errors only, it will be able to correct <span class="math inline">\(Y\)</span> errors as well (passes verification below). This does not seem to be guarantied in general, as <a href="https://quantumcomputing.stackexchange.com/questions/26846/if-a-quantum-error-correcting-code-corrects-both-x-and-z-errors-will-it-be">counter-examples</a> exist.</p>
+</section>
+<section id="verification" class="level1">
+<h1>Verification</h1>
+<p>To convince you and myself that the loss plot above does reflect learning a genuine ECC here I will carry out an independent check. First let me note that the way errors enter in the model we trained is not completely general. The most general evolution of the initial state under an interaction with an environment is described by a quantum channel</p>
+<p><span class="math display">\[|\psi\rangle\to \rho = \operatorname{Tr}_{n-1}\sum {M_a}|\Psi\rangle\langle\Psi|M_a^\dagger,\qquad |\Psi\rangle=|\psi\rangle\otimes |0\rangle^{n-1} .\]</span></p>
+<p>Here <span class="math inline">\(\rho\)</span> is the final density matrix of the first physical qubit, which by our assumption corresponds to the logical qubit after error correction process. The partial trace is taken with respect to the other physical qubits. Matrices <span class="math inline">\(M_a\)</span> are called Kraus operators and could be thought of as a combination <span class="math display">\[M_a = U_{decoding} E_a U_{encoding} \ .\]</span> We trained our model on cases where the error part <span class="math inline">\(E_a\)</span> in each Kraus operator <span class="math inline">\(M_a\)</span> is a single Pauli operator acting on some qubit, e.g.&nbsp;<span class="math inline">\(E_a=X_2\)</span>. A general single-qubit error corresponds to each <span class="math inline">\(E_a\)</span> being a linear combination of single-qubit unitaries <span class="math display">\[E_a=\sum_{i=1}^{n} c_{ai} U_i.\]</span> For example, one of them could be something like <span class="math inline">\(E_1 = c_{11}(0.13 X_1+2.7 Y_1)+c_{12} Z_2 + c_{13} (Y_1-0.55 Z_1)\)</span>. Kraus operators are not required to be unitary, but only to satisfy the completeness relation <span class="math inline">\(\sum M_a^\dagger M_a=1\)</span>. Our model was trained so that <span class="math inline">\(M_a |\Psi\rangle=|\psi\rangle \otimes |\text{some state}\rangle\)</span> when <span class="math inline">\(M_a\)</span> only contains Pauli errors acting on a single qubit. However, this equation extends to arbitrary single-qubit errors by linearity.</p>
+<p>To perform an independent check I generate a bunch of initial states and generic single-qubit errors <span class="math inline">\(E_a\)</span>. I will restrict to channels with single (non-normalized) Kraus operators for simplicity. If (normalized) density matrices <span class="math display">\[ \rho_a=\frac{M_a|\Psi\rangle\langle\Psi|M_a^\dagger}{\langle \Psi|M_a^\dagger M_a|\Psi\rangle} \]</span> reproduce the correlators of the original state for any <span class="math inline">\(M_a\)</span>, they surely do for any sum over <span class="math inline">\(M_a\)</span>. Thus, I will check that</p>
+<p><span class="math display">\[\langle\psi|X|\psi\rangle=\operatorname{tr}\rho_a X,\quad \langle\psi|Y|\psi\rangle=\operatorname{tr}\rho_a Y,\quad \langle\psi|Z|\psi\rangle=\operatorname{tr}\rho_a Z .\]</span></p>
+<p>Essentially, we’ll do the full state tomography of the first physical qubit. This of course should be equivalent to the loss function we used during training, but I think reformulation is useful as an additional consistency check.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Random seed, JAX-style</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>key, <span class="op">*</span>keys <span class="op">=</span> random.split(random.PRNGKey(<span class="dv">0</span>), <span class="dv">3</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample sizes.</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> model.num_qubits</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>num_initial_states <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>num_errors <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial states, drawn at random and normalized.</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>initial_states <span class="op">=</span> random.uniform(keys[<span class="dv">0</span>], shape<span class="op">=</span>(<span class="dv">2</span>, num_initial_states, <span class="dv">2</span>)) <span class="co"># 2x real components</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>initial_states <span class="op">=</span> initial_states[<span class="dv">0</span>]<span class="op">+</span><span class="ot">1j</span><span class="op">*</span>initial_states[<span class="dv">1</span>] <span class="co"># combine into 1x complext components</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> norm_state(s):</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> jnp.sqrt(jnp.real(s.conj()<span class="op">*</span>s).<span class="bu">sum</span>())</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>norms <span class="op">=</span> [norm_state(s) <span class="cf">for</span> s <span class="kw">in</span> initial_states]</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>initial_states <span class="op">=</span> [s<span class="op">/</span>norm_state(s) <span class="cf">for</span> s <span class="kw">in</span> initial_states]</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">### Defining random linear combinations of single-qubits errors is a bit cumbersome, but purely technical.</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Random single-qubit errors.</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>random_1q_unitaries <span class="op">=</span> unitary_group.rvs(<span class="dv">2</span>, size<span class="op">=</span>num_errors<span class="op">*</span>num_qubits).reshape(num_errors, num_qubits, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>random_coefficients <span class="op">=</span> random.uniform(keys[<span class="dv">1</span>], (num_errors, num_qubits))</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> error_at_position(error_u, i, num_qubits):</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Takes U and returns tensor product 1 x 1 x ... U x 1 ... x 1 with U at position i."""</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    ops <span class="op">=</span> [jnp.identity(<span class="dv">2</span>)]<span class="op">*</span>num_qubits</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    ops[i] <span class="op">=</span> error_u</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">reduce</span>(jnp.kron, ops)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_error_operator(errors, coeffs):   </span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Takes a list of 1q errors and puts error 1 on qubit 1, error 2 on qubit 2, etc, then takes their liner combination."""</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    num_qubits <span class="op">=</span> <span class="bu">len</span>(errors)</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    full_errors <span class="op">=</span> [error_at_position(u, i, num_qubits) <span class="cf">for</span> i, u <span class="kw">in</span> <span class="bu">enumerate</span>(errors)]</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>([u<span class="op">*</span>c <span class="cf">for</span> u, c <span class="kw">in</span> <span class="bu">zip</span>(full_errors, coeffs)])</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>errors <span class="op">=</span> [make_error_operator(errors, coeffs) <span class="cf">for</span> errors, coeffs <span class="kw">in</span> <span class="bu">zip</span>(random_1q_unitaries, random_coefficients)]</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>errors <span class="op">=</span> jnp.array(errors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So finally we have a bunch of initial states and general (non-unitary) single-qubit error operators. Let’s see directly the the model is able to correct them.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> model.params</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>u_encoding <span class="op">=</span> model.encoding_layer.unitary(params.encoding_params)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>u_decoding <span class="op">=</span> model.decoding_layer.unitary(params.decoding_params)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> density_matrix(s):</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Density matrix of the first qubit."""</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    num_qubits <span class="op">=</span> <span class="bu">int</span>(jnp.log2(<span class="bu">len</span>(s)))</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> s.reshape([<span class="dv">2</span>]<span class="op">*</span>num_qubits)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    axes <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, num_qubits))</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    rho <span class="op">=</span> jnp.tensordot(s, s.conj(), axes<span class="op">=</span>(axes, axes))</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rho</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tomography_loss(initial_state, error_u):</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    final_state <span class="op">=</span> u_decoding <span class="op">@</span> error_u <span class="op">@</span> u_encoding <span class="op">@</span> ECCmodel.embed(initial_state, num_qubits)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For non-unitary errors the state should be normilized.</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    final_state <span class="op">=</span> final_state<span class="op">/</span>jnp.sqrt(jnp.real((final_state.conj()<span class="op">*</span>final_state).<span class="bu">sum</span>()))</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    final_rho <span class="op">=</span> density_matrix(final_state)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    pauli_averages_initial <span class="op">=</span> [(initial_state.conj() <span class="op">@</span> p <span class="op">@</span> initial_state).<span class="bu">sum</span>() <span class="cf">for</span> p <span class="kw">in</span> [x_mat, y_mat, z_mat]]</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    pauli_averages_final <span class="op">=</span> [jnp.trace(final_rho <span class="op">@</span> p) <span class="cf">for</span> p <span class="kw">in</span> [x_mat, y_mat, z_mat]]</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> <span class="bu">sum</span>([(avg_i <span class="op">-</span> avg_f)<span class="op">**</span><span class="dv">2</span> <span class="cf">for</span> avg_i, avg_f <span class="kw">in</span> <span class="bu">zip</span>(pauli_averages_initial, pauli_averages_final)])</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> jnp.real(loss)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>losses <span class="op">=</span> [tomography_loss(s, u) <span class="cf">for</span> s <span class="kw">in</span> initial_states <span class="cf">for</span> u <span class="kw">in</span> errors]</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>avg_loss <span class="op">=</span> <span class="bu">sum</span>(losses)<span class="op">/</span><span class="bu">len</span>(losses)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Average loss from tomography: </span><span class="sc">{</span><span class="bu">float</span>(avg_loss)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Average loss from tomography: 2.6336230973811325e-09</code></pre>
+</div>
+</div>
+<p>OK, the average tomographic loss is basically within the machine precision, which makes a strong case for the fact our simple model did learn a genuine ECC code on 5 qubits. This wraps up my experiment!</p>
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="idnm/blog" data-repo-id="R_kgDOJWB1vg" data-category="General" data-category-id="DIC_kwDOJWB1vs4CVvR7" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.319">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-07-22">
+<meta name="description" content="Optimal compiling of unitaries reaching the theoretical lower bound">
+
+<title>Notes on Quantum Computing - Machine learning compilation of quantum circuits</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../kika.jpeg" rel="icon" type="image/jpeg">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-description','listing-categories','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1154MLY31V"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1154MLY31V', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Notes on Quantum Computing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Machine learning compilation of quantum circuits</h1>
+                  <div>
+        <div class="description">
+          Optimal compiling of unitaries reaching the theoretical lower bound
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">machine learning</div>
+                <div class="quarto-category">compilation</div>
+                <div class="quarto-category">qiskit</div>
+                <div class="quarto-category">paper review</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 22, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#what-is-compilation" id="toc-what-is-compilation" class="nav-link" data-scroll-target="#what-is-compilation">What is compilation?</a></li>
+  <li><a href="#simplified-problem" id="toc-simplified-problem" class="nav-link" data-scroll-target="#simplified-problem">Simplified problem</a></li>
+  <li><a href="#existing-results" id="toc-existing-results" class="nav-link" data-scroll-target="#existing-results">Existing results</a></li>
+  <li><a href="#theoretical-lower-bound-and-quantum-shannon-decomposition" id="toc-theoretical-lower-bound-and-quantum-shannon-decomposition" class="nav-link" data-scroll-target="#theoretical-lower-bound-and-quantum-shannon-decomposition">Theoretical lower bound and quantum Shannon decomposition</a></li>
+  </ul></li>
+  <li><a href="#whats-in-the-preprint" id="toc-whats-in-the-preprint" class="nav-link" data-scroll-target="#whats-in-the-preprint">What’s in the preprint?</a>
+  <ul class="collapse">
+  <li><a href="#templates" id="toc-templates" class="nav-link" data-scroll-target="#templates">Templates</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#compiling-random-unitaries" id="toc-compiling-random-unitaries" class="nav-link" data-scroll-target="#compiling-random-unitaries">Compiling random unitaries</a></li>
+  <li><a href="#compiling-on-restricted-topology" id="toc-compiling-on-restricted-topology" class="nav-link" data-scroll-target="#compiling-on-restricted-topology">Compiling on restricted topology</a></li>
+  <li><a href="#compiling-specific-measure-zero-gates" id="toc-compiling-specific-measure-zero-gates" class="nav-link" data-scroll-target="#compiling-specific-measure-zero-gates">Compiling specific ‘measure zero’ gates</a></li>
+  <li><a href="#compressing-the-quantum-shannon-decomposition" id="toc-compressing-the-quantum-shannon-decomposition" class="nav-link" data-scroll-target="#compressing-the-quantum-shannon-decomposition">Compressing the quantum Shannon decomposition</a></li>
+  </ul></li>
+  <li><a href="#weak-spots" id="toc-weak-spots" class="nav-link" data-scroll-target="#weak-spots">Weak spots</a></li>
+  </ul></li>
+  <li><a href="#final-remarks" id="toc-final-remarks" class="nav-link" data-scroll-target="#final-remarks">Final remarks</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>I am going to review a recent <a href="http://arxiv.org/abs/2106.05649">preprint</a> by Liam Madden and Andrea Simonetto that uses techniques from machine learning to tackle the problem of quantum circuits compilation. I find the approach suggested in the paper very interesting and the preliminary results quite promising.</p>
+<section id="what-is-compilation" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-compilation">What is compilation?</h2>
+<blockquote class="blockquote">
+<p>Note that a variety of terms are floating around the literature and used more or less interchangibly. Among those are <strong>synthesis</strong>, <strong>compilation</strong>, <strong>transpilation</strong> and <strong>decomposition</strong> of quantum circuits. I will not make a distinction and try to stick to <strong>compilation</strong>.</p>
+</blockquote>
+<p>But first things first, what is a compilation of a quantum circuit? The best motivation and illustration for the problem is the following. Say you need to run a textbook quantum circuit on a real hardware. The real hardware usually allows only for a few basic one and two qubit gates. In contrast, your typical textbook quantum circuit may feature (1) complex many-qubit gates, for example multi-controlled gates and (2) one and two qubit gates which are not supported by the hardware. As a simple example take this 3-qubit Grover’s circuit (from <a href="https://qiskit.org/textbook/ch-algorithms/grover.html">qiskit textbook</a>):</p>
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#initialization</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># importing Qiskit</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> IBMQ, Aer, assemble, transpile</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit, ClassicalRegister, QuantumRegister</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.providers.ibmq <span class="im">import</span> least_busy</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># import basic plot tools</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_histogram</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> initialize_s(qc, qubits):</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Apply a H-gate to 'qubits' in qc"""</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> q <span class="kw">in</span> qubits:</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        qc.h(q)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> diffuser(nqubits):</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(nqubits)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply transformation |s&gt; -&gt; |00..0&gt; (H-gates)</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> qubit <span class="kw">in</span> <span class="bu">range</span>(nqubits):</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        qc.h(qubit)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply transformation |00..0&gt; -&gt; |11..1&gt; (X-gates)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> qubit <span class="kw">in</span> <span class="bu">range</span>(nqubits):</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        qc.x(qubit)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Do multi-controlled-Z gate</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    qc.h(nqubits<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    qc.mct(<span class="bu">list</span>(<span class="bu">range</span>(nqubits<span class="op">-</span><span class="dv">1</span>)), nqubits<span class="op">-</span><span class="dv">1</span>)  <span class="co"># multi-controlled-toffoli</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    qc.h(nqubits<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply transformation |11..1&gt; -&gt; |00..0&gt;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> qubit <span class="kw">in</span> <span class="bu">range</span>(nqubits):</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        qc.x(qubit)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply transformation |00..0&gt; -&gt; |s&gt;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> qubit <span class="kw">in</span> <span class="bu">range</span>(nqubits):</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>        qc.h(qubit)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We will return the diffuser as a gate</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    U_s <span class="op">=</span> qc.to_gate()</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    U_s.name <span class="op">=</span> <span class="st">"U$_s$"</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> U_s</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>qc.cz(<span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>qc.cz(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>oracle_ex3 <span class="op">=</span> qc.to_gate()</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>oracle_ex3.name <span class="op">=</span> <span class="st">"U$_\omega$"</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>grover_circuit <span class="op">=</span> QuantumCircuit(n)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>grover_circuit <span class="op">=</span> initialize_s(grover_circuit, [<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>])</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>grover_circuit.append(oracle_ex3, [<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>])</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>grover_circuit.append(diffuser(n), [<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>])</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>grover_circuit <span class="op">=</span> grover_circuit.decompose()</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>grover_circuit.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<p><img src="2021-07-22-Machine learning compilation of quantum circuits_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The three qubit gates like Toffoli are not generally available on a hardware and one and two qubit gates my be different from those in the textbook algorithm. For example ion quantum computers are good with <a href="https://en.wikipedia.org/wiki/M%C3%B8lmer%E2%80%93S%C3%B8rensen_gate">Mølmer–Sørensen gates</a> and may need several native one qubit gates to implement the Hadamard gate.</p>
+<p>Additional important problem is to take into account qubit connectivity. Usually textbook algorithms assume full connectivity, meaning that two-qubit gates can act on any pair of qubits. On most hardware platforms however a qubit can only interact with its neighbors. Assuming that one and two qubits gates available on the hardware can implement a SWAP gate between adjacent qubits, to solve the connectivity problem one can insert as many SWAPs as necessary to connect topologically disjoint qubits. Using SWAPs however leads to a huge overhead in the number of total gates in the compiled circuit, and it is of much importance use them as economically as possible. In fact, the problem of optimal SWAPping alone in generic situation is <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C5&amp;q=on+the+complexity+of+quantum+circuit+compilation&amp;btnG=">NP-complete</a>.</p>
+</section>
+<section id="simplified-problem" class="level2">
+<h2 class="anchored" data-anchor-id="simplified-problem">Simplified problem</h2>
+<p>When compiling a quantum circuit one has to decide which resulting circuits are considered to be efficient. Ideally, one should optimize for the total fidelity of the circuit. Let us imagine running the algorithm on a real device. Probably my theorist’s image of a real device is still way too platonic, but I will try my best. Many details need to be taken into account. For example, gates acting on different qubits or pairs of qubits may have different fidelities. Decoherence of qubits with time can make circuits where many operations can be executed in parallel more favorable. Cross-talk (unwanted interactions) between neighboring qubits may lead to exotic patterns for optimal circuits. A simple proxy for the resulting fidelity that is often adopted is the number of two-qubit gates (which are generically much less accurate than a single-qubit gates). So the problem that is often studied, and that is addressed in the preprint we are going to discuss, is the problem of optimal compilation into a gate set consisting of arbitrary single-qubit gates and CNOTs, the only two qubits gate. The compiled circuit must</p>
+<ol type="1">
+<li>Respect hardware connectivity.</li>
+<li>Have as few CNOTs as possible.</li>
+<li>Exceed a given fidelity threshold.</li>
+</ol>
+<p>Last item here means that we also allow for an approximate compilation. By increasing the number of CNOTs one can always achieve an exact compilation, but since in reality each additional CNOT comes with its own fidelity cost this might not be a good trade-off. Note also that a specific choice for two-qubit gate is made, a CNOT gate. Any two-qubit gate can be decomposed into at most 3 CNOTs <a href="https://arxiv.org/pdf/quant-ph/0308006.pdf">see e.g.&nbsp;here</a>, so in terms of computational complexity this is of course inconsequential. However in the following discussion we will care a lot about constant factors and may wish to revisit this choice at the end.</p>
+</section>
+<section id="existing-results" class="level2">
+<h2 class="anchored" data-anchor-id="existing-results">Existing results</h2>
+<p>Since finding the exact optimal solution to the compilation problem is intractable, as with many things in life one needs to resort to heuristic methods. A combination of many heuristic methods, in fact. As an example one can check out the <a href="https://qiskit.org/documentation/apidoc/transpiler.html">transpilation workflow</a> in <code>qiskit</code>. Among others, there is a step that compiles &gt;2 qubit gates into one and two qubit gates; the one that tries to find a good initial placement of the logical qubits onto physical hardware; the one that ‘routes’ the desired circuit to match a given topology being as greedy on SWAPs as possible. Each of these steps can use several different heuristic optimization algorithms, which are continuously refined and extended (for example this <a href="https://arxiv.org/abs/2106.06446">recent preprint</a> improves on the default rounting procedure in <code>qiskit</code>). In my opinion it would be waay better to have one unified heuristic for all steps of the process, especially taking into account that they are not completely independent. Although this might be too much to ask for, some advances are definitely possible and machine learning tools might prove very useful. The paper we are going to discuss is an excellent demonstration.</p>
+</section>
+<section id="theoretical-lower-bound-and-quantum-shannon-decomposition" class="level2">
+<h2 class="anchored" data-anchor-id="theoretical-lower-bound-and-quantum-shannon-decomposition">Theoretical lower bound and quantum Shannon decomposition</h2>
+<p>There is a couple of very nice theoretical results about the compilation problem that I need to mention. But first, let us agree that we will compile unitaries, not circuits. What is the difference? Of course, any quantum circuit (without measurements and neglecting losses) corresponds to a unitary matrix. However, to compute that unitary matrix for a large quantum circuit explicitly is generally an intractable problem, precisely for the same reasons that quantum computation is assumed to be more powerful than classical. Still, taking as the input a unitary matrix (which is in general hard to compute from the circuit) is very useful both theoretically and practically. I will discuss pros and cons of this approach later on.</p>
+<p>OK, now the fun fact. Generically, one needs at least this many CNOTs</p>
+<p><span class="math display">\[\begin{align}
+L:=\# \text{CNOTs} \geq \frac14\left(4^n-3n-1\right) \label{TLB}
+\end{align}\]</span></p>
+<p>to exactly compile an <span class="math inline">\(n\)</span>-qubit unitary. ‘Generically’ means that the set of <span class="math inline">\(n\)</span>-qubit unitaries that can be compiled exactly with smaller amount of CNOTs has measure zero. Keep in mind though, that there are important unitaries in this class like multi-controlled gates or qubit permutations. We will discuss compilation of some gates from the ‘measure-zero’ later on.</p>
+<p>The authors of the preprint (I hope you and me still remember that there is some actual results to discuss, not just my overly long introduction to read) refer to <span class="math inline">\(\eqref{TLB}\)</span> as the theoretical lower bound or TLB for short. The proof of this <a href="https://dl.acm.org/doi/10.5555/968879.969163">fact</a> is actually rather simple and I will sketch it. A general <span class="math inline">\(d\times d\)</span> unitary has <span class="math inline">\(d^2\)</span> real parameters. For <span class="math inline">\(n\)</span> qubits <span class="math inline">\(d=2^n\)</span>. Single one-qubit gate has 3 real parameters. Any sequence of one-qubit gates applied to the same qubit can be reduced to a single one-qubit gate and hence can have no more than 3 parameters. That means, that without CNOTs we can only have 3n parameters in our circuit, 3 for each one-qubit gate. This is definitely not enough to describe an arbitrary unitary on <span class="math inline">\(n\)</span> qubits which has <span class="math inline">\(d^2=4^n\)</span> parameters.</p>
+<p>Now, adding a single CNOT allows to insert two more 1-qubit unitaries after it, like that</p>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.circuit <span class="im">import</span> Parameter</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>a1, a2, a3 <span class="op">=</span> [Parameter(a) <span class="cf">for</span> a <span class="kw">in</span> [<span class="st">'a1'</span>, <span class="st">'a2'</span>, <span class="st">'a3'</span>]]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>b1, b2, b3 <span class="op">=</span> [Parameter(b) <span class="cf">for</span> b <span class="kw">in</span> [<span class="st">'b1'</span>, <span class="st">'b2'</span>, <span class="st">'b3'</span>]]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>qc.u(a1, a2, a3, <span class="dv">0</span>)              </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>qc.u(b1, b2, b3, <span class="dv">1</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>              </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<p><img src="2021-07-22-Machine learning compilation of quantum circuits_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>At the first glance this allows to add 6 more parameters. However, each single-qubit unitary can be represented via the Euler angles as a product of only <span class="math inline">\(R_z\)</span> and <span class="math inline">\(R_x\)</span> rotations either as <span class="math inline">\(U=R_z R_x R_z\)</span> or <span class="math inline">\(U=R_x R_y R_z\)</span> (I do not specify angles). Now, CNOT can be represented as <span class="math inline">\(CNOT=|0\rangle\langle 0|\otimes I+|1\rangle\langle 1|\otimes X\)</span>. It follows that <span class="math inline">\(R_z\)</span> commutes with the control of CNOT and <span class="math inline">\(R_x\)</span> commutes with the target of CNOT, hence they can be dragged to the left and joined with preceding one-qubit gates. So in fact each new CNOT gate allows to add only 4 real parameters:</p>
+<div class="cell" data-execution_count="12">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>a1, a2 <span class="op">=</span> [Parameter(a) <span class="cf">for</span> a <span class="kw">in</span> [<span class="st">'a1'</span>, <span class="st">'a2'</span>]]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>b1, b2 <span class="op">=</span> [Parameter(b) <span class="cf">for</span> b <span class="kw">in</span> [<span class="st">'b1'</span>, <span class="st">'b2'</span>]]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>qc.rx(a1, <span class="dv">0</span>)              </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>qc.rz(a2, <span class="dv">0</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>qc.rz(b1, <span class="dv">1</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>qc.rx(b2, <span class="dv">1</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>              </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<p><img src="2021-07-22-Machine learning compilation of quantum circuits_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>That’s it, there are no more caveats. Thus, the total number of parameters we can get with <span class="math inline">\(L\)</span> CNOTs is <span class="math inline">\(3n+4L\)</span> and we need to describe a <span class="math inline">\(d\times d\)</span> unitary which has <span class="math inline">\(4^n\)</span> parameters. In fact, the global phase of the unitary is irrelevant so we only need <span class="math inline">\(3n+4L \geq 4^n-1\)</span>. Solving for <span class="math inline">\(L\)</span> gives the TLB <span class="math inline">\(\eqref{TLB}\)</span>. That’s pretty cool, isn’t it?</p>
+<p>Now there is an algorithm, called <em>quantum Shannon decomposition</em> (see <a href="https://arxiv.org/abs/quant-ph/0406176">ref</a>), which gives an exact compilation of any unitary with the number of CNOTs twice as much as the TLB requires. In complexity-theoretic terms an overall factor of two is of course inessential, but for current NISQ devices we want to get as efficient as possible. Moreover, to my understanding the quantum Shannon decomposition is not easily extendable to restricted topology while inefficient generalizations lead to a much bigger overhead (roughly an order of magnitude).</p>
+</section>
+</section>
+<section id="whats-in-the-preprint" class="level1">
+<h1>What’s in the preprint?</h1>
+<section id="templates" class="level2">
+<h2 class="anchored" data-anchor-id="templates">Templates</h2>
+<p>I’ve already wrote an introduction way longer than intended so from now on I will try to be brief and to the point. The authors of the preprint propose two templates inspired by the quantum Shannon decomposition. The building block for each template is a ‘CNOT unit’</p>
+<div class="cell" data-execution_count="13">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>a1, a2 <span class="op">=</span> [Parameter(a) <span class="cf">for</span> a <span class="kw">in</span> [<span class="st">'a1'</span>, <span class="st">'a2'</span>]]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>b1, b2 <span class="op">=</span> [Parameter(b) <span class="cf">for</span> b <span class="kw">in</span> [<span class="st">'b1'</span>, <span class="st">'b2'</span>]]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>qc.ry(a1, <span class="dv">0</span>)              </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>qc.rz(a2, <span class="dv">0</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>qc.ry(b1, <span class="dv">1</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>qc.rx(b2, <span class="dv">1</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>              </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<p><img src="2021-07-22-Machine learning compilation of quantum circuits_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>First template is called <strong>sequ</strong> in the paper and is obtained as follows. There are <span class="math inline">\(n(n-1)/2\)</span> different CNOTs on <span class="math inline">\(n\)</span>-qubit gates. We enumerate them somehow and simply stack sequentially. Here is a 3-qubut example with two layers (I use <code>qiskit</code> gates <code>cz</code> instead of our ‘CNOT units’ for the ease of graphical representation)</p>
+<div class="cell" data-execution_count="24">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    qc.barrier()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<p><img src="2021-07-22-Machine learning compilation of quantum circuits_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The second template is called <strong>spin</strong> and for 4 qubits looks as follows</p>
+<div class="cell" data-execution_count="25">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">4</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    qc.barrier()</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<p><img src="2021-07-22-Machine learning compilation of quantum circuits_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>I’m sure you get the idea. That’s it! The templates fix the pattern of CNOTs while angles of single-qubit gates are adjustable parameters which are collectively denoted by <span class="math inline">\(\theta\)</span>.</p>
+<p>The idea now is simple. Try to optimize these parameters to achieve the highest possible fidelity for a given target unitary to compile. I am not at all an expert on the optimization methods, so I might miss many subtleties, but on the surface the problem looks rather straightforward. You can choose your favorite flavor of the gradient descent and hope for convergence. The problem appears to be non-convex but the gradient descent seems to work well in practice. One technical point that I do not fully understand is that the authors choose to work with fidelity defined by the Frobenius norm <span class="math inline">\(||U-V||_F^2\)</span> which is sensitive to the global phase of each unitary. To my understanding they often find that local minima of this fidelity coincides with the global minimum up to a global phase. OK, so in the rest of the post I refer to the ‘gradient descent’ as the magic numerical method which does good job of finding physically sound minimums.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="compiling-random-unitaries" class="level3">
+<h3 class="anchored" data-anchor-id="compiling-random-unitaries">Compiling random unitaries</h3>
+<p>OK, finally, for the surprising results. The authors find experimentally that both <strong>sequ</strong> and <strong>spin</strong> perform surprisingly well on random unitaries always coming very close to the TLB <span class="math inline">\(\eqref{TLB}\)</span> with good fidelity. More precisely, the tests proceed as follows. First, one generates a random unitary. Next, for each number <span class="math inline">\(L\)</span> of CNOTs below the TLB one runs the gradient descent to see how much fidelity can be achieved with this amount of CNOTs. Finally, one plots the fidelity as a function of <span class="math inline">\(L\)</span>. Impressively, on the sample of hundred unitaries the fidelity always approaches 100% when the number of CNOTs reaches the TLB. For the <span class="math inline">\(n=3\)</span> qubits TLB is <span class="math inline">\(L=14\)</span>, for <span class="math inline">\(n=5\)</span> <span class="math inline">\(L=252\)</span> (these are the two cases studied). So, in all cases studied, the gradient descent lead by the provided templates seems to always find the optimal compilation circuit! Recall that this is two times better than quantum Shannon decomposition. Please see the original paper for nice plots that I do not reproduce here.</p>
+</section>
+<section id="compiling-on-restricted-topology" class="level3">
+<h3 class="anchored" data-anchor-id="compiling-on-restricted-topology">Compiling on restricted topology</h3>
+<p>These tests were performed on the fully connected circuits. The next remarkable discovery is that restricting the connectivity does not to seem to harm the performance of the compilation! More precisely, the authors considered two restricted topologies in the paper, ‘star’ where all qubits are connected to single central one and ‘line’ where well, they are connected by links on a line. The <strong>spin</strong> template can not be applied to star topology, but it can be applied to line topology. The <strong>sequ</strong> template can be generalized to any topology by simply omitting CNOTs that are not allowed. Again, as examining a hundred of random unitaries on <span class="math inline">\(n=3\)</span> and <span class="math inline">\(n=5\)</span> qubits shows, the fidelity nearing 100% can be achieved right at the TLB in all cases, which hints that topology restriction may not be a problem in this approach at all! To appreciate the achievement, imagine decomposing each unitary via the quantum Shannon decomposition and then routing on restricted topology with swarms of SWAPs, a terrifying picture indeed. It would be interesting to compare the results against the performance of <code>qiskit</code> transpiler which is unfortunately not done in the paper to my understanding.</p>
+</section>
+<section id="compiling-specific-measure-zero-gates" class="level3">
+<h3 class="anchored" data-anchor-id="compiling-specific-measure-zero-gates">Compiling specific ‘measure zero’ gates</h3>
+<p>Some important multi-qubit gates fall into the ‘measure zero’ set which can be compiled with a smaller amount of CNOTs than is implied by the TLB <span class="math inline">\(\eqref{TLB}\)</span>. For example, 4-qubit Toffoli gate can be compiled with 14 CNOTs while the TLB requires 61 gates. Numerical tests show that the plain version of the algorithm presented above does not generically obtain the optimal compilation for special gates. However, with some tweaking and increasing the amount of attempts the authors were able to find optimal decompositions for a number of known gates such as 3- and 4-qubit Toffoli, 3-qubit Fredkin and 1-bit full adder on 4 qubits. The tweaking included randomly changing the orientation of some CNOTs (note that in both <strong>sequ</strong> and <strong>spin</strong> the control qubit is always at the top) and running many optimization cycles with random initial conditions. The best performing method appeared to be <strong>sequ</strong> with random flips of CNOTs. The whole strategy might look a bit fishy, but I would argue that it is not. My argument is simple: you only need to find a good compilation of the 4-qubit Toffoli <em>once</em>. After that you pat yourself on the back and use the result in all your algorithms. So it does not really matter how hard it was to find the compilation as long as you did not forget to write it down.</p>
+</section>
+<section id="compressing-the-quantum-shannon-decomposition" class="level3">
+<h3 class="anchored" data-anchor-id="compressing-the-quantum-shannon-decomposition">Compressing the quantum Shannon decomposition</h3>
+<p>Finally, as a new twist on the plot the authors propose a method to compress the standard quantum Shannon decomposition (which is twice the TLB, remember?). The idea seems simple and works surprisingly well. The algorithm works as follows. 1. Compile a unitary exactly using the quantum Shannon decomposition. 1. Promote parameters in single-qubit gates variables (they have fixed values in quantum Shannon decomposition). 2. Add [LASSO](https://en.wikipedia.org/wiki/Lasso_(statistics)-type regularization term, which forces one-qubit gates to have small parameters, ideally zero (which makes the corresponding gates into identities). 3. Run a gradient descent on the regularized cost function (fidelity+LASSO term). Some one-qubit gates will become identity after that (one might need to tune the regularization parameter here). 4. After eliminating identity one-qubit gates one can end up in the situation where there is a bunch of CNOTs with no single-qubit gates in between. There are efficient algorithms for reducing the amount of CNOTs in this case.<br>
+5. Recall that the fidelity was compromised by adding regularization terms. Run the gradient descent once more, this time without regularization, to squeeze out these last percents of fidelity.</p>
+<p>From the description of this algorithm it does not appear obvious that the required cancellations (elimination of single-qubit gates and cancellations in resulting CNOT clusters) is bound to happen, but the experimental tests show that they do. Again, from a bunch of random unitaries it seems that the <span class="math inline">\(\times 2\)</span> reduction to the TLB is almost sure to happen! Please see the preprint for plots.</p>
+</section>
+</section>
+<section id="weak-spots" class="level2">
+<h2 class="anchored" data-anchor-id="weak-spots">Weak spots</h2>
+<p>Although I find results of the paper largely impressive, a couple of weak spots deserve a mention. ### Limited scope of experiments The numerical experiments were only carried out for <span class="math inline">\(n=3\)</span> and <span class="math inline">\(n=5\)</span> qubits which of course is not much. To see if the method keeps working as the number of qubits is scaled is sure very important. There may be two promblems. First, the templates can fail to be expressive enough for larger circuits. The authors hope to attack this problem from the theoretical side and show that the templates do fill the space of unitaries. Well, best of luck with that! Another potential problem is that although the templates work fine for higher <span class="math inline">\(n\)</span>, the learning part might become way more challenging. Well, I guess we should wait and see. ### Unitary as the input As I discussed somewhere way above, for a realistic quantum computation we can not know the unitary matrix that we need to compile. If we did, there would no need in the quantum computer in the first place. I can make two objects here. First, we are still in the NISQ era and pushing the existing quantum computers to their edge is a very important task. Even if an algorithm can be simulated classically, running it on a real device might be invaluable. Second, even quantum circuits on 1000 qubits do not usually feature 100-qubit unitaries. So it could be possible to separate a realistic quantum circuit into pieces, each containing only a few qubits, and compile them separately.</p>
+</section>
+</section>
+<section id="final-remarks" class="level1">
+<h1>Final remarks</h1>
+<p>To me, the algorithms presented in the preprint seem to be refreshingly efficient and universal. At some level it appears to be irrelevant which exact template do we use. Near the theoretical lower bound they all perform similarly well, even on restricted topology. This might be a justification for choosing CNOT as the two-qubit gate, as this probably does not matter in the end! I’m really cheering for a universal algorithm like that to win the compilation challenge over a complicated web of isolated heuristics, which are currently state of the art.</p>
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="idnm/blog" data-repo-id="R_kgDOJWB1vg" data-category="General" data-category-id="DIC_kwDOJWB1vs4CVvR7" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.319">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-08-18">
+<meta name="description" content="A case study by building a tensor network to match qiskit conventions">
+
+<title>Notes on Quantum Computing - Matrix representation of quantum circuits - notations and gotchas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../kika.jpeg" rel="icon" type="image/jpeg">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-description','listing-categories','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1154MLY31V"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1154MLY31V', { 'anonymize_ip': true});
+</script>
+<script>
+window.MathJax = {
+  tex: {
+    tags: 'ams'
+  }
+};
+</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Notes on Quantum Computing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Matrix representation of quantum circuits - notations and gotchas</h1>
+                  <div>
+        <div class="description">
+          A case study by building a tensor network to match qiskit conventions
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">qiskit</div>
+                <div class="quarto-category">tensor networks</div>
+                <div class="quarto-category">quantum concepts</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 18, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a>
+  <ul class="collapse">
+  <li><a href="#defining-the-problem" id="toc-defining-the-problem" class="nav-link" data-scroll-target="#defining-the-problem">Defining the problem</a></li>
+  </ul></li>
+  <li><a href="#states-vertical-ordering" id="toc-states-vertical-ordering" class="nav-link" data-scroll-target="#states-vertical-ordering">States: vertical ordering</a>
+  <ul class="collapse">
+  <li><a href="#single-qubit-states" id="toc-single-qubit-states" class="nav-link" data-scroll-target="#single-qubit-states">Single qubit states</a></li>
+  </ul></li>
+  <li><a href="#operators-horizontal-ordering" id="toc-operators-horizontal-ordering" class="nav-link" data-scroll-target="#operators-horizontal-ordering">Operators: horizontal ordering</a></li>
+  <li><a href="#paper-and-pencil-computation" id="toc-paper-and-pencil-computation" class="nav-link" data-scroll-target="#paper-and-pencil-computation">Paper-and-pencil computation</a></li>
+  <li><a href="#implementation-with-tensornetworks" id="toc-implementation-with-tensornetworks" class="nav-link" data-scroll-target="#implementation-with-tensornetworks">Implementation with <code>tensornetworks</code></a>
+  <ul class="collapse">
+  <li><a href="#an-aside-about-reshaping" id="toc-an-aside-about-reshaping" class="nav-link" data-scroll-target="#an-aside-about-reshaping">An aside about reshaping</a></li>
+  <li><a href="#tensor-product-ordering" id="toc-tensor-product-ordering" class="nav-link" data-scroll-target="#tensor-product-ordering">Tensor product ordering</a></li>
+  <li><a href="#circuit-from-tensor-network" id="toc-circuit-from-tensor-network" class="nav-link" data-scroll-target="#circuit-from-tensor-network">Circuit from tensor network</a></li>
+  <li><a href="#a-better-way" id="toc-a-better-way" class="nav-link" data-scroll-target="#a-better-way">A better way</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p><a target="_blank" href="https://colab.research.google.com/github/idnm/blog/blob/master/posts/matrix_representation_of_quantum_circuits/2021-08-18-Matrix%20representation%20of%20quantum%20circuits.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" align="right" alt="Open In Colab"> </a></p>
+<section id="intro" class="level1">
+<h1>Intro</h1>
+<p>Usually, for experimenting with quantum circuits I use <code>qiskit</code>. As any higher level environment it is very convenient for common tasks, but may turn out too inflexible for unusual use cases. A somewhat opposite approach is to use much lower level tools to gain in flexibility at the expense of convenience. Currently I want to use Google’s <code>tensornetwork</code> <a href="https://tensornetwork.readthedocs.io/en/latest/">package</a> for simulations and training of quantum circuits, but this requires building many things that are for free in <code>qiskit</code> from scratch. It is also necessary to become explicit about conventions for matrix representation of quantum circuits. As long as you stay within a single framework this may not be an issue. However for debugging purposes as well as for comparison between different frameworks this may become unavoidable. Thus, I always anticipated, that a day will come when I need to face my fears and order all terms in a tensor product by hands. Now it seems I’m past the difficult part and I’m better writing this down in case I would need to do something similar in the future.</p>
+<section id="defining-the-problem" class="level2">
+<h2 class="anchored" data-anchor-id="defining-the-problem">Defining the problem</h2>
+<p>OK, so what is the problem? Consider the following simple circuit built with <code>qiskit</code>:</p>
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Operator, Statevector</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">0</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>qc.y(<span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<p><img src="2021-08-18-Matrix representation of quantum circuits_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>It is not hard or ambiguous to interpret what this circuit does by inspecting the diagram. Say the input state is <span class="math inline">\(q_0=|0\rangle\)</span>, <span class="math inline">\(q_1=|1\rangle\)</span>. After <span class="math inline">\(X\)</span> acts on <span class="math inline">\(q_0\)</span> it becomes <span class="math inline">\(q_0\to X |0\rangle=|1\rangle\)</span>. Similarly, <span class="math inline">\(q_1\)</span> after <span class="math inline">\(Y\)</span> becomes <span class="math inline">\(q_1\to Y|1\rangle=-i |0\rangle\)</span>. Since now <span class="math inline">\(q_0\)</span> is “on” the CNOT gate switches the state of <span class="math inline">\(q_1\)</span> further to <span class="math inline">\(q_0 \to -i|1\rangle\)</span>. So the end result is that <span class="math inline">\(q_0=|0\rangle, q_1=|1\rangle\)</span> is transformed to <span class="math inline">\(q_0=|1\rangle, q_1=-i|1\rangle\)</span>. Or perhaps a picture says it better</p>
+<p><img src="myimages/xycnot01.png" class="img-fluid"></p>
+<p>Similarly, we can work out what the circuit does for other computational basis states which by linearity fully fixes the action of the circuit. Although quite explicit, this is a clumsy description. This is why the matrix notation is usually used. And indeed, we can obtain the matrix corresponding to our quantum circuit quite easily in <code>qiskit</code>:</p>
+<div class="cell" data-scrolled="true" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>U_qs <span class="op">=</span> Operator(qc).data</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>U_qs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>array([[0.+0.j, 0.+0.j, 0.+0.j, 0.-1.j],
+       [0.+1.j, 0.+0.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 0.+1.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 0.+0.j, 0.-1.j, 0.+0.j]])</code></pre>
+</div>
+</div>
+<p>It is important to realize that a number of conventions must be chosen before such explicit matrix representation can be written down. In particular, I will emphasize two points I tripped over while studying this: ordering of the qubit states in the tensor product or “vertical ordering” and ordering of operators or “horizontal ordering”.</p>
+<p><img src="upsidedown.jpg" alt="Drawing" style="width: 400px;"></p>
+<p>In the rest of the post I will clarify what are the conventions used in <code>qiskit</code> and how to reproduce the circuit with the <code>tensornetwork</code> library.</p>
+</section>
+</section>
+<section id="states-vertical-ordering" class="level1">
+<h1>States: vertical ordering</h1>
+<section id="single-qubit-states" class="level2">
+<h2 class="anchored" data-anchor-id="single-qubit-states">Single qubit states</h2>
+<p>First we need to give matrix representations to two basis states of a single qubit. Here I think it is quite uncontroversial to choose <span class="math display">\[\begin{align}
+|0\rangle = \begin{pmatrix}1\\0\end{pmatrix},\qquad |1\rangle = \begin{pmatrix}0\\1\end{pmatrix} \label{kets}
+\end{align}\]</span></p>
+<p>These are the “ket” vectors. Their “bra” counterparts are <span class="math display">\[\begin{align}
+\langle 0| = \begin{pmatrix}1 &amp; 0\end{pmatrix}, \qquad \langle 1| = \begin{pmatrix}0 &amp; 1\end{pmatrix} \label{bras}
+\end{align}\]</span></p>
+<p>With these, the following operators can be computed <span class="math display">\[\begin{align}
+|0\rangle\langle 0| = \begin{pmatrix}1 &amp; 0 \\ 0 &amp; 0\end{pmatrix},\qquad |0\rangle\langle 1| = \begin{pmatrix}0 &amp; 1 \\ 0 &amp; 0\end{pmatrix} \nonumber\\ |1\rangle\langle 0| = \begin{pmatrix}0 &amp; 0 \\ 1 &amp; 0\end{pmatrix},\qquad |1\rangle\langle 1| = \begin{pmatrix}0 &amp; 0 \\ 0 &amp; 1\end{pmatrix} \label{ketbras}
+\end{align}\]</span> ## Multiple qubit states When there is more than a single qubit things become a bit more interesting and potentially confusing. For example, the combined Hilbert space of two qubits <span class="math inline">\(\mathcal{H}_2\)</span> is a tensor product of single-qubit Hilbert spaces <span class="math inline">\(\mathcal{H}_2 = \mathcal{H}_1 \otimes \mathcal{H}_1\)</span> but we need to decide which qubit goes first and which goes second. In <code>qiskit</code> a convention is adopted that additional qubits join from the <em>left</em>, i.e.&nbsp;when we have two qubits as here</p>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>qc01 <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>qc01.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<p><img src="2021-08-18-Matrix representation of quantum circuits_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The state of the system is <span class="math inline">\(|q_1\rangle\otimes |q_0\rangle\)</span> (this is of course only true literally for <a href="https://idnm.github.io/blog/quantum%20concepts/qiskit/2021/07/12/Entanglement.html">non-entangled states</a> but we can define everything only on the computational basis states ). OK, but how do we translate this into the matrix representation? The states in the tensor product of vector spaces can be represented by the <a href="https://en.wikipedia.org/wiki/Kronecker_product">Kronecker product</a> which is not symmetric with respect to permutation arguments. Best way to explain how Kronecker product works is, as usual, through examples:</p>
+<p><span class="math display">\[\begin{align}
+\begin{pmatrix} 1 \\ 0 \end{pmatrix} \otimes \begin{pmatrix} a \\ b \end{pmatrix} = \begin{pmatrix} a \\ b \\ 0 \\ 0 \end{pmatrix},\qquad \begin{pmatrix} 0 \\ 1 \end{pmatrix} \otimes \begin{pmatrix} a \\ b \end{pmatrix} = \begin{pmatrix} 0\\ 0\\ a \\ b \end{pmatrix}
+\end{align}\]</span> Result for generic left vector can be obtained by linearity <span class="math display">\[\begin{align}
+\begin{pmatrix} x \\ y \end{pmatrix} \otimes \begin{pmatrix} a \\ b \end{pmatrix} = x \begin{pmatrix} 1 \\ 0 \end{pmatrix} \otimes \begin{pmatrix} a \\ b\end{pmatrix} +y\begin{pmatrix} 0 \\ 1 \end{pmatrix} \otimes \begin{pmatrix} a \\ b \end{pmatrix} = \begin{pmatrix} x a\\ x b\\ y a \\ y b \end{pmatrix}  = \begin{pmatrix} x \begin{pmatrix} a\\ b\end{pmatrix} \\ y  \begin{pmatrix} a \\  b\end{pmatrix} \end{pmatrix}
+\end{align}\]</span></p>
+<p>The last notation here is a bit informal but it shows what happens. One just substitutes the right vector into all elements of the left vector, multiplied by the corresponding components of the left vector. The Kronecker product is defined in the same way for matrices of arbitrary size, not just for two vectors.</p>
+<p>So, now we can compute matrix representations of states in the computation basis of two-qubit system</p>
+<p><span class="math display">\[\begin{align}
+|00\rangle = \begin{pmatrix}1\\0 \end{pmatrix} \otimes \begin{pmatrix}1\\0 \end{pmatrix} = \begin{pmatrix}1\\0\\0\\0\end{pmatrix},\quad |01\rangle = \begin{pmatrix}1\\0 \end{pmatrix} \otimes \begin{pmatrix}0\\1 \end{pmatrix} = \begin{pmatrix}0\\1\\0\\0\end{pmatrix} \label{01}\\
+|10\rangle = \begin{pmatrix}0\\1\end{pmatrix} \otimes \begin{pmatrix}1\\0 \end{pmatrix} = \begin{pmatrix}0\\0\\1\\0\end{pmatrix},\quad |11\rangle = \begin{pmatrix}0\\1\end{pmatrix} \otimes \begin{pmatrix}0\\1 \end{pmatrix} = \begin{pmatrix}0\\0\\0\\1\end{pmatrix}
+\end{align}\]</span></p>
+<p>There is a useful relation between the index of the non-zero element <span class="math inline">\(n\)</span> in the four-dimensional representation and the computational basis bitstring <span class="math inline">\(q_1q_0\)</span>, namely <span class="math inline">\(n=2q_1+q_0\)</span>. I.e. the bitstring <span class="math inline">\(q_1q_0\)</span> is the binary representation of the index <span class="math inline">\(n\)</span>. This extends to arbitrary number of qubits, for example since <span class="math inline">\(101\)</span> is <span class="math inline">\(5\)</span> in binary representation it follows <span class="math display">\[\begin{align}
+|101\rangle = \begin{pmatrix}0\\0\\0\\0\\0\\1\\0\\0 \end{pmatrix} \label{101}
+\end{align}\]</span> (try to obtain this from the two tensor products!)</p>
+<p>Don’t believe me? OK, let’s check! In <code>qiskit</code> there is a convenient function to construct a vector representation from a bit string which we will take advantage of. First start with a two-qubit example:</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>s01 <span class="op">=</span> Statevector.from_label(<span class="st">'01'</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>s01.data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>array([0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j])</code></pre>
+</div>
+</div>
+<p>Comparing to <span class="math inline">\(\eqref{01}\)</span> we find agreement. Similarly,</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>s101 <span class="op">=</span> Statevector.from_label(<span class="st">'101'</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>s101.data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>array([0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j])</code></pre>
+</div>
+</div>
+<p>Again, this is in agreement with <span class="math inline">\(\eqref{101}\)</span>.</p>
+<p>However, I am not sure that this relation is sufficient to justify the ordering of the tensor products. To me it is much more natural to read the circuit from top to bottom and construct the Hilbert spaces accordingly, say <span class="math inline">\(\mathcal{H}_0\otimes \mathcal{H}_1 \otimes \mathcal{H}_2 \dots\)</span> instead of <span class="math inline">\(\cdots \mathcal{H}_2\otimes \mathcal{H}_1\otimes \mathcal{H}_0\)</span>. Later I will change the ordering of the tensor product to my liking, but for now we stick with the <code>qiskit</code> one. Now, with conventions for states in place we can proceed to operators.</p>
+</section>
+</section>
+<section id="operators-horizontal-ordering" class="level1">
+<h1>Operators: horizontal ordering</h1>
+<p>One can say that convention for states representation and ordering of tensor products is a “vertical” convention. There is also a “horizontal” convention which might be potentially confusing. Consider the following circuit</p>
+<div class="cell" data-execution_count="6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>qc123 <span class="op">=</span> QuantumCircuit(<span class="dv">1</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>qc123.rx(<span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>qc123.ry(<span class="dv">2</span>, <span class="dv">0</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>qc123.rz(<span class="dv">3</span>, <span class="dv">0</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>qc123.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<p><img src="2021-08-18-Matrix representation of quantum circuits_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Here, the operator <span class="math inline">\(R_x\)</span> is appplied first, the operator <span class="math inline">\(R_y\)</span> second and <span class="math inline">\(R_z\)</span> last. So in mathematical notation the circuit corresponds to <span class="math inline">\(R_z R_y R_x\)</span> and <em>not</em> to <span class="math inline">\(R_x R_y R_z\)</span>. I think that the circuit notation is actually better. We think and write from left to right, this is also a direction that time flows on paper. When another thing happens, we write it to the right and it would be convenient to apply the corresponding operator also to the right. I heard real mathematicians complain about that issue, but I guess we are stuck with it for now.</p>
+</section>
+<section id="paper-and-pencil-computation" class="level1">
+<h1>Paper-and-pencil computation</h1>
+<p>With the set up in place we can compute the circuit of interest by hands. For convenience I plot it here once again:</p>
+<div class="cell" data-execution_count="7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>qc.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<p><img src="2021-08-18-Matrix representation of quantum circuits_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>OK, so what is the unitary matrix corresponding to this circuit? It is <span class="math display">\[\begin{align}
+U = CNOT_{01} \cdot (Y\otimes X)
+\end{align}\]</span> Here <span class="math display">\[\begin{multline}
+CNOT_{01} = \mathbb{1}\otimes |0\rangle\langle 0|+X\otimes |1\rangle\langle 1|=\\\begin{pmatrix}1&amp;0\\0&amp;1\end{pmatrix}\otimes \begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}+\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\otimes \begin{pmatrix}0&amp;0\\0&amp;1\end{pmatrix}=\begin{pmatrix}1&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;1\\0&amp;0&amp;1&amp;0\\0&amp;1&amp;0&amp;0\end{pmatrix}
+\end{multline}\]</span> and <span class="math display">\[\begin{align}
+Y\otimes X = \begin{pmatrix} 0&amp; -i\\i&amp;0\end{pmatrix} \otimes \begin{pmatrix} 0&amp; 1\\1&amp;0\end{pmatrix}=\begin{pmatrix}0&amp;0&amp;0&amp;-i\\0&amp;0&amp;-i&amp;0\\0&amp;i&amp;0&amp;0\\i&amp;0&amp;0&amp;0\end{pmatrix}
+\end{align}\]</span> Multiplying them together gives <span class="math display">\[\begin{align}
+U = \begin{pmatrix}0 &amp; 0 &amp; 0 &amp; -i \\ i&amp;0&amp;0&amp;0 \\ 0 &amp; i &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; -i &amp; 0\end{pmatrix}
+\end{align}\]</span> Alright, so this is indeed the matrix that <code>qiskit</code> computes:</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>U_qs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>array([[0.+0.j, 0.+0.j, 0.+0.j, 0.-1.j],
+       [0.+1.j, 0.+0.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 0.+1.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 0.+0.j, 0.-1.j, 0.+0.j]])</code></pre>
+</div>
+</div>
+<p>We can now also check that that the states evolve as we expected. For example recall that we computed that our quantum circuit maps <span class="math inline">\(q_0 =|0\rangle, q_1 =|1\rangle\)</span> to <span class="math inline">\(q_0 =|1\rangle, q_1 =|1\rangle\)</span> with an overall phase <span class="math inline">\(-i\)</span>. Agreement with <code>qiskit</code> can be checked as follows:</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>qs_state <span class="op">=</span> Statevector.from_label(<span class="st">'10'</span>).evolve(qc).data </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>our_state <span class="op">=</span> <span class="op">-</span><span class="ot">1j</span><span class="op">*</span>Statevector.from_label(<span class="st">'11'</span>).data</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>np.allclose(qs_state, our_state)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>True</code></pre>
+</div>
+</div>
+</section>
+<section id="implementation-with-tensornetworks" class="level1">
+<h1>Implementation with <code>tensornetworks</code></h1>
+<p>I will not give a proper introduction to tensor networks but just make some digressions I think should be helpful as we go along.</p>
+<p>First thing we will need are the matrices defining <span class="math inline">\(X, Y\)</span> and <span class="math inline">\(CNOT\)</span> gates. Let us introduce them.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">0</span>]])</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="op">-</span><span class="ot">1j</span>], [<span class="ot">1j</span>, <span class="dv">0</span>]])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>CNOT <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>],</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>]]).reshape(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="an-aside-about-reshaping" class="level2">
+<h2 class="anchored" data-anchor-id="an-aside-about-reshaping">An aside about reshaping</h2>
+<p>Note that as usually written, <span class="math inline">\(CNOT\)</span> is a <span class="math inline">\(4\times4\)</span> matrix. Since as a quantum gate it acts on two qubits, so it should rather be a four-legged tensor. This is the purpose of the reshaping operation. At first the reshaping might be a bit tricky, so let me illustrate it with an example. Introduce two <span class="math inline">\(4\times4\)</span> matrices and define their product:</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.random.rand(<span class="dv">4</span>,<span class="dv">4</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> np.random.rand(<span class="dv">4</span>,<span class="dv">4</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>AB <span class="op">=</span> A <span class="op">@</span> B</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now define the corresponding four-legged tensors.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensornetwork <span class="im">as</span> tn</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> tn.Node(A.reshape(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> tn.Node(B.reshape(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>By contracting the legs (or “edges” in terminology of <code>tensornetworks</code>) appropriately, we can reproduce the matrix multiplication. First the code:</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>a[<span class="dv">2</span>] <span class="op">^</span> b[<span class="dv">0</span>]</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>a[<span class="dv">3</span>] <span class="op">^</span> b[<span class="dv">1</span>]</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> tn.contractors.greedy([a, b], output_edge_order<span class="op">=</span>[a[<span class="dv">0</span>], a[<span class="dv">1</span>], b[<span class="dv">2</span>], b[<span class="dv">3</span>]]).tensor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can check that the contraction performed in this way exactly reproduces the matrix multiplication of original <span class="math inline">\(4\times4\)</span> matrices:</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>np.allclose(AB, ab.reshape(<span class="dv">4</span>,<span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>True</code></pre>
+</div>
+</div>
+<p>This can be interpreted graphically as follows. First, the reshaping procedure can be thought of as splitting each of two four-dimensional legs of the original matrix into two two-dimensional ones</p>
+<p><img src="abtensors.jpg" class="img-fluid"></p>
+<p>The labels on the legs have nothing to do with qubit states, these are just indices of edges as assigned by <code>tn.Node</code> operation on our matrices. The matrix multiplication of the original matrices in terms of four-legged tensors then can be drawn as follows</p>
+<p><img src="abtensorproduct.jpg" class="img-fluid"></p>
+<p>The index arrangements in the last part explain why we connected the edges in our code the way we did. This is something to watch out for. For example, connecting edges of two identity tensors in the wrong way may produce a <span class="math inline">\(SWAP\)</span> gate.</p>
+</section>
+<section id="tensor-product-ordering" class="level2">
+<h2 class="anchored" data-anchor-id="tensor-product-ordering">Tensor product ordering</h2>
+<p>The matrix representation of a tensor diagram like this</p>
+<p><img src="kroneckertensor.jpg" class="img-fluid"></p>
+<p>also comes with a convention for the ordering of tensor products. In <code>tensornetwork</code> as well as in my opinion it is natural to order top-down, i.e.&nbsp;the above diagram is <span class="math inline">\(U\otimes \mathbb{1}\)</span> instead of <span class="math inline">\(\mathbb{1}\otimes U\)</span> as is adopted in <code>qiskit</code>.</p>
+</section>
+<section id="circuit-from-tensor-network" class="level2">
+<h2 class="anchored" data-anchor-id="circuit-from-tensor-network">Circuit from tensor network</h2>
+<p>Alright, not we are in a position to reproduce the circuit unitary from the tensor network with nodes <code>x</code>, <code>y</code> and <code>cnot</code>:</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Make tensors from matrices</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>x, y, cnot <span class="op">=</span> <span class="bu">list</span>(<span class="bu">map</span>(tn.Node, [X, Y, CNOT]))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect edges properly</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>cnot[<span class="dv">2</span>] <span class="op">^</span> y[<span class="dv">0</span>]</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>cnot[<span class="dv">3</span>] <span class="op">^</span> x[<span class="dv">0</span>]</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform the contraction ~ matrix multiplication</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>U_tn <span class="op">=</span> tn.contractors.greedy([cnot, x, y], output_edge_order<span class="op">=</span>[cnot[<span class="dv">0</span>], cnot[<span class="dv">1</span>], y[<span class="dv">1</span>], x[<span class="dv">1</span>]]).tensor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This way of contracting the edges corresponds to the following diagram:</p>
+<p><img src="cnotxy.jpg" class="img-fluid"></p>
+<p>Note that this is basically the original circuit with both the vertical and the horizontal directions reversed. The horizontal reversal is due to mathematical vs circuit notation (circuit is better!) and the vertical reversal is due to the mismatch between <code>qiskit</code> and <code>tensornetwork</code> ordering of tensor product (<code>tensornetwork</code>’s is better!). We can check that the unitary we obtain from this tensor network agrees with <code>qiskit</code>’s</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>np.allclose(U_tn.reshape(<span class="dv">4</span>,<span class="dv">4</span>), U_qs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>True</code></pre>
+</div>
+</div>
+</section>
+<section id="a-better-way" class="level2">
+<h2 class="anchored" data-anchor-id="a-better-way">A better way</h2>
+<p>I find all this misalignment very inconvenient and hard to debug. Ideally I want to look at the quantum circuit and construct the corresponding tensor network just as I read a text: from left to right and from top to bottom. Here I propose a solution which seems much more satisfactory to me. We will deal with horizontal reversal by first defining edges and then applying gates to them. This way we can read the circuit from left to right and simply add new gates, just as in <code>qiskit</code>. I will not try to revert the vertical direction directly, because I find it hard to think upside down. Instead, for comparison with <code>qiskit</code> I will use a built-in <code>reverse_bits</code> method.</p>
+<p>So let’s start by defining a function that applies a given gate to the collection of qubits (this is a slight modification of an <a href="https://tensornetwork.readthedocs.io/en/latest/quantum_circuit.html">example</a> from <code>tensornetwork</code> docs) :</p>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_gate(qubits, gate_tensor, positions):</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    gate <span class="op">=</span> tn.Node(gate_tensor)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(gate.edges) <span class="op">==</span> <span class="dv">2</span><span class="op">*</span><span class="bu">len</span>(positions), <span class="st">'Gate size does not match positions provided.'</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(positions):</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Connect RIGHT legs of the gate to the active qubits</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        gate[i<span class="op">+</span><span class="bu">len</span>(positions)] <span class="op">^</span> qubits[p] </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Reassing active qubits to the corresponding LEFT legs of the gate </span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        qubits[p] <span class="op">=</span> gate[i]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Importantly, here, in contrast to the official docs, we append the gate from the <em>left</em>, so that a sequence of application of some <span class="math inline">\(G_1\)</span> followed by <span class="math inline">\(G_2\)</span> is equivalent to the application of <span class="math inline">\(G_2\cdot G_1\)</span>. Now there is one more subtlety. Previously we used matrix representation of <span class="math inline">\(CNOT\)</span> assuming that the uppermost qubit comes last in the tensor product. Now that we decided to turn this convention upside down our matrix representation of <span class="math inline">\(CNOT\)</span> must be <span class="math inline">\(CNOT =|0\rangle\langle 0|\otimes \mathbb{1}+|1\rangle\langle 1|\otimes X\)</span> or explicitly</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>CNOT <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                 [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>]]).reshape(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With that we are ready to reconstruct our original circuit in a convenient way:</p>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The context manager  `NodeCollection` is a bit of a magic trick</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># which keeps track of all tensors in the network automatically.</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>all_nodes <span class="op">=</span> []</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tn.NodeCollection(all_nodes): </span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># I do not know how to create 'abstract' edges in `tensornetworks`.</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Instead, I create an identity tensor and use its edges to apply new gates to.</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    id0 <span class="op">=</span> tn.Node(np.identity(<span class="dv">4</span>).reshape(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    qubits0 <span class="op">=</span> id0.edges[<span class="dv">2</span>:<span class="dv">4</span>]</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    qubits <span class="op">=</span> id0.edges[<span class="dv">0</span>:<span class="dv">2</span>]</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, X, [<span class="dv">0</span>])</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, Y, [<span class="dv">1</span>])</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, CNOT, [<span class="dv">0</span>,<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let us check!</p>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>U_tn <span class="op">=</span> tn.contractors.greedy(all_nodes, output_edge_order<span class="op">=</span>qubits<span class="op">+</span>qubits0).tensor.reshape(<span class="dv">4</span>,<span class="dv">4</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>U_reversed_qs <span class="op">=</span> Operator(qc.reverse_bits()).data</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>np.allclose(U_tn, U_reversed_qs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>True</code></pre>
+</div>
+</div>
+<p>Wohoo, it worked! If that looked simple to you I’m happy. It took me several hours of debugging to finally match the two matrices. Just to make sure, let me conclude with a more complicated example.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>qc3 <span class="op">=</span> QuantumCircuit(<span class="dv">3</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>qc3.x(<span class="dv">0</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>qc3.cx(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>qc3.y(<span class="dv">1</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>qc3.x(<span class="dv">2</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>qc3.cx(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>qc3.y(<span class="dv">2</span>)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>qc3.draw(output<span class="op">=</span><span class="st">'mpl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<p><img src="2021-08-18-Matrix representation of quantum circuits_files/figure-html/cell-22-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>As you can see, constructing the tensor network analog now works more or less identically:</p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>all_nodes <span class="op">=</span> []</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tn.NodeCollection(all_nodes):</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    id0 <span class="op">=</span> tn.Node(np.identity(<span class="dv">8</span>).reshape(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    qubits0 <span class="op">=</span> id0.edges[<span class="dv">3</span>:<span class="dv">6</span>]</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    qubits <span class="op">=</span> id0.edges[<span class="dv">0</span>:<span class="dv">3</span>]</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The essential part</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, X, [<span class="dv">0</span>])</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, CNOT, [<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, Y, [<span class="dv">1</span>])</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, X, [<span class="dv">2</span>])</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, CNOT, [<span class="dv">2</span>, <span class="dv">1</span>])</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    apply_gate(qubits, Y, [<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And now we compare:</p>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>U3_tn <span class="op">=</span> tn.contractors.greedy(all_nodes, output_edge_order<span class="op">=</span>qubits<span class="op">+</span>qubits0).tensor.reshape(<span class="dv">8</span>,<span class="dv">8</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>U3_qs_reversed <span class="op">=</span> Operator(qc3.reverse_bits()).data</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>np.allclose(U3_tn, U3_qs_reversed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>True</code></pre>
+</div>
+</div>
+<p>Alright, this resounding <strong>True</strong> is the best way to conclude that comes to mind. I own many thanks to <a href="https://github.com/LuchnikovI">Ilia Luchnikov</a> for the help with <code>tensornetwork</code> library. Any questions are welcome in the comments!</p>
+
+
+
+</section>
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="idnm/blog" data-repo-id="R_kgDOJWB1vg" data-category="General" data-category-id="DIC_kwDOJWB1vs4CVvR7" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
