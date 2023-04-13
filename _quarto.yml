@@ -9,6 +9,9 @@ website:
       - about.qmd
       - icon: linkedin
         href: https://www.linkedin.com/in/nikita-nemkov/
+  comments:
+    giscus:
+      repo: idnm/blog
 format:
   html:
     theme: cosmo
