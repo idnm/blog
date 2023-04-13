@@ -7,8 +7,6 @@ website:
   navbar:
     right:
       - about.qmd
-      - icon: linkedin
-        href: https://www.linkedin.com/in/nikita-nemkov/
   google-analytics: "G-1154MLY31V"
 format:
   html:
