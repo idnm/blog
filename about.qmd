@@ -7,9 +7,9 @@ listing: false
  
 ---
 
-Hi there! My name is Nikita Nemkov, and I'm a quantum computing researcher. I'm interested in most things quantum, but currently mainly work on compilation of quantum circuits and variational algorithms, while my background is in theoretical physics. On this blog I publish notes on random subjects in quantum computing. I do not have any particular audience in mind, and the notes are mostly for my future self. Yet, if you found anything here to be useful, don't hesitate to leave a comment, drop me an [email](nnemkov@gmail.com), or connect on [LinkedIn](https://www.linkedin.com/in/nikita-nemkov/).
+Hi there! My name is Nikita Nemkov, and I'm a quantum computing researcher. I'm interested in most things quantum, but currently mainly work on compilation of quantum circuits and variational algorithms, while my background is in theoretical physics. On this blog, I publish notes on random subjects in quantum computing. I do not have any particular audience in mind, and the notes are mostly for my future self. Yet, if you found anything here to be useful, don't hesitate to leave a comment, drop me an [email](nnemkov@gmail.com), or connect on [LinkedIn](https://www.linkedin.com/in/nikita-nemkov/).
 
 
 My posts are rendered from fully functional Jupyter notebooks, and many contain some code. If there is `open in colab` button, you can click on it and explore the post interactively.
 
-Recently, I migrated the blog from fastpages to quarto, which was not efforless. I suspect this introduced a lot of minor bugs, reference inconsistencies, missing figures and so on. I you spot somehing like that please let me know.
+Recently, I migrated the blog from fastpages to quarto, which was not effortless. I suspect this introduced a lot of minor bugs, reference inconsistencies, missing figures and so on. If you spot something like that, please let me know.
