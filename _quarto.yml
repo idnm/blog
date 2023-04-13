@@ -12,6 +12,7 @@ website:
   comments:
     giscus:
       repo: idnm/blog
+  google-analytics: "G-1154MLY31V"
 format:
   html:
     theme: cosmo
