@@ -21,7 +21,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -183,6 +202,7 @@ window.MathJax = {
 <li>Variational algorithms, no guarantees.</li>
 <li>QPE may fail because of state preparation.</li>
 <li>Are boson&amp;other samplers useful?</li>
+<li>Possibly a large gap between quantum advantage and useful quantum advantage</li>
 </ul>
 <p><strong>Classes of algorithms</strong></p>
 <ul>
@@ -193,11 +213,27 @@ window.MathJax = {
 <li>Sampling</li>
 <li>Solving linear systems</li>
 </ul>
+<p>** Gaps **</p>
+<ul>
+<li>Quantum RAM and macine learning</li>
+</ul>
 <p><strong>To read</strong></p>
 <ul>
-<li><a href="#Fedorov2022">Fedorov2022</a></li>
-<li><a href="#Bharti2022">Bharti2022</a></li>
-<li><a href="#Harrow2018">Harrow2018</a></li>
+<li><a href="#Fedorov2022">Fedorov2022</a> <span class="citation" data-cites="Fedorov2022">&nbsp;[<a href="#ref-Fedorov2022" role="doc-biblioref">1</a>]</span></li>
+<li><a href="#Bharti2022">Bharti2022</a> <span class="citation" data-cites="Bharti2022">&nbsp;[<a href="#ref-Bharti2022" role="doc-biblioref">2</a>]</span>
+<ul>
+<li>Just a single line on Bittel and Kliesh.</li>
+</ul></li>
+<li><a href="#Harrow2018">Harrow2018</a> <span class="citation" data-cites="Harrow2018">&nbsp;[<a href="#ref-Harrow2018" role="doc-biblioref">3</a>]</span>
+<ul>
+<li>Lamppost ~ crypto</li>
+<li><blockquote class="blockquote">
+<p>Supremacy experiments can be thought of as the computational analogue of Bell experiments.</p>
+</blockquote></li>
+</ul></li>
+<li>Aaronson <span class="citation" data-cites="Aaronson2022">&nbsp;[<a href="#ref-Aaronson2022" role="doc-biblioref">4</a>]</span></li>
+<li>Arrazola <span class="citation" data-cites="Arrazola">&nbsp;[<a href="#ref-Arrazola" role="doc-biblioref">5</a>]</span></li>
+<li>Photons <span class="citation" data-cites="Li_2015">&nbsp;[<a href="#ref-Li_2015" role="doc-biblioref"><strong>Li_2015?</strong></a>]</span></li>
 </ul>
 <p><strong>To watch</strong></p>
 <ul>
@@ -216,6 +252,7 @@ window.MathJax = {
 
 
 
+
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
 
@@ -223,7 +260,23 @@ window.MathJax = {
 <div class="listing-no-matching d-none">
 No matching items
 </div>
-</div></main> <!-- /main -->
+</div><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-Fedorov2022" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">A. K. Fedorov, N. Gisin, S. M. Beloussov, and A. I. Lvovsky, <em><a href="http://arxiv.org/abs/2203.17181"><span class="nocase">Quantum computing at the quantum advantage threshold: a down-to-business review</span></a></em>, 1 (2022).</div>
+</div>
+<div id="ref-Bharti2022" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">K. Bharti et al., <em><a href="https://doi.org/10.1103/RevModPhys.94.015004"><span class="nocase">Noisy intermediate-scale quantum algorithms</span></a></em>, Reviews of Modern Physics <strong>94</strong>, 015004 (2022).</div>
+</div>
+<div id="ref-Harrow2018" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">A. W. Harrow and A. Montanaro, <em><a href="https://doi.org/10.1038/nature23458"><span class="nocase">Quantum computational supremacy</span></a></em>, Nature <strong>549</strong>, 203 (2017).</div>
+</div>
+<div id="ref-Aaronson2022" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">S. Aaronson, <em><a href="https://arxiv.org/abs/2209.06930v1 http://arxiv.org/abs/2209.06930"><span class="nocase">How Much Structure Is Needed for Huge Quantum Speedups?</span></a></em>, (2022).</div>
+</div>
+<div id="ref-Arrazola" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">J. M. Arrazola, <em><a href="https://medium.com/xanaduai/everything-you-always-wanted-to-know-about-quantum-inspired-algorithms-38ee1a0e30ef"><span class="nocase">Everything you always wanted to know about quantum-inspired algorithms | by Xanadu | XanaduAI | Medium</span></a></em>, (n.d.).</div>
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
