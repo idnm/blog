@@ -1,3 +1,203 @@
+@article{Biamonte2017,
+abstract = {Fuelled by increasing computer power and algorithmic advances, machine learning techniques have become powerful tools for finding patterns in data. Quantum systems produce atypical patterns that classical systems are thought not to produce efficiently, so it is reasonable to postulate that quantum computers may outperform classical computers on machine learning tasks. The field of quantum machine learning explores how to devise and implement quantum software that could enable machine learning that is faster than that of classical computers. Recent work has produced quantum algorithms that could act as the building blocks of machine learning programs, but the hardware and software challenges are still considerable.},
+archivePrefix = {arXiv},
+arxivId = {1611.09347},
+author = {Biamonte, Jacob and Wittek, Peter and Pancotti, Nicola and Rebentrost, Patrick and Wiebe, Nathan and Lloyd, Seth},
+doi = {10.1038/nature23474},
+eprint = {1611.09347},
+file = {:home/idnm/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Biamonte et al. - 2017 - Quantum machine learning.pdf:pdf},
+issn = {14764687},
+journal = {Nature},
+mendeley-groups = {Open systems},
+number = {7671},
+pages = {195--202},
+pmid = {28905917},
+publisher = {Nature Publishing Group},
+title = {{Quantum machine learning}},
+url = {http://dx.doi.org/10.1038/nature23474},
+volume = {549},
+year = {2017}
+}
+
+
+
+@article{Cerezo2020,
+abstract = {Applications such as simulating complicated quantum systems or solving large-scale linear algebra problems are very challenging for classical computers due to the extremely high computational cost. Quantum computers promise a solution, although fault-tolerant quantum computers will likely not be available in the near future. Current quantum devices have serious constraints, including limited numbers of qubits and noise processes that limit circuit depth. Variational Quantum Algorithms (VQAs), which use a classical optimizer to train a parametrized quantum circuit, have emerged as a leading strategy to address these constraints. VQAs have now been proposed for essentially all applications that researchers have envisioned for quantum computers, and they appear to the best hope for obtaining quantum advantage. Nevertheless, challenges remain including the trainability, accuracy, and efficiency of VQAs. Here we overview the field of VQAs, discuss strategies to overcome their challenges, and highlight the exciting prospects for using them to obtain quantum advantage.},
+archivePrefix = {arXiv},
+arxivId = {2012.09265v2},
+author = {Cerezo, M. and Arrasmith, Andrew and Babbush, Ryan and Benjamin, Simon C. and Endo, Suguru and Fujii, Keisuke and McClean, Jarrod R. and Mitarai, Kosuke and Yuan, Xiao and Cincio, Lukasz and Coles, Patrick J.},
+doi = {10.1038/s42254-021-00348-9},
+eprint = {2012.09265v2},
+journal = {Nature Reviews Physics},
+mendeley-groups = {Algorithms},
+month = {dec},
+number = {9},
+pages = {625--644},
+publisher = {Springer Nature},
+title = {{Variational Quantum Algorithms}},
+url = {http://arxiv.org/abs/2012.09265 http://dx.doi.org/10.1038/s42254-021-00348-9},
+volume = {3},
+year = {2020}
+}
+
+
+@article{Huang2021,
+abstract = {Quantum technology has the potential to revolutionize how we acquire and process experimental data to learn about the physical world. An experimental setup that transduces data from a physical system to a stable quantum memory, and processes that data using a quantum computer, could have significant advantages over conventional experiments in which the physical system is measured and the outcomes are processed using a classical computer. We prove that, in various tasks, quantum machines can learn from exponentially fewer experiments than those required in conventional experiments. The exponential advantage holds in predicting properties of physical systems, performing quantum principal component analysis on noisy states, and learning approximate models of physical dynamics. In some tasks, the quantum processing needed to achieve the exponential advantage can be modest; for example, one can simultaneously learn about many noncommuting observables by processing only two copies of the system. Conducting experiments with up to 40 superconducting qubits and 1300 quantum gates, we demonstrate that a substantial quantum advantage can be realized using today's relatively noisy quantum processors. Our results highlight how quantum technology can enable powerful new strategies to learn about nature.},
+archivePrefix = {arXiv},
+arxivId = {2112.00778v1},
+author = {Huang, Hsin-Yuan and Broughton, Michael and Cotler, Jordan and Chen, Sitan and Li, Jerry and Mohseni, Masoud and Neven, Hartmut and Babbush, Ryan and Kueng, Richard and Preskill, John and McClean, Jarrod R.},
+doi = {10.1126/science.abn7293},
+eprint = {2112.00778v1},
+journal = {Science},
+month = {dec},
+number = {6598},
+pages = {1182--1186},
+publisher = {American Association for the Advancement of Science},
+title = {{Quantum advantage in learning from experiments}},
+url = {http://arxiv.org/abs/2112.00778 http://dx.doi.org/10.1126/science.abn7293},
+volume = {376},
+year = {2021}
+}
+
+
+@article{Babbush2023,
+abstract = {We present a quantum algorithm for simulating the classical dynamics of {\$}2{\^{}}n{\$}
+coupled oscillators (e.g., {\$}2{\^{}}n{\$} masses coupled by springs). Our approach
+leverages a mapping between the Schr$\backslash$"odinger equation and Newton's equation
+for harmonic potentials such that the amplitudes of the evolved quantum state
+encode the momenta and displacements of the classical oscillators. When
+individual masses and spring constants can be efficiently queried, and when the
+initial state can be efficiently prepared, the complexity of our quantum
+algorithm is polynomial in {\$}n{\$}, almost linear in the evolution time, and
+sublinear in the sparsity. As an example application, we apply our quantum
+algorithm to efficiently estimate the kinetic energy of an oscillator at any
+time. We show that any classical algorithm solving this same problem is
+inefficient and must make {\$}2{\^{}}{\{}\backslashOmega(n){\}}{\$} queries to the oracle and, when the
+oracles are instantiated by efficient quantum circuits, the problem is
+BQP-complete. Thus, our approach solves a potentially practical application
+with an exponential speedup over classical computers. Finally, we show that
+under similar conditions our approach can efficiently simulate more general
+classical harmonic systems with {\$}2{\^{}}n{\$} modes.},
+archivePrefix = {arXiv},
+arxivId = {2303.13012},
+author = {Babbush, Ryan and Berry, Dominic W. and Kothari, Robin and Somma, Rolando D. and Wiebe, Nathan},
+eprint = {2303.13012},
+file = {::},
+month = {mar},
+title = {{Exponential quantum speedup in simulating coupled classical oscillators}},
+url = {https://arxiv.org/abs/2303.13012v2},
+year = {2023}
+}
+
+
+@article{Liu2023,
+abstract = {Large machine learning models are revolutionary technologies of artificial
+intelligence whose bottlenecks include huge computational expenses, power, and
+time used both in the pre-training and fine-tuning process. In this work, we
+show that fault-tolerant quantum computing could possibly provide provably
+efficient resolutions for generic (stochastic) gradient descent algorithms,
+scaling as {\$}\backslashmathcal{\{}O{\}}(T{\^{}}2 \backslashtimes \backslashtext{\{}polylog{\}}(n)){\$}, where {\$}n{\$} is the size
+of the models and {\$}T{\$} is the number of iterations in the training, as long as
+the models are both sufficiently dissipative and sparse, with small learning
+rates. Based on earlier efficient quantum algorithms for dissipative
+differential equations, we find and prove that similar algorithms work for
+(stochastic) gradient descent, the primary algorithm for machine learning. In
+practice, we benchmark instances of large machine learning models from 7
+million to 103 million parameters. We find that, in the context of sparse
+training, a quantum enhancement is possible at the early stage of learning
+after model pruning, motivating a sparse parameter download and re-upload
+scheme. Our work shows solidly that fault-tolerant quantum algorithms could
+potentially contribute to most state-of-the-art, large-scale machine-learning
+problems.},
+archivePrefix = {arXiv},
+arxivId = {2303.03428},
+author = {Liu, Junyu and Liu, Minzhao and Liu, Jin-Peng and Ye, Ziyu and Alexeev, Yuri and Eisert, Jens and Jiang, Liang},
+eprint = {2303.03428},
+file = {:home/idnm/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Liu et al. - 2023 - Towards provably efficient quantum algorithms for large-scale machine-learning models.pdf:pdf},
+mendeley-groups = {Algorithms},
+month = {mar},
+title = {{Towards provably efficient quantum algorithms for large-scale machine-learning models}},
+url = {https://arxiv.org/abs/2303.03428v2},
+year = {2023}
+}
+
+
+@article{Tang2022,
+abstract = {Understanding whether quantum machine learning algorithms present a genuine computational advantage over classical approaches is challenging. Ewin Tang explains how dequantizing algorithms can uncover when there is no quantum speedup and perhaps help explore analogies between quantum and classical linear algebra. Will quantum computers someday give super-polynomial speedups for machine learning on classical data? Answering this question is challenging. Ewin Tang explains how dequantizing algorithms can uncover when there is no quantum speedup and perhaps help explore analogies between quantum and classical linear algebra.},
+author = {Tang, Ewin},
+doi = {10.1038/s42254-022-00511-w},
+issn = {2522-5820},
+journal = {Nature Reviews Physics 2022 4:11},
+keywords = {Computer science,Quantum information},
+mendeley-groups = {Algorithms},
+month = {sep},
+number = {11},
+pages = {692--693},
+publisher = {Nature Publishing Group},
+title = {{Dequantizing algorithms to understand quantum advantage in machine learning}},
+url = {https://www.nature.com/articles/s42254-022-00511-w},
+volume = {4},
+year = {2022}
+}
+
+
+
+@article{Aaronson2015,
+abstract = {New quantum algorithms promise an exponential speed-up for machine learning, clustering and finding patterns in big data. But to achieve a real speed-up, we need to delve into the details.},
+author = {Aaronson, Scott},
+doi = {10.1038/nphys3272},
+issn = {1745-2473},
+journal = {Nature Physics},
+keywords = {Quantum information},
+mendeley-groups = {Algorithms},
+month = {apr},
+number = {4},
+pages = {291--293},
+publisher = {Nature Publishing Group},
+title = {{Read the fine print}},
+url = {https://www.nature.com/articles/nphys3272 http://www.nature.com/articles/nphys3272},
+volume = {11},
+year = {2015}
+}
+
+
+@article{Biamonte2017,
+abstract = {Fuelled by increasing computer power and algorithmic advances, machine learning techniques have become powerful tools for finding patterns in data. Quantum systems produce atypical patterns that classical systems are thought not to produce efficiently, so it is reasonable to postulate that quantum computers may outperform classical computers on machine learning tasks. The field of quantum machine learning explores how to devise and implement quantum software that could enable machine learning that is faster than that of classical computers. Recent work has produced quantum algorithms that could act as the building blocks of machine learning programs, but the hardware and software challenges are still considerable.},
+archivePrefix = {arXiv},
+arxivId = {1611.09347},
+author = {Biamonte, Jacob and Wittek, Peter and Pancotti, Nicola and Rebentrost, Patrick and Wiebe, Nathan and Lloyd, Seth},
+doi = {10.1038/nature23474},
+eprint = {1611.09347},
+file = {:home/idnm/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Biamonte et al. - 2017 - Quantum machine learning.pdf:pdf},
+issn = {14764687},
+journal = {Nature},
+mendeley-groups = {Open systems},
+number = {7671},
+pages = {195--202},
+pmid = {28905917},
+publisher = {Nature Publishing Group},
+title = {{Quantum machine learning}},
+url = {http://dx.doi.org/10.1038/nature23474},
+volume = {549},
+year = {2017}
+}
+
+
+@article{Lee2022,
+abstract = {The idea to use quantum mechanical devices to simulate other quantum systems is commonly ascribed to Feynman. Since the original suggestion, concrete proposals have appeared for simulating molecular and materials chemistry through quantum computation, as a potential "killer application". Indications of potential exponential quantum advantage in artificial tasks have increased interest in this application, thus, it is critical to understand the basis for potential exponential quantum advantage in quantum chemistry. Here we gather the evidence for this case in the most common task in quantum chemistry, namely, ground-state energy estimation. We conclude that evidence for such an advantage across chemical space has yet to be found. While quantum computers may still prove useful for quantum chemistry, it may be prudent to assume exponential speedups are not generically available for this problem.},
+archivePrefix = {arXiv},
+arxivId = {2208.02199},
+author = {Lee, Seunghoon and Lee, Joonho and Zhai, Huanchen and Tong, Yu and Dalzell, Alexander M. and Kumar, Ashutosh and Helms, Phillip and Gray, Johnnie and Cui, Zhi-Hao and Liu, Wenyuan and Kastoryano, Michael and Babbush, Ryan and Preskill, John and Reichman, David R. and Campbell, Earl T. and Valeev, Edward F. and Lin, Lin and Chan, Garnet Kin-Lic},
+eprint = {2208.02199},
+file = {:home/idnm/Dropbox/hep/Quantum Computing/2208.02199.pdf:pdf},
+mendeley-groups = {Algorithms},
+month = {aug},
+title = {{Is there evidence for exponential quantum advantage in quantum chemistry?}},
+url = {http://arxiv.org/abs/2208.02199},
+year = {2022}
+}
+
+
 @article{Daley2022,
 abstract = {The development of quantum computing across several technologies and platforms has reached the point of having an advantage over classical computers for an artificial problem, a point known as ‘quantum advantage'. As a next step along the development of this technology, it is now important to discuss ‘practical quantum advantage', the point at which quantum devices will solve problems of practical interest that are not tractable for traditional supercomputers. Many of the most promising short-term applications of quantum computers fall under the umbrella of quantum simulation: modelling the quantum properties of microscopic particles that are directly relevant to modern materials science, high-energy physics and quantum chemistry. This would impact several important real-world applications, such as developing materials for batteries, industrial catalysis or nitrogen fixing. Much as aerodynamics can be studied either through simulations on a digital computer or in a wind tunnel, quantum simulation can be performed not only on future fault-tolerant digital quantum computers but also already today through special-purpose analogue quantum simulators. Here we overview the state of the art and future perspectives for quantum simulation, arguing that a first practical quantum advantage already exists in the case of specialized applications of analogue devices, and that fully digital devices open a full range of applications but require further development of fault-tolerant hardware. Hybrid digital–analogue devices that exist today already promise substantial flexibility in near-term applications. The current status and future perspectives for quantum simulation are overviewed, and the potential for practical quantum computational advantage is analysed by comparing classical numerical methods with analogue and digital quantum simulators.},
 author = {Daley, Andrew J. and Bloch, Immanuel and Kokail, Christian and Flannigan, Stuart and Pearson, Natalie and Troyer, Matthias and Zoller, Peter},
@@ -87,14 +287,46 @@ year = {2023}
     url = {https://www.technologyreview.com/2022/03/28/1048355/quantum-computing-has-a-hype-problem/}
 }
     
-https://www.technologyreview.com/2022/03/28/1048355/quantum-computing-has-a-hype-problem/
+@online{TPQA,
+    title = {High Performance Quantum Computing},
+    date = {2021},
+    organization = {Youtube},
+    author = {Matthias Troyer},
+    url = {https://www.youtube.com/watch?v=WY3htdKUGsA&t=1011s},
+}
+
 
 @online{HPQC,
     title = {High Performance Quantum Computing},
     date = {2014},
     organization = {Youtube},
     author = {Matthias Troyer},
-    url = {https://www.youtube.com/watch?v=Hkz_Sn5qYWg},
+    url = {https://www.youtube.com/watch?v=-fcQt5C2XGY&list=PLkSK0hIHz-LnGheNnZ1Al7eSYs0_lkb2d&index=7},
+}
+
+@online{Preskill,
+    author = {Sean Carroll},
+    title = {Mindscape 153 | John Preskill on Quantum Computers and What They’re Good For},
+    organization = {YouTube},
+    date = {2022},
+    url = {https://www.youtube.com/watch?v=UYt4QG8iZ6U}
+}
+
+
+@online{Galitski,
+    author = {Victor Galitski},
+    title = {Quantum Computing Hype is Bad for Science},
+    organization = {LinkedIn},
+    date = {2021},
+    url = {https://www.linkedin.com/pulse/quantum-computing-hype-bad-science-victor-galitski-1c/}
+}
+
+@online{BabbushTalk,
+    title = {Google's perspective on the viable applications of early fault-tolerant Quantum computers},
+    date = {2021},
+    organization = {Youtube},
+    author = {Ryan Babbush},
+    url = {https://www.youtube.com/watch?v=-fcQt5C2XGY},
 }
 
 @online{LockwoodNISQ,
@@ -136,7 +368,7 @@ year = {2022}
 abstract = {Gaussian Boson Sampling (GBS) is a near-term platform for photonic quantum computing. Recent efforts have led to the discovery of GBS algorithms with applications to graph-based problems, point processes, and molecular vibronic spectra in chemistry. The development of dedicated quantum software is a key enabler in permitting users to program devices and implement algorithms. In this work, we introduce a new applications layer for the Strawberry Fields photonic quantum computing library. The applications layer provides users with the necessary tools to design and implement algorithms using GBS with only a few lines of code. This paper serves a dual role as an introduction to the software, supported with example code, and also a review of the current state of the art in GBS algorithms.},
 archivePrefix = {arXiv},
 arxivId = {1912.07634v1},
-author = {Bromley, Thomas R. and Arrazola, Juan Miguel and Jahangiri, Soran and Izaac, Josh and Quesada, Nicol{\'{a}}s and Gran, Alain Delgado and Schuld, Maria and Swinarton, Jeremy and Zabaneh, Zeid and Killoran, Nathan},
+author = {Bromley, Thomas R. and fla, Juan Miguel and Jahangiri, Soran and Izaac, Josh and Quesada, Nicol{\'{a}}s and Gran, Alain Delgado and Schuld, Maria and Swinarton, Jeremy and Zabaneh, Zeid and Killoran, Nathan},
 doi = {10.1088/2058-9565/ab8504},
 eprint = {1912.07634v1},
 file = {:home/idnm/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Bromley et al. - 2019 - Applications of Near-Term Photonic Quantum Computers Software and Algorithms.pdf:pdf},
@@ -172,11 +404,11 @@ year = {2022}
 }
 
 @article{Zhong2020,
-abstract = {Quantum computers promise to perform certain tasks that are believed to be intractable to classical computers. Boson sampling is such a task and is considered a strong candidate to demonstrate the quantum computational advantage. We performed Gaussian boson sampling by sending 50 indistinguishable single-mode squeezed states into a 100-mode ultralow-loss interferometer with full connectivity and random matrix-the whole optical setup is phase-locked-and sampling the output using 100 high-efficiency single-photon detectors. The obtained samples were validated against plausible hypotheses exploiting thermal states, distinguishable photons, and uniform distribution. The photonic quantum computer, Jiuzhang, generates up to 76 output photon clicks, which yields an output statespace dimension of 1030 and a sampling rate that is faster than using the state-of-the-art simulation strategy and supercomputers by a factor of {\~{}}1014.},
+abstract = {Gaussian boson sampling exploits squeezed states to provide a highly efficient way to demonstrate quantum computational advantage. We perform experiments with 50 input single-mode squeezed states with high indistinguishability and squeezing parameters, which are fed into a 100-mode ultralow-loss interferometer with full connectivity and random transformation, and sampled using 100 high-efficiency single-photon detectors. The whole optical set-up is phase-locked to maintain a high coherence between the superposition of all photon number states. We observe up to 76 output photon-clicks, which yield an output state space dimension of {\$}10{\^{}}{\{}30{\}}{\$} and a sampling rate that is {\$}10{\^{}}{\{}14{\}}{\$} faster than using the state-of-the-art simulation strategy and supercomputers. The obtained samples are validated against various hypotheses including using thermal states, distinguishable photons, and uniform distribution.},
 archivePrefix = {arXiv},
 arxivId = {2012.01625},
-author = {Zhong, Han Sen and Wang, Hui and Deng, Yu Hao and Chen, Ming Cheng and Peng, Li Chao and Luo, Yi Han and Qin, Jian and Wu, Dian and Ding, Xing and Hu, Yi and Hu, Peng and Yang, Xiao Yan and Zhang, Wei Jun and Li, Hao and Li, Yuxuan and Jiang, Xiao and Gan, Lin and Yang, Guangwen and You, Lixing and Wang, Zhen and Li, Li and Liu, Nai Le and Lu, Chao Yang and Pan, Jian Wei},
-doi = {10.1126/SCIENCE.ABE8770/SUPPL_FILE/ABE8770_ZHONG_SM.PDF},
+author = {Zhong, Han-Sen and Wang, Hui and Deng, Yu-Hao and Chen, Ming-Cheng and Peng, Li-Chao and Luo, Yi-Han and Qin, Jian and Wu, Dian and Ding, Xing and Hu, Yi and Hu, Peng and Yang, Xiao-Yan and Zhang, Wei-Jun and Li, Hao and Li, Yuxuan and Jiang, Xiao and Gan, Lin and Yang, Guangwen and You, Lixing and Wang, Zhen and Li, Li and Liu, Nai-Le and Lu, Chao-Yang and Pan, Jian-Wei},
+doi = {10.1126/science.abe8770},
 eprint = {2012.01625},
 issn = {10959203},
 journal = {Science},
@@ -187,10 +419,11 @@ pages = {1460--1463},
 pmid = {33273064},
 publisher = {American Association for the Advancement of Science},
 title = {{Quantum computational advantage using photons}},
-url = {https://www.science.org/doi/10.1126/science.abe8770},
+url = {https://www.science.org/doi/10.1126/science.abe8770 http://arxiv.org/abs/2012.01625 http://dx.doi.org/10.1126/science.abe8770},
 volume = {370},
 year = {2020}
 }
+
 
 @article{Wu2021,
 abstract = {Scaling up to a large number of qubits with high-precision control is essential in the demonstrations of quantum computational advantage to exponentially outpace the classical hardware and algorithmic improvements. Here, we develop a two-dimensional programmable superconducting quantum processor, $\backslash$textit{\{}Zuchongzhi{\}}, which is composed of 66 functional qubits in a tunable coupling architecture. To characterize the performance of the whole system, we perform random quantum circuits sampling for benchmarking, up to a system size of 56 qubits and 20 cycles. The computational cost of the classical simulation of this task is estimated to be 2-3 orders of magnitude higher than the previous work on 53-qubit Sycamore processor [Nature $\backslash$textbf{\{}574{\}}, 505 (2019)]. We estimate that the sampling task finished by $\backslash$textit{\{}Zuchongzhi{\}} in about 1.2 hours will take the most powerful supercomputer at least 8 years. Our work establishes an unambiguous quantum computational advantage that is infeasible for classical computation in a reasonable amount of time. The high-precision and programmable quantum computing platform opens a new door to explore novel many-body phenomena and implement complex quantum algorithms.},
