@@ -1,3 +1,86 @@
+@online{pyqsp,
+    author={Isaac Chuang and et al},
+    year = {2022},
+    title = {pyqsp: Quantum Signal Processing},
+    url = {https://github.com/ichuang/pyqsp}
+}
+
+@online{ArazzolaQSVT,
+    author = {Juan Miguel Arrazola},
+    title = {Intro to QSVT},
+    year = {2023},
+    url = {https://pennylane.ai/qml/demos/tutorial_intro_qsvt.html}
+}
+
+@article{Gilyen2019,
+abstract = {An n-qubit quantum circuit performs a unitary operation on an exponentially large, 2n-dimensional, Hilbert space, which is a major source of quantum speed-ups. We develop a new “Quantum singular value transformation” algorithm that can directly harness the advantages of exponential dimensionality by applying polynomial transformations to the singular values of a block of a unitary operator. The transformations are realized by quantum circuits with a very simple structure – typically using only a constant number of ancilla qubits – leading to optimal algorithms with appealing constant factors. We show that our framework allows describing many quantum algorithms on a high level, and enables remarkably concise proofs for many prominent quantum algorithms, ranging from optimal Hamiltonian simulation to various quantum machine learning applications. We also devise a new singular vector transformation algorithm, describe how to exponentially improve the complexity of implementing fractional queries to unitaries with a gapped spectrum, and show how to efficiently implement principal component regression. Finally, we also prove a quantum lower bound on spectral transformations.},
+archivePrefix = {arXiv},
+arxivId = {1806.01838},
+author = {Gily{\'{e}}n, Andr{\'{a}}s and Su, Yuan and Low, Guang Hao and Wiebe, Nathan},
+doi = {10.1145/3313276.3316366},
+eprint = {1806.01838},
+file = {:home/idnm/Dropbox/hep/Quantum Computing/1806.01838.pdf:pdf},
+isbn = {9781450367059},
+issn = {07378017},
+journal = {Proceedings of the Annual ACM Symposium on Theory of Computing},
+keywords = {Block-encdoing,Quantum signal processing,Qubitization},
+pages = {193--204},
+title = {{Quantum singular value transformation and beyond: Exponential improvements for quantum matrix arithmetics}},
+year = {2019}
+}
+
+
+@article{Tang2023,
+abstract = {We present a simplified exposition of some pieces of [Gily$\backslash$'en, Su, Low, and
+Wiebe, STOC'19, arXiv:1806.01838], who introduced a quantum singular value
+transformation (QSVT) framework for applying polynomial functions to
+block-encoded matrices. The QSVT framework has garnered substantial recent
+interest from the quantum algorithms community, as it was demonstrated by
+[GSLW19] to encapsulate many existing algorithms naturally phrased as an
+application of a matrix function. First, we posit that the lifting of quantum
+singular processing (QSP) to QSVT is better viewed not through Jordan's lemma
+(as was suggested by [GSLW19]) but as an application of the cosine-sine
+decomposition, which can be thought of as a more explicit and stronger version
+of Jordan's lemma. Second, we demonstrate that the constructions of bounded
+polynomial approximations given in [GSLW19], which use a variety of ad hoc
+approaches drawing from Fourier analysis, Chebyshev series, and Taylor series,
+can be unified under the framework of truncation of Chebyshev series, and
+indeed, can in large part be matched via a bounded variant of a standard
+meta-theorem from [Trefethen, 2013]. We hope this work finds use to the
+community as a companion guide for understanding and applying the powerful
+framework of [GSLW19].},
+archivePrefix = {arXiv},
+arxivId = {2302.14324},
+author = {Tang, Ewin and Tian, Kevin},
+eprint = {2302.14324},
+file = {:home/idnm/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Tang, Tian - 2023 - A CS guide to the quantum singular value transformation.pdf:pdf},
+mendeley-groups = {Algorithms},
+month = {feb},
+title = {{A CS guide to the quantum singular value transformation}},
+url = {https://arxiv.org/abs/2302.14324v1},
+year = {2023}
+}
+
+
+@article{Martyn2021,
+abstract = {Quantum algorithms offer significant speed-ups over their classical counterparts for a variety of problems. The strongest arguments for this advantage are borne by algorithms for quantum search, quantum phase estimation, and Hamiltonian simulation, which appear as subroutines for large families of composite quantum algorithms. A number of these quantum algorithms have recently been tied together by a novel technique known as the quantum singular value transformation (QSVT), which enables one to perform a polynomial transformation of the singular values of a linear operator embedded in a unitary matrix. In the seminal GSLW'19 paper on the QSVT [Gily{\'{e}}n et al., ACM STOC 2019], many algorithms are encompassed, including amplitude amplification, methods for the quantum linear systems problem, and quantum simulation. Here, we provide a pedagogical tutorial through these developments, first illustrating how quantum signal processing may be generalized to the quantum eigenvalue transform, from which the QSVT naturally emerges. Paralleling GSLW'19, we then employ the QSVT to construct intuitive quantum algorithms for search, phase estimation, and Hamiltonian simulation, and also showcase algorithms for the eigenvalue threshold problem and matrix inversion. This overview illustrates how the QSVT is a single framework comprising the three major quantum algorithms, suggesting a grand unification of quantum algorithms.},
+archivePrefix = {arXiv},
+arxivId = {2105.02859},
+author = {Martyn, John M. and Rossi, Zane M. and Tan, Andrew K. and Chuang, Isaac L.},
+doi = {10.1103/PRXQuantum.2.040203},
+eprint = {2105.02859},
+file = {:home/idnm/Dropbox/hep/Quantum Computing/2105.02859v5.pdf:pdf},
+issn = {26913399},
+journal = {PRX Quantum},
+mendeley-groups = {Algorithms},
+number = {4},
+pages = {1--39},
+title = {{Grand Unification of Quantum Algorithms}},
+volume = {2},
+year = {2021}
+}
+
+
 @article{Biamonte2017,
 abstract = {Fuelled by increasing computer power and algorithmic advances, machine learning techniques have become powerful tools for finding patterns in data. Quantum systems produce atypical patterns that classical systems are thought not to produce efficiently, so it is reasonable to postulate that quantum computers may outperform classical computers on machine learning tasks. The field of quantum machine learning explores how to devise and implement quantum software that could enable machine learning that is faster than that of classical computers. Recent work has produced quantum algorithms that could act as the building blocks of machine learning programs, but the hardware and software challenges are still considerable.},
 archivePrefix = {arXiv},
