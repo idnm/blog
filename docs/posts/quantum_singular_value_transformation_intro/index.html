@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-06-06">
+<meta name="dcterms.date" content="2023-06-07">
 <meta name="description" content="Or grand unification of quantum algorithms, if you feel a bit grandiose.">
 
 <title>Notes on Quantum Computing - Introduction to Quantum Singular Value Transformation</title>
@@ -216,7 +216,7 @@ window.MathJax = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 6, 2023</p>
+        <p class="date">June 7, 2023</p>
       </div>
     </div>
     
@@ -349,21 +349,23 @@ window.MathJax = {
 <section id="a-high-level-overview" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="a-high-level-overview"><span class="header-section-number">1.1</span> A high-level overview</h2>
 <p>Constructing a quantum algorithm using QSVT consists of the following main steps. Don’t worry if this does not immediately make sense, the goal of this post is to elaborate and give examples.</p>
-<div class="callout callout-style-simple callout-note">
-<div class="callout-body d-flex">
+<div class="callout callout-style-default callout-note callout-titled" title="QSVT in a nutshell">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-body-container">
-<div id="thm-qsvt_nutshell" class="theorem">
-<p><span class="theorem-title"><strong>Box 1 (QSVT in a nutshell) </strong></span>&nbsp;</p>
+<div class="callout-title-container flex-fill">
+QSVT in a nutshell
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:17px">
 <ol type="1">
 <li>Express your problem of interest as applying a function <span class="math inline">\(f(x)\)</span> to (the singular values of) a <span class="math inline">\(A\to f(A)\)</span>.</li>
 <li>Find a unitary circuit <span class="math inline">\(U\)</span> that block encodes your matrix, i.e.&nbsp;in a suitable basis <span class="math display">\[U=\begin{pmatrix}A&amp;*\\ *&amp;*\end{pmatrix} \ .\]</span></li>
 <li>Find a good enough polynomial approximation to the target function <span class="math inline">\(p(x)\approx f(x)\)</span>.</li>
 <li>Using quantum signal processing to construct a circuit <span class="math inline">\(U_\phi\)</span>, that block encodes <span class="math inline">\(p(A)\)</span>, i.e. <span class="math display">\[U_\phi=\begin{pmatrix}p(A)&amp;*\\ *&amp;*\end{pmatrix} \ .\]</span></li>
 </ol>
-</div>
 </div>
 </div>
 </div>
@@ -413,7 +415,7 @@ U_\phi =S(\phi_0)\prod_{i=1}^d R(a) S(\phi_i) = S(\phi_0)R(a) S(\phi_1) R(a)\dot
 </div>
 <p>Now, if you actually compute <span class="math inline">\(U_\phi\)</span>, you’ll find it is of the following form (up to a global phase) <span class="math display">\[U_\phi= \begin{pmatrix} P(a) &amp; i Q(a)\sqrt{1-a^2} \\ i Q(a)^*\sqrt{1-a^2} &amp; P(a)^*\end{pmatrix} \ . \]</span> The key fact here is that both <span class="math inline">\(P(a)\)</span> and <span class="math inline">\(Q(a)\)</span> are <em>polynomials</em>.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="W and R signal conventions">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -422,7 +424,7 @@ W and R signal conventions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>One can choose different signal- and signal-processing operators. Our choice is the <span class="math inline">\(R\)</span>-convention. It will be most convenient for generalizing to QSVT. Another standard one is <span class="math inline">\(W\)</span>-convention, where the signal operator is <span class="math display">\[W(a)=\begin{pmatrix}a &amp; i\sqrt{1-a^2}\\i\sqrt{1-a^2} &amp; a\end{pmatrix} \ .\]</span> The two signal operators are related by <span class="math inline">\(R(a)=-i S(\pi/4) W(a) S(\pi/4)\)</span>. For <span class="math inline">\(W\)</span>-signal operator relation <span class="math inline">\(\eqref{QSP}\)</span> is exact, while for <span class="math inline">\(R(a)\)</span> there is an additional global phase <span class="math inline">\(i^d\)</span>. If we have an angle sequence <span class="math inline">\(\phi_i^W\)</span> implementing the desired polynomial transformation with <span class="math inline">\(W\)</span>-signal, the angles for <span class="math inline">\(R\)</span>-signal are <span class="math display">\[\phi_0^R=\phi_0^W+(2d-1)\frac{\pi}{4}, \quad \phi_d^R=\phi_d^W-\frac{\pi}{4}, \quad \phi_i^R=\phi_i^W-\frac{\pi}{2} (0 &lt; i&lt; d)\,\, \ .\]</span></p>
 </div>
@@ -578,7 +580,7 @@ p(A)=\begin{cases} \sum_i p(\sigma_i)|v_i\rangle \langle w_i|,\qquad \text{$p$ i
 <p>Often, the operator <span class="math inline">\(A\)</span> to be block encoded naturally acts on some <span class="math inline">\(n\)</span>-qubit system, perhaps <span class="math inline">\(A\)</span> is a Hamiltonian. In that case, assuming <span class="math inline">\(||A||\le 1\)</span>, we only need one additional qubit to block-encode <span class="math inline">\(A\)</span>. The result may look something like</p>
 <p><span class="math display">\[U=\begin{pmatrix} A &amp; \sqrt{1-AA^\dagger} \\ \sqrt{1-A^\dagger A} &amp; -A^\dagger \end{pmatrix}\ .\]</span></p>
 <div class="callout callout-style-default callout-note callout-titled" title="Exercise">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -587,7 +589,7 @@ Exercise
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Show that <span class="math inline">\(U\)</span> is unitary. You will need to show that <span class="math inline">\(A\sqrt{1-A^\dagger A}=\sqrt{1-AA^\dagger}A\)</span> which can be done via SVD.</p>
 </div>
@@ -611,7 +613,7 @@ Exercise
 <p><span class="math display">\[\text{PREPARE}^\dagger\cdot\text{SELECT}\cdot\text{PREPARE} = \begin{pmatrix}\alpha_1 U_1+\dots \alpha_NU_N&amp; *\\ *&amp;* \end{pmatrix}\]</span></p>
 <p>i.e.&nbsp;it block encodes the desired linear combination.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Exercise">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -620,7 +622,7 @@ Exercise
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Prove this statement. Show also that <a href="#fig-uphi">Fig.&nbsp;1</a> is a particular case, and that it indeed block encodes <span class="math inline">\(\frac12\left(U_{\phi}+U_{-\phi}\right)\)</span> as claimed.</p>
 </div>
