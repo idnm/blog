@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.319">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-06-06">
+<meta name="description" content="Or grand unification of quantum algorithms, if you feel a bit grandiose.">
+
+<title>Notes on Quantum Computing - Introduction to Quantum Singular Value Transformation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../kika.jpeg" rel="icon" type="image/jpeg">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-description','listing-categories','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1154MLY31V"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1154MLY31V', { 'anonymize_ip': true});
+</script>
+<script>
+window.MathJax = {
+  tex: {
+    tags: 'ams'
+  }
+};
+</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Notes on Quantum Computing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Introduction to Quantum Singular Value Transformation</h1>
+                  <div>
+        <div class="description">
+          Or grand unification of quantum algorithms, if you feel a bit grandiose.
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 6, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a>
+  <ul class="collapse">
+  <li><a href="#a-high-level-overview" id="toc-a-high-level-overview" class="nav-link" data-scroll-target="#a-high-level-overview"><span class="header-section-number">1.1</span> A high-level overview</a></li>
+  <li><a href="#what-i-will-and-will-not-discuss" id="toc-what-i-will-and-will-not-discuss" class="nav-link" data-scroll-target="#what-i-will-and-will-not-discuss"><span class="header-section-number">1.2</span> What I will and will not discuss</a></li>
+  </ul></li>
+  <li><a href="#quantum-signal-processing" id="toc-quantum-signal-processing" class="nav-link" data-scroll-target="#quantum-signal-processing"><span class="header-section-number">2</span> Quantum signal processing</a>
+  <ul class="collapse">
+  <li><a href="#ingredients" id="toc-ingredients" class="nav-link" data-scroll-target="#ingredients"><span class="header-section-number">2.1</span> Ingredients</a></li>
+  <li><a href="#circuit" id="toc-circuit" class="nav-link" data-scroll-target="#circuit"><span class="header-section-number">2.2</span> Circuit</a></li>
+  <li><a href="#polynomials-from-qsp" id="toc-polynomials-from-qsp" class="nav-link" data-scroll-target="#polynomials-from-qsp"><span class="header-section-number">2.3</span> Polynomials from QSP</a></li>
+  <li><a href="#generalizing-qsp-polynomials" id="toc-generalizing-qsp-polynomials" class="nav-link" data-scroll-target="#generalizing-qsp-polynomials"><span class="header-section-number">2.4</span> Generalizing QSP polynomials</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">2.5</span> Implementation</a></li>
+  </ul></li>
+  <li><a href="#singular-value-decomposition" id="toc-singular-value-decomposition" class="nav-link" data-scroll-target="#singular-value-decomposition"><span class="header-section-number">3</span> Singular value decomposition</a>
+  <ul class="collapse">
+  <li><a href="#what-is-it" id="toc-what-is-it" class="nav-link" data-scroll-target="#what-is-it"><span class="header-section-number">3.1</span> What is it?</a></li>
+  <li><a href="#relation-to-eigenvalues" id="toc-relation-to-eigenvalues" class="nav-link" data-scroll-target="#relation-to-eigenvalues"><span class="header-section-number">3.2</span> Relation to eigenvalues</a></li>
+  <li><a href="#sec-operator_norm" id="toc-sec-operator_norm" class="nav-link" data-scroll-target="#sec-operator_norm"><span class="header-section-number">3.3</span> Relation to operator norm</a></li>
+  <li><a href="#sec-pseudo_inverse" id="toc-sec-pseudo_inverse" class="nav-link" data-scroll-target="#sec-pseudo_inverse"><span class="header-section-number">3.4</span> Moore-Penrose pseudo-inverse</a></li>
+  <li><a href="#how-to-define-polynomial-of-an-arbitrary-matrix" id="toc-how-to-define-polynomial-of-an-arbitrary-matrix" class="nav-link" data-scroll-target="#how-to-define-polynomial-of-an-arbitrary-matrix"><span class="header-section-number">3.5</span> How to define polynomial of an arbitrary matrix</a></li>
+  </ul></li>
+  <li><a href="#sec-block" id="toc-sec-block" class="nav-link" data-scroll-target="#sec-block"><span class="header-section-number">4</span> Block encodings</a>
+  <ul class="collapse">
+  <li><a href="#block-encoding-in-the-computational-basis" id="toc-block-encoding-in-the-computational-basis" class="nav-link" data-scroll-target="#block-encoding-in-the-computational-basis"><span class="header-section-number">4.1</span> Block encoding in the computational basis</a></li>
+  <li><a href="#can-any-matrix-be-block-encoded" id="toc-can-any-matrix-be-block-encoded" class="nav-link" data-scroll-target="#can-any-matrix-be-block-encoded"><span class="header-section-number">4.2</span> Can any matrix be block encoded?</a></li>
+  <li><a href="#single-qubit-block-encoding" id="toc-single-qubit-block-encoding" class="nav-link" data-scroll-target="#single-qubit-block-encoding"><span class="header-section-number">4.3</span> Single-qubit block encoding</a></li>
+  <li><a href="#controlled-unitary-is-a-block-encoding" id="toc-controlled-unitary-is-a-block-encoding" class="nav-link" data-scroll-target="#controlled-unitary-is-a-block-encoding"><span class="header-section-number">4.4</span> Controlled unitary is a block encoding</a></li>
+  <li><a href="#sec-LCU" id="toc-sec-LCU" class="nav-link" data-scroll-target="#sec-LCU"><span class="header-section-number">4.5</span> Linear combination of unitaries</a></li>
+  <li><a href="#applying-block-encoded-operator-to-a-state" id="toc-applying-block-encoded-operator-to-a-state" class="nav-link" data-scroll-target="#applying-block-encoded-operator-to-a-state"><span class="header-section-number">4.6</span> Applying block encoded operator to a state</a></li>
+  <li><a href="#block-encoding-in-general-bases-and-projection-operators" id="toc-block-encoding-in-general-bases-and-projection-operators" class="nav-link" data-scroll-target="#block-encoding-in-general-bases-and-projection-operators"><span class="header-section-number">4.7</span> Block encoding in general bases and projection operators</a></li>
+  <li><a href="#sec-projector_rotations" id="toc-sec-projector_rotations" class="nav-link" data-scroll-target="#sec-projector_rotations"><span class="header-section-number">4.8</span> Projector rotations from controlled projectors</a></li>
+  </ul></li>
+  <li><a href="#approximating-functions-with-bounded-polynomials" id="toc-approximating-functions-with-bounded-polynomials" class="nav-link" data-scroll-target="#approximating-functions-with-bounded-polynomials"><span class="header-section-number">5</span> Approximating functions with bounded polynomials</a>
+  <ul class="collapse">
+  <li><a href="#recap-of-the-problem" id="toc-recap-of-the-problem" class="nav-link" data-scroll-target="#recap-of-the-problem"><span class="header-section-number">5.1</span> Recap of the problem</a></li>
+  <li><a href="#chebyshev-polynomials" id="toc-chebyshev-polynomials" class="nav-link" data-scroll-target="#chebyshev-polynomials"><span class="header-section-number">5.2</span> Chebyshev polynomials</a></li>
+  <li><a href="#sec-polynomial_how_to" id="toc-sec-polynomial_how_to" class="nav-link" data-scroll-target="#sec-polynomial_how_to"><span class="header-section-number">5.3</span> A recipie for building bounded Chebyshev approximations</a></li>
+  <li><a href="#sec-theta_approx" id="toc-sec-theta_approx" class="nav-link" data-scroll-target="#sec-theta_approx"><span class="header-section-number">5.4</span> Illustration: approximating the step function</a></li>
+  </ul></li>
+  <li><a href="#qsvt" id="toc-qsvt" class="nav-link" data-scroll-target="#qsvt"><span class="header-section-number">6</span> QSVT</a>
+  <ul class="collapse">
+  <li><a href="#recap" id="toc-recap" class="nav-link" data-scroll-target="#recap"><span class="header-section-number">6.1</span> Recap</a></li>
+  <li><a href="#ow-qsvt-works" id="toc-ow-qsvt-works" class="nav-link" data-scroll-target="#ow-qsvt-works"><span class="header-section-number">6.2</span> ow QSVT works</a></li>
+  <li><a href="#qsvt-circuit" id="toc-qsvt-circuit" class="nav-link" data-scroll-target="#qsvt-circuit"><span class="header-section-number">6.3</span> QSVT circuit</a></li>
+  <li><a href="#why-qsvt-works" id="toc-why-qsvt-works" class="nav-link" data-scroll-target="#why-qsvt-works"><span class="header-section-number">6.4</span> Why QSVT works</a></li>
+  <li><a href="#qubitization" id="toc-qubitization" class="nav-link" data-scroll-target="#qubitization"><span class="header-section-number">6.5</span> Qubitization</a></li>
+  </ul></li>
+  <li><a href="#grovers-search" id="toc-grovers-search" class="nav-link" data-scroll-target="#grovers-search"><span class="header-section-number">7</span> Grover’s search</a>
+  <ul class="collapse">
+  <li><a href="#the-problem" id="toc-the-problem" class="nav-link" data-scroll-target="#the-problem"><span class="header-section-number">7.1</span> The problem</a></li>
+  <li><a href="#projectors" id="toc-projectors" class="nav-link" data-scroll-target="#projectors"><span class="header-section-number">7.2</span> Projectors</a></li>
+  <li><a href="#polynomial-approximation" id="toc-polynomial-approximation" class="nav-link" data-scroll-target="#polynomial-approximation"><span class="header-section-number">7.3</span> Polynomial approximation</a></li>
+  <li><a href="#implementation-1" id="toc-implementation-1" class="nav-link" data-scroll-target="#implementation-1"><span class="header-section-number">7.4</span> Implementation</a></li>
+  </ul></li>
+  <li><a href="#hamiltonian-simulation" id="toc-hamiltonian-simulation" class="nav-link" data-scroll-target="#hamiltonian-simulation"><span class="header-section-number">8</span> Hamiltonian simulation</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-1" id="toc-the-problem-1" class="nav-link" data-scroll-target="#the-problem-1"><span class="header-section-number">8.1</span> The problem</a></li>
+  <li><a href="#watch-out-for-your-hamiltonian" id="toc-watch-out-for-your-hamiltonian" class="nav-link" data-scroll-target="#watch-out-for-your-hamiltonian"><span class="header-section-number">8.2</span> Watch out for your Hamiltonian</a></li>
+  <li><a href="#solving-the-parity-problem" id="toc-solving-the-parity-problem" class="nav-link" data-scroll-target="#solving-the-parity-problem"><span class="header-section-number">8.3</span> Solving the parity problem</a></li>
+  <li><a href="#approximating-polynomial" id="toc-approximating-polynomial" class="nav-link" data-scroll-target="#approximating-polynomial"><span class="header-section-number">8.4</span> Approximating polynomial</a></li>
+  <li><a href="#implementation-2" id="toc-implementation-2" class="nav-link" data-scroll-target="#implementation-2"><span class="header-section-number">8.5</span> Implementation</a></li>
+  </ul></li>
+  <li><a href="#solving-linear-systems" id="toc-solving-linear-systems" class="nav-link" data-scroll-target="#solving-linear-systems"><span class="header-section-number">9</span> Solving linear systems</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-2" id="toc-the-problem-2" class="nav-link" data-scroll-target="#the-problem-2"><span class="header-section-number">9.1</span> The problem</a></li>
+  <li><a href="#watch-out-for-your-linear-system" id="toc-watch-out-for-your-linear-system" class="nav-link" data-scroll-target="#watch-out-for-your-linear-system"><span class="header-section-number">9.2</span> Watch out for your linear system</a></li>
+  <li><a href="#approximating-polynomial-1" id="toc-approximating-polynomial-1" class="nav-link" data-scroll-target="#approximating-polynomial-1"><span class="header-section-number">9.3</span> Approximating polynomial</a></li>
+  <li><a href="#implementation-3" id="toc-implementation-3" class="nav-link" data-scroll-target="#implementation-3"><span class="header-section-number">9.4</span> Implementation</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">10</span> Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell" data-tags="[]" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.linalg</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyqsp</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyqsp.angle_sequence</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyqsp.response</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyqsp.angle_sequence <span class="im">import</span> QuantumSignalProcessingPhases</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> contextlib</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> quiet(func):</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> quiet_func(<span class="op">*</span>args, <span class="op">**</span>kwargs):    </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        f <span class="op">=</span> io.StringIO()</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> contextlib.redirect_stdout(f):</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>            res <span class="op">=</span> func(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> res</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> quiet_func</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">6</span>, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p><span class="citation" data-cites="ArazzolaQSVT">&nbsp;[<a href="#ref-ArazzolaQSVT" role="doc-biblioref">1</a>]</span> <span class="citation" data-cites="Gilyen2019">&nbsp;[<a href="#ref-Gilyen2019" role="doc-biblioref">2</a>]</span> <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span> <span class="citation" data-cites="Martyn2021">&nbsp;[<a href="#ref-Martyn2021" role="doc-biblioref">4</a>]</span></p>
+<p><strong><em>Quantum singular value transformation (QSVT)</em></strong> is a new framework developed in recent years that is now extensively used to understand and improve existing as well as construct new quantum algorithms. If you are willing to be a bit dramatic, QSVT has been claimed to provide a grand unification of many different quantum algorithms. So, how does it work?</p>
+<section id="a-high-level-overview" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="a-high-level-overview"><span class="header-section-number">1.1</span> A high-level overview</h2>
+<p>Constructing a quantum algorithm using QSVT consists of the following main steps. Don’t worry if this does not immediately make sense, the goal of this post is to elaborate and give examples.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<div id="thm-qsvt_nutshell" class="theorem">
+<p><span class="theorem-title"><strong>Box 1 (QSVT in a nutshell) </strong></span>&nbsp;</p>
+<ol type="1">
+<li>Express your problem of interest as applying a function <span class="math inline">\(f(x)\)</span> to (the singular values of) a <span class="math inline">\(A\to f(A)\)</span>.</li>
+<li>Find a unitary circuit <span class="math inline">\(U\)</span> that block encodes your matrix, i.e.&nbsp;in a suitable basis <span class="math display">\[U=\begin{pmatrix}A&amp;*\\ *&amp;*\end{pmatrix} \ .\]</span></li>
+<li>Find a good enough polynomial approximation to the target function <span class="math inline">\(p(x)\approx f(x)\)</span>.</li>
+<li>Using quantum signal processing to construct a circuit <span class="math inline">\(U_\phi\)</span>, that block encodes <span class="math inline">\(p(A)\)</span>, i.e. <span class="math display">\[U_\phi=\begin{pmatrix}p(A)&amp;*\\ *&amp;*\end{pmatrix} \ .\]</span></li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<p>Let’s begin unpacking this by clarifying the first step, i.e.&nbsp;how to frame your quantum problem as a singular value transformation. Here are three examples.</p>
+<ol type="1">
+<li><strong>Grover’s search.</strong> There is some marked state <span class="math inline">\(|m\rangle\)</span> of <span class="math inline">\(n\)</span> qubits that we need to find. In this case, we can take <span class="math inline">\(A\)</span> to be <span class="math inline">\(1\times 1\)</span> matrix containing a single matrix element <span class="math inline">\(a=\langle m|H^{\otimes n}|0\rangle\)</span>. If we can apply the sign-function to it <span class="math inline">\(x\to \operatorname{sign}(x)\)</span>, we will map an arbitrary amplitude <span class="math inline">\(a&gt;0\)</span> to 1, and hence build the circuit that is guaranteed to take the initial state <span class="math inline">\(|0\rangle\)</span> to the marked state <span class="math inline">\(|m\rangle\)</span>.</li>
+<li><strong>Quantum simulation.</strong> Here given a Hamiltonian <span class="math inline">\(H\)</span> we seek to construct a unitary <span class="math inline">\(e^{-iHt}\)</span>. Quite literally, this is the problem of applying <span class="math inline">\(f(x)=e^{-ixt}\)</span> to the eigenvalues of <span class="math inline">\(H\)</span>. Up to technicalities, eigenvalues can be transformed in the same way as singular values.</li>
+<li><strong>Solving linear equations.</strong> Given a matrix <span class="math inline">\(A\)</span> and a vector <span class="math inline">\(b\)</span> solve <span class="math inline">\(Ax=b\)</span> for <span class="math inline">\(x\)</span>, i.e.&nbsp;compute <span class="math inline">\(A^+b\)</span> where <span class="math inline">\(A^+\)</span> is the Moore-Penrose pseudo-inverse of <span class="math inline">\(A\)</span>. But pseudo-inverse <span class="math inline">\(A^+\)</span> is just equal to the usual hermitian conjugate <span class="math inline">\(A^\dagger\)</span> with singular values inverted, so here <span class="math inline">\(f(x)\propto \frac1x\)</span>.</li>
+</ol>
+<p>Many other applications of QSVT exist, but in this blog post I will focus on these three. Hopefully step (1) is starting to make sense now. How do we perform step (2) then, how to find the block encoding? To my understanding, this is typically the most challenging part, and has to be addressed case-by-case. I will give some intuition and examples of block encodings below in <a href="#sec-block">Sec.&nbsp;4</a>. Next, QSVT allows performing only polynomial transformations, but most problems of practical interest require applying non-polynomial functions. This is why we need step (3), which is finding the right polynomial approximation. Importantly, the degree of the approximating polynomial determines the complexity of the final quantum circuit, so this is an essential step as well. Finally, after you decided on the best approximating polynomial, you can implement it using techniques from the quantum signal processing, which is step (4). This should be straightforward in theory, while in practice there still may be issues with speed and numerical stability for large instances.</p>
+</section>
+<section id="what-i-will-and-will-not-discuss" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="what-i-will-and-will-not-discuss"><span class="header-section-number">1.2</span> What I will and will not discuss</h2>
+<p>Will - QSP, Block encodings (LCU), approximating polynomials - Proof of QSVT - Three quantum algorithms - Code implementation - pyqsp usage examples Will not - Exact circuits for each case - How to block encode in general - How to get approximating polynomials in practice - Other applications of QSVT</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/A_qsvt.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="quantum-signal-processing" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Quantum signal processing</h1>
+<p>The origins and applications of the <strong><em>quantum signal processing (QSP)</em></strong> are very interesting in their own right, but I won’t review them here. Instead, I will view QSP simply as a precursor to QSVT, or QSVT for two-level systems, and hence a great starting point.</p>
+<section id="ingredients" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="ingredients"><span class="header-section-number">2.1</span> Ingredients</h2>
+<p>So, suppose you have a two-level system and can perform a simple diagonal transformation on it <span class="math display">\[\begin{align}
+S(\phi)=\begin{pmatrix}e^{i\phi}&amp;0 \\ 0&amp; e^{-i\phi}\end{pmatrix} \ . \label{S}
+\end{align}\]</span> Here <span class="math inline">\(\phi\)</span> is an angle you can vary. You can also perform a fixed non-diagonal operation <span class="math display">\[\begin{align}
+R(a)=\begin{pmatrix}a&amp;\sqrt{1-a^2}\\\sqrt{1-a^2} &amp; -a\end{pmatrix} \ . \label{R}
+\end{align}\]</span> Here, <span class="math inline">\(a\in \mathbb{R}\)</span> is fixed. Note that <span class="math inline">\(R(a=1)\)</span> is a reflection, hence the variable name.</p>
+</section>
+<section id="circuit" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="circuit"><span class="header-section-number">2.2</span> Circuit</h2>
+<p>The most general quantum circuit you can build from these two ingredients is the following alternating sequence</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><span class="math display">\[\begin{align}
+U_\phi =S(\phi_0)\prod_{i=1}^d R(a) S(\phi_i) = S(\phi_0)R(a) S(\phi_1) R(a)\dots S(\phi_{d-1}) R(a) S(\phi_d) \label{QSP} \ .
+\end{align}\]</span></p>
+</div>
+</div>
+</div>
+<p>Now, if you actually compute <span class="math inline">\(U_\phi\)</span>, you’ll find it is of the following form (up to a global phase) <span class="math display">\[U_\phi= \begin{pmatrix} P(a) &amp; i Q(a)\sqrt{1-a^2} \\ i Q(a)^*\sqrt{1-a^2} &amp; P(a)^*\end{pmatrix} \ . \]</span> The key fact here is that both <span class="math inline">\(P(a)\)</span> and <span class="math inline">\(Q(a)\)</span> are <em>polynomials</em>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="W and R signal conventions">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+W and R signal conventions
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>One can choose different signal- and signal-processing operators. Our choice is the <span class="math inline">\(R\)</span>-convention. It will be most convenient for generalizing to QSVT. Another standard one is <span class="math inline">\(W\)</span>-convention, where the signal operator is <span class="math display">\[W(a)=\begin{pmatrix}a &amp; i\sqrt{1-a^2}\\i\sqrt{1-a^2} &amp; a\end{pmatrix} \ .\]</span> The two signal operators are related by <span class="math inline">\(R(a)=-i S(\pi/4) W(a) S(\pi/4)\)</span>. For <span class="math inline">\(W\)</span>-signal operator relation <span class="math inline">\(\eqref{QSP}\)</span> is exact, while for <span class="math inline">\(R(a)\)</span> there is an additional global phase <span class="math inline">\(i^d\)</span>. If we have an angle sequence <span class="math inline">\(\phi_i^W\)</span> implementing the desired polynomial transformation with <span class="math inline">\(W\)</span>-signal, the angles for <span class="math inline">\(R\)</span>-signal are <span class="math display">\[\phi_0^R=\phi_0^W+(2d-1)\frac{\pi}{4}, \quad \phi_d^R=\phi_d^W-\frac{\pi}{4}, \quad \phi_i^R=\phi_i^W-\frac{\pi}{2} (0 &lt; i&lt; d)\,\, \ .\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="polynomials-from-qsp" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="polynomials-from-qsp"><span class="header-section-number">2.3</span> Polynomials from QSP</h2>
+<p>Why are <span class="math inline">\(P(a)\)</span> and <span class="math inline">\(Q(a)\)</span> polynomials? Well, you can check this directly/prove by induction. For instance, <span class="math display">\[\begin{pmatrix} P(a) &amp; i Q(a)\sqrt{1-a^2} \\ i Q(a)^*\sqrt{1-a^2} &amp; P(a)^*\end{pmatrix} \begin{pmatrix} a &amp; i \sqrt{1-a^2} \\ i\sqrt{1-a^2} &amp; a\end{pmatrix}=\begin{pmatrix} P'(a) &amp; i Q'(a)\sqrt{1-a^2} \\ i Q'(a)^*\sqrt{1-a^2} &amp; P'(a)^*\end{pmatrix}\]</span> with (primes are not derivatives!) <span class="math display">\[P'(a)=aP(a)-Q(a)(1-a^2),\qquad Q'(a)=P(a)+aQ(a) \ .\]</span></p>
+<p>The polynomials <span class="math inline">\(P,Q\)</span> obtained in this way are not arbitrary. They always satisfy the following three properties.</p>
+<ol type="1">
+<li><span class="math inline">\(\operatorname{deg}(P)\le d\)</span>, <span class="math inline">\(\operatorname{deg}(Q)\le d-1\)</span>. In words, the degree of <span class="math inline">\(P\)</span> is no more than the number of times <span class="math inline">\(R(a)\)</span> is applied, and degree of <span class="math inline">\(Q\)</span> is one less.</li>
+<li><span class="math inline">\(P(-a)=(-1)^{d+1} P(a), Q(-a)=(-1)^{d} Q(a)\)</span>. In words, both <span class="math inline">\(P\)</span> and <span class="math inline">\(Q\)</span> have definite and opposite parity. For <span class="math inline">\(d\)</span> even <span class="math inline">\(P\)</span> is odd and <span class="math inline">\(Q\)</span> is even, for <span class="math inline">\(d\)</span> odd <span class="math inline">\(P\)</span> is even and <span class="math inline">\(Q\)</span> is odd.</li>
+<li><span class="math inline">\(|P(a)|+(1-a^2)|Q(a)|^2=1\)</span>. This follows from <span class="math inline">\(U_\phi\)</span> being a unitary. In particular, this implies that <span class="math inline">\(P(a)\)</span> is bounded <span class="math inline">\(|P(a)|\le 1\)</span> for <span class="math inline">\(-1\le a\le 1\)</span>.</li>
+</ol>
+<p>An important fact of QSP is that the reverse statement is also true - as long as a degree <span class="math inline">\(d\)</span> polynomial <span class="math inline">\(P\)</span> satisfies these conditions, there are <span class="math inline">\(d+1\)</span> angles <span class="math inline">\(\phi_i\)</span> that produce <span class="math inline">\(P\)</span> via the QSP <span class="math inline">\(\eqref{QSP}\)</span>. While the proof is not trivial, the statement looks reasonable. Indeed, a complex polynomial <span class="math inline">\(P\)</span> of degree <span class="math inline">\(d\)</span> and definite parity has about <span class="math inline">\(d\)</span> independent real coefficients, and this is exactly the number of angles we can tweak in the QSP. Since dimensions of the parameter spaces agree, it is plausible that they can map both ways.</p>
+</section>
+<section id="generalizing-qsp-polynomials" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="generalizing-qsp-polynomials"><span class="header-section-number">2.4</span> Generalizing QSP polynomials</h2>
+<p>While many polynomials <span class="math inline">\(P\)</span> can be obtained in this way, there are important limitations. In particular, by property (3) <span class="math inline">\(|P(1)|=1\)</span>, which is often undesirable (say, you need to approximate <span class="math inline">\(f(x)\)</span> such that <span class="math inline">\(f(1)\neq1\)</span>). The trick is to look at the real part <span class="math inline">\(\operatorname{Re} P(a)\)</span>. While still bounded, it does not have to satisfy <span class="math inline">\(\operatorname{Re} P(1)=1\)</span> and is general enough for many applications. Then the problem is how to access <span class="math inline">\(\operatorname{Re}P\)</span>. One way is to measure the QSP operator in <span class="math inline">\(|\pm\rangle\)</span> basis. Indeed, you can check that</p>
+<p><span class="math display">\[
+\langle +|U_\phi|+\rangle=\operatorname{Re}P(a)+i\operatorname{Re}Q(a)\sqrt{1-a^2} \ .
+\]</span></p>
+<p>A QSP sequence can be found so that <span class="math inline">\(\operatorname{Re}P(a)\)</span> gives the desired polynomial, while <span class="math inline">\(\operatorname{Re}Q(a)\)</span> is approximately zero.</p>
+<p>Another way to single out the real part of <span class="math inline">\(P(a)\)</span> is by introducing an auxiliary qubit and applying the following circuit</p>
+<div id="fig-uphi" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figures/uphiuminusphi.svg" class="img-fluid figure-img" width="400"></p>
+<p></p><figcaption class="figure-caption">Fig.&nbsp;1: Block encoding real polynomial</figcaption><p></p>
+</figure>
+</div>
+<p>This trick more readily generalizes to QSVT. In effect, this circuit performs a block encoding of <span class="math inline">\(\frac12\left(U_\phi+U_{-\phi}\right)\)</span>. Since <span class="math inline">\(U_{-\phi}=U_{\phi}^*\)</span>, it block encodes <span class="math inline">\(\frac12\left(P(a)+P(a)^*\right)=\operatorname{Re}P(a)\)</span>. If the circuit above is not clear, don’t worry, I will discuss block encodings in <a href="#sec-block">Sec.&nbsp;4</a>. The same trick can be used to combine even and odd polynomials into a general one. In effect, <em>QSP can be used to block encode any bounded real polynomial</em>. This will be sufficient for our QSVT applications.</p>
+</section>
+<section id="implementation" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="implementation"><span class="header-section-number">2.5</span> Implementation</h2>
+<p>Let’s now implement the QSP and see how it works in practice. First we define the <span class="math inline">\(R\)</span>-signal and signal-processing operators. To get QSP sequences we will use <code>pyqsp</code> python package <span class="citation" data-cites="pyqsp">&nbsp;[<a href="#ref-pyqsp" role="doc-biblioref">5</a>]</span>. Since it gives anges in the <span class="math inline">\(W\)</span>-convention, we will also need to convert them to our <span class="math inline">\(R\)</span>-convention. Finally, we define a function that assembles the QSP circuit.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> R(a):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Singnal operator in the R-convention."""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.sqrt(<span class="dv">1</span><span class="op">-</span>a<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> np.array([</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        [a, b],</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        [b, <span class="op">-</span>a]])</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> R</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> S(phi):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Diagonal signal-processing operator."""</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.diag([np.exp(<span class="ot">1j</span><span class="op">*</span>phi), np.exp(<span class="op">-</span><span class="ot">1j</span><span class="op">*</span>phi)])</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> angles_from_W_to_R(phis):</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Converts QSP angles from W-convention to R-convention."""</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(phis)<span class="op">&gt;</span><span class="dv">0</span>, <span class="st">'At least one angle must be provided.'</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    phis <span class="op">=</span> <span class="op">\</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    [phis[<span class="dv">0</span>]<span class="op">+</span>(<span class="dv">2</span><span class="op">*</span><span class="bu">len</span>(phis)<span class="op">-</span><span class="dv">3</span>)<span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>] <span class="op">\</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> [phi<span class="op">-</span>np.pi<span class="op">/</span><span class="dv">2</span> <span class="cf">for</span> phi <span class="kw">in</span> phis[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>]] <span class="op">\</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> [phis[<span class="op">-</span><span class="dv">1</span>]<span class="op">-</span>np.pi<span class="op">/</span><span class="dv">4</span>]</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> phis </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_QSP(R, phis):</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Computes S(phi_0) @ R @ S(phi_1) @ R ... @ S(phi_d-1) @ R @ S(phi_d). """</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> S(phis[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> phi <span class="kw">in</span> phis[:<span class="op">-</span><span class="dv">1</span>][::<span class="op">-</span><span class="dv">1</span>]:        </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        res <span class="op">=</span> S(phi) <span class="op">@</span> R <span class="op">@</span> res</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let’s take some arbitrary polynomial <span class="math inline">\(P\)</span>, determine the QSP angles <span class="math inline">\(P\to \phi\)</span>, and check that the real part of the QSP amplitude <span class="math inline">\(U_\phi[0,0]\)</span> reproduces the chosen polynomial.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that the polynomial must have definite parity and be bounded.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> np.polynomial.Polynomial([<span class="fl">0.</span>, <span class="fl">0.1</span>, <span class="fl">0.</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.</span>, <span class="fl">0.4</span>]) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># QSP angles from polynomial coefficients.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>phis <span class="op">=</span> pyqsp.angle_sequence.QuantumSignalProcessingPhases(p.coef, signal_operator<span class="op">=</span><span class="st">'Wx'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>phis <span class="op">=</span> angles_from_W_to_R(phis)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Range to scan over.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute matrix elements of the QSP sequence</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>unitaries <span class="op">=</span> [apply_QSP(R(xi), phis) <span class="cf">for</span> xi <span class="kw">in</span> x]</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>matrix_elements <span class="op">=</span> [np.real(u[<span class="dv">0</span>,<span class="dv">0</span>]) <span class="cf">for</span> u <span class="kw">in</span> unitaries]</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>plt.plot(x, p(x))<span class="op">;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>plt.plot(x, matrix_elements, <span class="st">'*'</span>)<span class="op">;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Your polynomial implemented by QSP'</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>If you are running this as an interactive notebook, try changing the polynomial and see what happens. This exercise ends our introduction to QSP.</p>
+<p>You may think of QSVT as a generalization of QSP, where instead of applying a polynomial transformation to a single matrix element, you apply it to the singular values of a block encoded matrix. Before explaining how exactly does that work, we should cover some technical background.</p>
+</section>
+</section>
+<section id="singular-value-decomposition" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Singular value decomposition</h1>
+<section id="what-is-it" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="what-is-it"><span class="header-section-number">3.1</span> What is it?</h2>
+<p>Probably it’s worth making a brief digression to discuss what are those singular values that we are going to transform. If, like me, you are more familiar with hermitian matrices and eigenvalues, think of the singular values as a generalization.</p>
+<p>So, the key theorem known as the singular value decomposition (SVD), says that <em>any</em> (and I mean <em>any</em>: real or complex, hermitian or non-hermitian, square or rectangular) matrix <span class="math inline">\(A\)</span> can be decomposed as follows <span class="math display">\[A=V\Sigma W^\dagger \ .\]</span></p>
+<p>If <span class="math inline">\(A\)</span> is <span class="math inline">\(n\times m\)</span> matrix, then <span class="math inline">\(V\)</span> is a unitary of dimension <span class="math inline">\(n\times n\)</span>, <span class="math inline">\(W\)</span> is a unitary of dimension <span class="math inline">\(m\times m\)</span>, and <span class="math inline">\(\Sigma\)</span> is something like a diagonal matrix, except it has dimension <span class="math inline">\(n\times m\)</span> and can be non-square. The ‘extra’ non-square part consists of zeros. If you remove it, <span class="math inline">\(\Sigma\)</span> is just a diagonal matrix with <em>positive</em> entries <span class="math inline">\(\sigma_i\)</span>. Another way of writing SVD is using the bra-ket notation <span class="math display">\[A=\sum_i \sigma_i|v_i\rangle \langle w_i| \ .\]</span></p>
+</section>
+<section id="relation-to-eigenvalues" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="relation-to-eigenvalues"><span class="header-section-number">3.2</span> Relation to eigenvalues</h2>
+<p>For Hermitian matrices the eigenvalue decomposition is almost the same as SVD with <span class="math inline">\(V=W\)</span>. A subtlety is that by definition <span class="math inline">\(\sigma_i\ge0\)</span> while the eigenvalues can be negative. Negative signs of the eigenvalues can be absorbed into <span class="math inline">\(V\)</span> or <span class="math inline">\(W\)</span>, but this will make them different.</p>
+<p>Also, you can show that non-zero eigenvalues of hermitian operators <span class="math inline">\(A^\dagger A\)</span> and <span class="math inline">\(AA^\dagger\)</span> are equal to <span class="math inline">\(\sigma_i^2\)</span>.</p>
+</section>
+<section id="sec-operator_norm" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="sec-operator_norm"><span class="header-section-number">3.3</span> Relation to operator norm</h2>
+<p>SVD has many applications, and I’ll mention two of them that will be relevant. Define the operator norm of <span class="math inline">\(A\)</span> by <span class="math display">\[||A||=\sup_v \frac{|Av|}{|v|} \ . \]</span></p>
+<p>In words, the linear transformation <span class="math inline">\(A\)</span> in general changes the length of the input vector <span class="math inline">\(v\)</span>, and the operator norm quantifies the largest such change. It is easy to see that <span class="math inline">\(||A||=\max_i \sigma_i\)</span>, i.e.&nbsp;that operator norm is equal to the largest singular value.</p>
+<p>Operator norm is a natural measure in quantum mechanics, and in particular in QSVT. Assume we aimed to implement some operator <span class="math inline">\(A_0\)</span> but only managed to implement <span class="math inline">\(A\)</span>. For an arbitrary state, we can write <span class="math inline">\(A|\psi\rangle=A_0|\psi\rangle+(A-A_0)|\psi\rangle\)</span>. The error term can be bounded as <span class="math inline">\(|(A-A_0)|\psi\rangle|\le ||A-A_0||\)</span>. Hence, if <span class="math inline">\(A\)</span> is close to <span class="math inline">\(A_0\)</span> in the operator norm, its action on any state will have a large overlap with the target state. In quantum mechanics, this means that for all practical purposes <span class="math inline">\(A\)</span> is a good approximation to <span class="math inline">\(A_0\)</span>.</p>
+</section>
+<section id="sec-pseudo_inverse" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="sec-pseudo_inverse"><span class="header-section-number">3.4</span> Moore-Penrose pseudo-inverse</h2>
+<p>Another application of SVD is to linear systems of equations <span class="math inline">\(Ax=b\)</span>. Depending on <span class="math inline">\(A\)</span> and <span class="math inline">\(b\)</span>, the system may have a single solution, many solutions or none at all. A related problem is to minimize <span class="math inline">\(|Ax-b|^2\)</span>, a problem which always has a solution. It can be written as <span class="math inline">\(x=A^+b\)</span> with <span class="math inline">\(A^+\)</span> being the Moore-Penrose pseudo-inverse. It is most easily defined in terms of the SVD <span class="math display">\[\begin{align}
+A^+=\sum_{\sigma_i\neq0}\sigma_i^{-1} |w_i\rangle \langle v_i| \ . \label{pseudo-inverse}
+\end{align}\]</span> For invertible matrices, <span class="math inline">\(A^+\)</span> coincides with the usual inverse <span class="math inline">\(A^{-1}\)</span>. For non-invertible ones, this is in a sense the closest you can get. Note that <span class="math inline">\(A^+\)</span> is equal to <span class="math inline">\(A^\dagger\)</span> with singular values inverted.</p>
+</section>
+<section id="how-to-define-polynomial-of-an-arbitrary-matrix" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="how-to-define-polynomial-of-an-arbitrary-matrix"><span class="header-section-number">3.5</span> How to define polynomial of an arbitrary matrix</h2>
+<p>It is straightforward to define a polynomial of a hermitian matrix, e.g.&nbsp;for <span class="math inline">\(p(x)=x-x^2+x^4\)</span> we set <span class="math inline">\(p(H)=H-H^2+H^4\)</span>. Alternatively, we can say that the polynomial applies to eigenvalues of <span class="math inline">\(H\)</span>, i.e.&nbsp;if <span class="math inline">\(H=\sum_i \lambda_i |v_i\rangle\langle v_i|\)</span> then <span class="math inline">\(p(H)=\sum_i p(\lambda_i) |v_i\rangle\langle v_i|\)</span>.</p>
+<p>For a general matrix <span class="math inline">\(A\)</span> expressions like <span class="math inline">\(A^2\)</span> may not make sense, because of incompatible dimensions. More abstractly, for a generic operator <span class="math inline">\(A\)</span> the input space need not be the same as the output space, so applying <span class="math inline">\(A\)</span> twice is simply not defined. In principle, we could still define <span class="math inline">\(p(A)\)</span> by applying <span class="math inline">\(p\)</span> to the singular values of <span class="math inline">\(A\)</span>, similarly to the hermitian case. The more natural and useful definition is a bit different. For <span class="math inline">\(A=\sum_i \sigma_i|v_i\rangle\langle w_i|\)</span> define <span class="math display">\[\begin{align}
+p(A)=\begin{cases} \sum_i p(\sigma_i)|v_i\rangle \langle w_i|,\qquad \text{$p$ is odd}\\ \sum_i p(\sigma_i)|w_i\rangle \langle w_i|,\qquad \text{$p$ is even} \end{cases}
+\end{align}\]</span></p>
+<p>For example, for <span class="math inline">\(p(x)=1-x^2+x^4\)</span> we get <span class="math inline">\(p(A)=\mathbb{1}-A^\dagger A+(A^\dagger A)^2\)</span>, for <span class="math inline">\(p(x)=x-x^3\)</span> we get <span class="math inline">\(p(A)=A-AA^\dagger A\)</span>. The pattern should be clear. By alternating <span class="math inline">\(A\)</span> and <span class="math inline">\(A^\dagger\)</span> we make sure that the input space of a new operator is the output space of a preceding one. If the <span class="math inline">\(p(x)\)</span> is odd, <span class="math inline">\(p(A)\)</span> maps between the same space as <span class="math inline">\(A\)</span>. If <span class="math inline">\(p(x)\)</span> is even, <span class="math inline">\(p(A)\)</span> maps the input space of <span class="math inline">\(A\)</span> back to itself.</p>
+<p>We will see that this distinction between the even and odd polynomials spills over into QSVT.</p>
+</section>
+</section>
+<section id="sec-block" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Block encodings</h1>
+<p>Another key concept to QSVT is that of block encodings. The idea is as follows. Quantum computer can only effect unitary transformations <span class="math inline">\(U\)</span>. However, many interesting operators are not unitary (say a typical Hamiltonian, or a matrix of a linear system). However, they can often be represented as a subpart of a larger unitary operation, or block encoded.</p>
+<section id="block-encoding-in-the-computational-basis" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="block-encoding-in-the-computational-basis"><span class="header-section-number">4.1</span> Block encoding in the computational basis</h2>
+<p>The simplest case of the block encoding is when your matrix of interest <span class="math inline">\(A\)</span> occupies the top-left corner of a unitary</p>
+<p><span class="math display">\[U=\begin{pmatrix}A&amp; *\\ * &amp; *\end{pmatrix} \ .\]</span></p>
+<p>Here and below, the wildcard asterisk <span class="math inline">\(*\)</span> means that we don’t care what is contained in other blocks as long as <span class="math inline">\(U\)</span> is unitary. <span class="math inline">\(A\)</span> and <span class="math inline">\(*\)</span> blocks can be of any size compatible with one another. <span class="math inline">\(U\)</span> must be square, of course. That’s it, that’s block encoding.</p>
+<p>The tricky part is to actually find an efficient quantum circuit corresponding to <span class="math inline">\(U\)</span>. In general, this is very problem-specific. I will mostly assume that block encodings are given from above (we have an oracular access to them). I will however discuss block encoding of a linear combination of unitaries in <a href="#sec-LCU">Sec.&nbsp;4.5</a>.</p>
+</section>
+<section id="can-any-matrix-be-block-encoded" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="can-any-matrix-be-block-encoded"><span class="header-section-number">4.2</span> Can any matrix be block encoded?</h2>
+<p>The block encoded matrix <span class="math inline">\(A\)</span> can be almost arbitrary. The only restriction is that its operator norm is less than one <span class="math inline">\(||A||\le1\)</span> (otherwise <span class="math inline">\(U\)</span> can not be unitary). If this is not the case, we can often encode <span class="math inline">\(A/\alpha\)</span> with sufficiently large <span class="math inline">\(\alpha\)</span> instead. Again, this is problem-specific.</p>
+</section>
+<section id="single-qubit-block-encoding" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="single-qubit-block-encoding"><span class="header-section-number">4.3</span> Single-qubit block encoding</h2>
+<p>Often, the operator <span class="math inline">\(A\)</span> to be block encoded naturally acts on some <span class="math inline">\(n\)</span>-qubit system, perhaps <span class="math inline">\(A\)</span> is a Hamiltonian. In that case, assuming <span class="math inline">\(||A||\le 1\)</span>, we only need one additional qubit to block-encode <span class="math inline">\(A\)</span>. The result may look something like</p>
+<p><span class="math display">\[U=\begin{pmatrix} A &amp; \sqrt{1-AA^\dagger} \\ \sqrt{1-A^\dagger A} &amp; -A^\dagger \end{pmatrix}\ .\]</span></p>
+<div class="callout callout-style-default callout-note callout-titled" title="Exercise">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Show that <span class="math inline">\(U\)</span> is unitary. You will need to show that <span class="math inline">\(A\sqrt{1-A^\dagger A}=\sqrt{1-AA^\dagger}A\)</span> which can be done via SVD.</p>
+</div>
+</div>
+</div>
+<p>Note that we can express the fact that <span class="math inline">\(U\)</span> block encodes <span class="math inline">\(A\)</span> by writing <span class="math inline">\(U=|0\rangle\langle0|\otimes A+\dots\)</span>.</p>
+</section>
+<section id="controlled-unitary-is-a-block-encoding" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="controlled-unitary-is-a-block-encoding"><span class="header-section-number">4.4</span> Controlled unitary is a block encoding</h2>
+<p>For intuition, I will give two examples of how to implement block encodings. One familiar case is a controlled unitary operation. Indeed, <span class="math display">\[C(U)=|0\rangle \langle 0| \otimes U+|1\rangle \langle 1| \otimes U=\begin{pmatrix} U &amp; 0 \\ 0 &amp; \mathbb{1}\end{pmatrix} \ .\]</span> Note that this is <span class="math inline">\(|0\rangle\)</span>-controlled unitary, the standard <span class="math inline">\(|1\rangle\)</span>-controlled has <span class="math inline">\(U\)</span> and the identity blocks swapped.</p>
+<p>More generally, let <span class="math inline">\(U\)</span> be controlled by a computational <span class="math inline">\(n\)</span>-qubit state <span class="math inline">\(|m\rangle\)</span>, i.e.&nbsp;<span class="math inline">\(C_{|m\rangle\langle m|}U=|m\rangle\langle m| \otimes U+(\mathbb{1}-|m\rangle\langle m|)\otimes\mathbb{1}\)</span>. Then, in matrix form</p>
+<p><span class="math display">\[C_{|m\rangle\langle m|}U=\begin{pmatrix}\mathbb{1} &amp;&amp;&amp;&amp;\\ &amp;\ddots&amp;&amp;&amp; \\ &amp;&amp; U &amp;&amp; \\ &amp;&amp;&amp;\ddots&amp; \\ &amp;&amp;&amp;&amp;\mathbb{1}\end{pmatrix} \ ,\]</span></p>
+<p>where <span class="math inline">\(U\)</span> occupies <span class="math inline">\(m\)</span>-th block.</p>
+</section>
+<section id="sec-LCU" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="sec-LCU"><span class="header-section-number">4.5</span> Linear combination of unitaries</h2>
+<p><strong><em>Linear combination of unitaries (LCU)</em></strong> is a powerful technique for block encoding. Using controlled versions of unitary operators <span class="math inline">\(U_1,\dots, U_N\)</span> it block encodes their linear combination <span class="math inline">\(\alpha_1 U_1+\dots\alpha_N U_N\)</span></p>
+<p>It works as follows. Assume <span class="math inline">\(N=2^n\)</span> and you can implement unitaries <span class="math inline">\(U_m\)</span> controlled by a state of <span class="math inline">\(n\)</span> qubits, <span class="math inline">\(C_{|m\rangle\langle m|}U_m\)</span>. Taking the product of all these controlled unitaries we get what is known as the <span class="math inline">\(\text{SELECT}\)</span> operator</p>
+<p><span class="math display">\[\text{SELECT} = \prod_m C_{|m\rangle\langle m|}U_m = \begin{pmatrix}U_1 &amp;&amp;&amp;&amp;\\ &amp;\ddots&amp;&amp;&amp; \\ &amp;&amp; U_m &amp;&amp; \\ &amp;&amp;&amp;\ddots&amp; \\ &amp;&amp;&amp;&amp;U_{2^n}\end{pmatrix}\]</span></p>
+<p>In other words, <span class="math inline">\(\text{SELECT} = \sum_m |m\rangle\langle m| \otimes U_m\)</span>, and it applies (selects) a different unitary based on the value of the control state. Now also assume you have a <span class="math inline">\(\text{PREPARE}\)</span> operator acting on the control qubits as follows <span class="math inline">\(\text{PREPARE} |0\rangle=\sum_m \sqrt{\alpha_m} |m\rangle\)</span> (assuming <span class="math inline">\(\sum_i\alpha_i=1\)</span>). Then</p>
+<p><span class="math display">\[\text{PREPARE}^\dagger\cdot\text{SELECT}\cdot\text{PREPARE} = \begin{pmatrix}\alpha_1 U_1+\dots \alpha_NU_N&amp; *\\ *&amp;* \end{pmatrix}\]</span></p>
+<p>i.e.&nbsp;it block encodes the desired linear combination.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Exercise">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Prove this statement. Show also that <a href="#fig-uphi">Fig.&nbsp;1</a> is a particular case, and that it indeed block encodes <span class="math inline">\(\frac12\left(U_{\phi}+U_{-\phi}\right)\)</span> as claimed.</p>
+</div>
+</div>
+</div>
+<p>Note that we need logarithmically less ancilla qubits than the number of unitaries, so the computations above are efficient. One of the use cases for this protocol is to block encode a local Hamiltonian, i.e.&nbsp;a Hamiltonian that consists of not too many Pauli strings of bounded weight. Implementing the controlled version of each Pauli string is straightforward, and the procedure goes through.</p>
+</section>
+<section id="applying-block-encoded-operator-to-a-state" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="applying-block-encoded-operator-to-a-state"><span class="header-section-number">4.6</span> Applying block encoded operator to a state</h2>
+<p>We can apply a block-encoded operator <span class="math inline">\(A\)</span> to a quantum state <span class="math inline">\(|\psi\rangle\)</span> as follows. Assume <span class="math inline">\(U=|0\rangle\langle0|\otimes A+\dots\)</span> block-encodes <span class="math inline">\(A\)</span> and we prepared the <span class="math inline">\(n+1\)</span> qubit system in the state <span class="math inline">\(|\Psi\rangle=|0\rangle \otimes|\psi\rangle\)</span>. Then</p>
+<p><span class="math display">\[U|\Psi\rangle = \begin{pmatrix} A &amp; *\\ * &amp; *\end{pmatrix}\begin{pmatrix} |\psi\rangle \\ 0\end{pmatrix}=\begin{pmatrix}A|\psi\rangle \\ * \end{pmatrix}=|0\rangle\otimes A|\psi\rangle+|1\rangle\otimes|*\rangle \ .\]</span></p>
+<p>Therefore, if we measure the ancillary qubit after applying <span class="math inline">\(U\)</span> to <span class="math inline">\(|\Psi\rangle\)</span> and find it in state <span class="math inline">\(|0\rangle\)</span>, the state of the remaining qubits is <span class="math display">\[\frac{A|\psi\rangle}{\langle\psi|A^\dagger A|\psi\rangle} \ .\]</span> I.e., up to a normalization, it is the state <span class="math inline">\(A|\psi\rangle\)</span> we aimed to find. On the other hand, if we find the ancialla qubit in state <span class="math inline">\(|1\rangle\)</span> we don’t get a useful result. Indeed, a general non-hermitian operator can not be implemented on a quantum computer deterministically, we need to <em>post-select</em> on the state of the ancillary qubit. The success probability <span class="math inline">\(P\)</span> of this protocol is given by <span class="math inline">\(P=\langle\psi|A^\dagger A|\psi\rangle\)</span>.</p>
+</section>
+<section id="block-encoding-in-general-bases-and-projection-operators" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="block-encoding-in-general-bases-and-projection-operators"><span class="header-section-number">4.7</span> Block encoding in general bases and projection operators</h2>
+<p>In general, we do not need the block encoding to be in the computational basis, i.e.&nbsp;that <span class="math inline">\(A\)</span> be the top-left block of a unitary <span class="math inline">\(U\)</span>. We can assume this holds only in some specially chosen input and output bases</p>
+<p><span class="math display">\[U = B_L \begin{pmatrix} A &amp; * \\ * &amp; *\end{pmatrix} B_R^\dagger \ .\]</span></p>
+<p>Here, <span class="math inline">\(B_L\)</span> and <span class="math inline">\(B_R\)</span> are unitary matrices that perform the necessary bases change.</p>
+<p>This statement is a bit empty because there is too much freedom: using properly chosen <span class="math inline">\(B_R\)</span> and <span class="math inline">\(B_L\)</span> we can say that any <span class="math inline">\(U\)</span> is a block encoding of any <span class="math inline">\(A\)</span>. What we really need in QSVT is the ability to perform controlled projectors based on the block encoding bases. Here is what I mean. Define <span class="math display">\[\Pi_n = \begin{pmatrix} \mathbb{1}_{n\times n} &amp; 0 \\ 0 &amp; 0\end{pmatrix} \ .\]</span> This is a projector on the first <span class="math inline">\(n\)</span> computation basis vectors. Now define left and right projectors <span class="math display">\[\Pi_L = B_L P_n B_L^\dagger, \qquad \Pi_R = B_R P_m B_R^\dagger \ .\]</span> If <span class="math inline">\(A\)</span> is square <span class="math inline">\(n=m\)</span>, but for general block encodings this need not hold. The key property of the projectors is</p>
+<p><span class="math display">\[\Pi_L U \Pi_R= B_L\begin{pmatrix} A &amp; 0 \\ 0 &amp; 0\end{pmatrix} B_R^\dagger \ .\]</span></p>
+<p>QSVT does not explicitly use <span class="math inline">\(B_L\)</span> or <span class="math inline">\(B_R\)</span>. We only need to have access to operators <span class="math display">\[\Pi_L(\phi)=e^{(2\Pi_L-1)\phi},\quad \Pi_R(\phi)=e^{(2\Pi_R-1)\phi} \ .\]</span> These are analogs of the signal-processing operator <span class="math inline">\(S(\phi)\)</span> we defined in QSP <span class="math inline">\(\eqref{S}\)</span>. Note that <span class="math display">\[\Pi_L(\phi)=B_L\begin{pmatrix}e^{i\phi} &amp;0 \\ 0 &amp; e^{-i\phi}\end{pmatrix}B_L^\dagger \]</span> (and similarly for <span class="math inline">\(\Pi_R(\phi)\)</span>). So, in the right-basis, <span class="math inline">\(\Pi(\phi)\)</span> is indeed a block version of the QSP signal-processing operator.</p>
+</section>
+<section id="sec-projector_rotations" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="sec-projector_rotations"><span class="header-section-number">4.8</span> Projector rotations from controlled projectors</h2>
+<p>Projector rotations <span class="math inline">\(\Pi(\phi)\)</span> are easy to implement provided access to the projector-controlled NOT operation <span class="math inline">\(C_{\Pi}NOT\)</span>, which is defined as <span class="math display">\[C_{\Pi}NOT=X\otimes\Pi+\mathbb{1}\otimes (1-\Pi)\]</span> or, graphically,</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/controlled_p.svg" class="img-fluid figure-img" width="300"></p>
+</figure>
+</div>
+<p>Slashed line means the operator can act on an arbitrary number of qubits. The rotation <span class="math inline">\(\Pi(\phi)\)</span> can be implemented as follows</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/projector_rotation.svg" class="img-fluid figure-img" width="300"></p>
+</figure>
+</div>
+<p>Thus, with an additional ancilla qubit and the ability to perform <span class="math inline">\(C_\Pi NOT\)</span> we get to implement <span class="math inline">\(\Pi(\phi)\)</span>. In what follows, I will not worry about this implementation detail and assume direct access to <span class="math inline">\(\Pi(\phi)\)</span>.</p>
+</section>
+</section>
+<section id="approximating-functions-with-bounded-polynomials" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Approximating functions with bounded polynomials</h1>
+<p>Another key step in QSVT is approximating target functions with polynomials. This is a huge field on its own, and I can only scratch the surface. It may be tempting to view the polynomial approximation, but we probably shouldn’t. This is because the degree of the polynomial that gives a good enough approximation to your function determines the number of queries to the block encoded operators. Hence, directly controls the complexity of the resulting quantum algorithm. Let’s therefore try to gain some intuition about how polynomial approximations work and how they scale.</p>
+<section id="recap-of-the-problem" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="recap-of-the-problem"><span class="header-section-number">5.1</span> Recap of the problem</h2>
+<p>So, originally we wanted to apply some function to singular values <span class="math inline">\(f(x)\)</span>. However, in QSP/QSVT we only know how to apply polynomials <span class="math inline">\(p(x)\)</span>. There are also restrictions on polynomials that we can implement.</p>
+<ol type="1">
+<li>The polynomial must be bounded in the physical range <span class="math inline">\(|p(x)|\le1\)</span> for <span class="math inline">\(-1\le x \le 1\)</span>.</li>
+<li>We can only implement directly even or odd <span class="math inline">\(p(x)\)</span>. If we need to approximate <span class="math inline">\(f(x)\)</span> of indefinite parity, we approximate its even and odd parts separately, then combine.</li>
+</ol>
+<p>In a typical application we only need to approximate <span class="math inline">\(f(x)\)</span> on a subset <span class="math inline">\((a,b)\subset (-1, 1)\)</span>. So the approximation task is to find <span class="math inline">\(p(x)\)</span> such that</p>
+<ol type="1">
+<li><span class="math inline">\(|p(x)-f(x)|\le \epsilon\)</span> for <span class="math inline">\(x\in (a,b)\)</span>.</li>
+<li><span class="math inline">\(|p(x)|\le 1\)</span> for <span class="math inline">\(x\in(-1,1)\)</span>.</li>
+<li><span class="math inline">\(p(x)\)</span> has the smallest degree possible.</li>
+</ol>
+<p>Here is an illustration of what that should look like.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/approx.svg" class="img-fluid figure-img" width="400"></p>
+<p></p><figcaption class="figure-caption">Approximation</figcaption><p></p>
+</figure>
+</div>
+<p>Note that <span class="math inline">\(|f(x)|\)</span> need not be bounded by 1 on <span class="math inline">\((-1,1)\)</span>, but only on <span class="math inline">\((a,b)\)</span> where we approximate it. Similarly, <span class="math inline">\(|p(x)|\)</span> only needs to be bounded by 1 on <span class="math inline">\((-1,1)\)</span>. In fact, because <span class="math inline">\(p(x)\)</span> is a polynomial, it will necessarily blow up for sufficiently large <span class="math inline">\(x\)</span>.</p>
+</section>
+<section id="chebyshev-polynomials" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="chebyshev-polynomials"><span class="header-section-number">5.2</span> Chebyshev polynomials</h2>
+<p>One of the most popular polynomial bases for approximations are given by Chebyshev polynomials, which can be defined as</p>
+<p><span class="math display">\[T_n(x)=\cos(n\arccos x)=\frac12\left(\left(x+\sqrt{1-x^2}\right)^n+\left(x-\sqrt{1-x^2}\right)^n\right) \ .\]</span></p>
+<p>Alright, this does not look very intuitive, what is so special about them? Actually, I don’t know. Let’s maybe ask a simpler question first, why not use the good old Taylor expansion? This is probably the first thing that comes to mind when talking about a polynomial approximation. The problem is, Taylor series is designed to capture the behavior of a function near a particular point, and the quality of approximation degrades fast as we step outside a close vicinity. If if the Taylor series converges there, the convergence may be way too slow.</p>
+<p>To capture a behavior over a certain range of values, instead of a vicinity of a particular point, some other functional basis may be better. Probably a Fourier expansion will work well, except it is not polynomial. Now, let’s actually take a look at the Chebyshev polynomials.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, plt.np.polynomial.Chebyshev.basis(n)(x), label<span class="op">=</span><span class="ss">f'$T_n$=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Chebyshev polynomials in (-1, 1)'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, plt.np.polynomial.Chebyshev.basis(n)(x), label<span class="op">=</span><span class="ss">f'$T_n$=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Chebyshev polynomials in (-2, 2)'</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Is it just me, or the Chebyshev polynomials actually look quite a lot like <span class="math inline">\(sin\)</span> and <span class="math inline">\(cos\)</span> functions in <span class="math inline">\((-1,1)\)</span> (left fig)? Note that they are also bounded there, and that they quickly blow up outside <span class="math inline">\((-1, 1)\)</span> (right fig).</p>
+<p>Now, as any respactable functional basis they have the property that an arbitrary reasonable function <span class="math inline">\(f(x)\)</span> can be expanded into the Chebyshev series <span class="math display">\[f(x)=\sum_{n\ge0} a_nT_n(x), \qquad x\in (-1, 1)\]</span> with decaying coefficients <span class="math inline">\(a_n\)</span>. One can bound <span class="math inline">\(a_n\)</span> as follows <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span> <span class="math display">\[a_n\le 2M\rho^{-n} \ .\]</span></p>
+<p>Parameters <span class="math inline">\(M\)</span> and <span class="math inline">\(\rho\)</span> need to be explained. Define the Bernstein ellipse <span class="math inline">\(E_{\rho}\)</span> as the set of poins on the complex plain that are bounded by the ellipse <span class="math inline">\(\frac{z+z^{-1}}{2}, |z|=\rho\)</span>, or alternatively <span class="math inline">\(\frac{\rho e^{i\phi}+\rho^{-1} e^{-i\phi}}{2},\phi\in (0,2\pi)\)</span>. Note that <span class="math inline">\(\rho&gt;1\)</span> and the interval <span class="math inline">\((-1,1)\)</span> is contained in <span class="math inline">\(E_\rho\)</span>. Here is a sketch.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ellipse.svg" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div>
+<p>Now, assume that <span class="math inline">\(f(x)\)</span> can be analytically continued from <span class="math inline">\((-1,1)\)</span> to the interior of <span class="math inline">\(E_\rho\)</span> and. Then, <span class="math inline">\(M\)</span> the upper bound on the value of <span class="math inline">\(f(z)\)</span>, i.e.&nbsp;<span class="math inline">\(|f(z)|&lt;M, z\in E_\rho\)</span>. Alright, so for any fixed <span class="math inline">\(M\)</span> and <span class="math inline">\(\rho\)</span> the Chebyshev coefficients of <span class="math inline">\(f(x)\)</span> decay exponentially. Given this fact and that all Chebyshev polynomials are bounded by 1 on <span class="math inline">\(x\in(-1,1)\)</span> we find that truncation of the Chebyshev expansion satisfies <span class="math display">\[|f(x)-\sum_{m=0}^n a_m T_m(x)|\le \frac{2M\rho^{-n-1}}{\rho-1} \ . \]</span></p>
+<p>This approximation result is in general not sufficient for QSVT applications. The interval <span class="math inline">\((-1,1)\)</span> here should be really thought of as the interval <span class="math inline">\((a,b)\)</span> from the previous section, i.e.&nbsp;the subset where the target function needs to be approximated. This means that along with finding a good approximation on <span class="math inline">\((-1,1)\)</span> we also need to ensure that the resulting polynomial remains bounded in some region outside <span class="math inline">\((-1,1)\)</span>, which is an additional challenge.</p>
+</section>
+<section id="sec-polynomial_how_to" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="sec-polynomial_how_to"><span class="header-section-number">5.3</span> A recipie for building bounded Chebyshev approximations</h2>
+<p>A general workaround for this problem is proposed in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span>. The idea is to take an approximation that behaves well on <span class="math inline">\((-1,1)\)</span> but blows up outside, and multiply it by a function that is close to 1 at <span class="math inline">\((-1, 1)\)</span> and rapidly decays outside. Then the product can be re-expanded in the Chebyshev basis and yield the desired result. Here is the summary of the procedure (Theorem 19 of <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span>).</p>
+<p>Let <span class="math inline">\(f(x)\)</span> be analytic on <span class="math inline">\([-1, 1]\)</span> and analytically continuanable to <span class="math inline">\(E_\rho\)</span> where it is bounded by <span class="math inline">\(M\)</span>. Denote <span class="math inline">\(\rho=1+\alpha, \alpha&gt;0\)</span>. For any <span class="math inline">\(\epsilon\)</span> there is a polynomial <span class="math inline">\(p(x)\)</span> such that</p>
+<ol type="1">
+<li><span class="math inline">\(|f(x)-p(x)|_{[-1,1]}\le M\epsilon\)</span>.</li>
+<li><span class="math inline">\(|p(x)|_{[-1-\delta, 1+\delta]}\le M\)</span>.</li>
+<li><span class="math inline">\(|p(x)|_{[-b,-1-\delta]\cup [1+\delta, b]}\le M\epsilon\)</span>.</li>
+</ol>
+<p>In words, <span class="math inline">\(p(x)\)</span> approximates <span class="math inline">\(f(x)\)</span> to relative precision <span class="math inline">\(\epsilon\)</span> on <span class="math inline">\([-1,1]\)</span>. Furthermore, <span class="math inline">\(p(x)\)</span> is bounded by a constant in some <span class="math inline">\(\delta\)</span>-neighborhood outside <span class="math inline">\([-1, 1]\)</span>. Finally, <span class="math inline">\(p(x)\)</span> is <span class="math inline">\(\epsilon\)</span>-close to zero outside this <span class="math inline">\(\delta\)</span>-neighborhood and up to a larger <span class="math inline">\(b\)</span>-neighborhood. Here is a sketch.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/approx_delta.svg" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div>
+<p>The condition that <span class="math inline">\(p(x)\)</span> is zero ouside some <span class="math inline">\(\delta\)</span>-neighborhood is useful for approximating piece-wise smooth functions. Now, I haven’t yet told what are <span class="math inline">\(\delta, b\)</span> and, most importantly, what is the degree of the polynomial? According to <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span>, <span class="math inline">\(\delta\)</span> can be anywhere in <span class="math inline">\((0, \frac{min(1,\alpha^2)}{C})\)</span> for a sufficiently large but constant <span class="math inline">\(C\)</span>. You can choose <span class="math inline">\(b&gt;1+\delta\)</span> freely. Then, the desired polynomial has degree <span class="math display">\[\begin{align}
+\operatorname{deg}p(x)=O\left(\frac{b}{\delta}\log \frac{b}{\delta \epsilon}\right) \label{pdeg} \ .
+\end{align}\]</span></p>
+<p>Some important features of this formula 1. If you insist on a good approximation at the point of discontinuity, you pay linear price. I.e. the degree of the polynomial scales linearly (modulo log factor) with <span class="math inline">\(\delta^{-1}\)</span>. 1. If you want your polynomial approximation to be bounde far enough away from <span class="math inline">\([-1,1]\)</span> you pay linear price, i.e.&nbsp;the degree scales linearly with <span class="math inline">\(b\)</span>. 1. Dependence on the error is logarithmic, which is nice.</p>
+</section>
+<section id="sec-theta_approx" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="sec-theta_approx"><span class="header-section-number">5.4</span> Illustration: approximating the step function</h2>
+<p>In many applications of QSVT it is actually very helpful to approximate the step function <span class="math inline">\(\theta(x-a)\)</span> for some small <span class="math inline">\(a\)</span>. This will also help us illustrate the approximation results described above.</p>
+<p>A problem with this step function is that it is not of definite parity, so we will instead aim to approximate its odd part <span class="math inline">\(f(x)=\frac12\left(\theta(x-a)+\theta(-x-a)\right)\)</span>. The two parts of this piecewise-smooth function are just constants <span class="math inline">\(\pm1\)</span>, and hence <span class="math inline">\(M=1\)</span> for arbitrary <span class="math inline">\(\rho\)</span>. The only thing we need to take care of is that the discontinuity region, where our approximation fails, is small enough <span class="math inline">\(\delta\le a\)</span>. This implies that there is a polynomial of degree <span class="math inline">\(O(\frac1a\log\frac1{a\epsilon})\)</span> that does the job.</p>
+<p>In this case and some other cases the approximation bound stated in the previous section does not give the tighest result. For instance, approximating the step function is possible with a polynomial of degree <span class="math inline">\(O(\frac1a\log\frac1\epsilon)\)</span>, i.e.&nbsp;the additional <span class="math inline">\(\log\frac1{a}\)</span> factor is not necessary. The overhead we get from applying the procedure above is often modest, a may be a good price to pay for the universality of the approach.</p>
+</section>
+</section>
+<section id="qsvt" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> QSVT</h1>
+<p>Phew! That was quite a bit of preparing. However, we now have all the ingredients in place to explain how (and also a bit why) QSVT works.</p>
+<section id="recap" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="recap"><span class="header-section-number">6.1</span> Recap</h2>
+<p>Let’s recap what is the setup.</p>
+<ol type="1">
+<li>The goal is to perform a functional transformation on the singular values of some operator <span class="math inline">\(A\to f(A)\)</span>.</li>
+<li>We are provided with a unitary <span class="math inline">\(U\)</span> that block encodes <span class="math inline">\(A\)</span>, i.e.&nbsp;<span class="math inline">\(U=B_L\begin{pmatrix} A&amp;*\\*&amp;*\end{pmatrix}B_R^\dagger\)</span> (in many cases of interest <span class="math inline">\(B_L=B_R=\mathbb{1}\)</span>).</li>
+<li>We are provided with projectors <span class="math inline">\(\Pi_L,\Pi_R\)</span> that describe this block encoding, i.e.&nbsp;<span class="math inline">\(\Pi_L U \Pi_R=B_L\begin{pmatrix} A&amp;0\\0&amp;0\end{pmatrix}B_R^\dagger\)</span> and can perform projector rotations <span class="math inline">\(\Pi_L(\phi), \Pi_R(\phi)\)</span>.</li>
+<li>We figured out what is a good polynomial approximation to our target function <span class="math inline">\(p(x)\approx f(x)\)</span>.</li>
+</ol>
+<p>From these ingredients, the QSVT builds a unitary <span class="math inline">\(U_\phi\)</span> that block encodes the desired polynomial transformation.</p>
+</section>
+<section id="ow-qsvt-works" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="ow-qsvt-works"><span class="header-section-number">6.2</span> ow QSVT works</h2>
+<p>Alright, how to build <span class="math inline">\(U_\phi\)</span>? A bit awkwardly, we will have to separately describe two cases, when <span class="math inline">\(p(x)\)</span> is even and when it is odd. So, for <span class="math inline">\(p(x)\)</span> even (the number of QSP phases is odd)</p>
+<p><span class="math display">\[\begin{align}
+U_\phi = \left(\prod_{i=0}^{d/2-1}\Pi_R(\phi_{2i})U^\dagger\Pi_L(\phi_{2i+1})U \right) \Pi_R(\phi_d),\qquad U_\phi=B_R\begin{pmatrix}p(A) &amp; *\\ * &amp; *\end{pmatrix} B_R^\dagger\ . \label{QSVT even}
+\end{align}\]</span></p>
+<p>For <span class="math inline">\(p(x)\)</span> odd (the number of QSP phases even) <span class="math display">\[\begin{align}
+U_{\phi}=\Pi_L(\phi_{0})U\prod_{i=1}^{(d-1)/2}\Pi_R(\phi_{2i-1})U^\dagger\Pi_L(\phi_{2i})U \Pi_R(\phi_d),\qquad U_\phi=B_L\begin{pmatrix}p(A) &amp; *\\ * &amp; *\end{pmatrix} B_R^\dagger \label{QSVT odd}
+\end{align}\]</span></p>
+<p>Recall that we defined polynomial of a matrix <span class="math inline">\(p(A)\)</span> in <strong>?@sec-polymatrix</strong>, and that it had the same personality split into even/odd cases. The angles <span class="math inline">\(\phi\)</span> are <em>the same</em> angles that we would use to apply <span class="math inline">\(p(x)\)</span> in QSP with R-conventions.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>One thing I tripped over. In QSP, we have different signal conventions and need to use a different angle sequence for each. Now I just told you that for QSVT we need to borrow QSP angles in the R-convention. Don’t we need to specify how exactly is our operator <span class="math inline">\(A\)</span> block encoded in <span class="math inline">\(U\)</span> then? No, we need not. The difference between QSP and QSVT is that in QSP we apply the same signal operator throughout, while in QSVT we alternate between <span class="math inline">\(U\)</span> and <span class="math inline">\(U^\dagger\)</span>. Because different block encodings are related by unitary transformations, these differences cancel in the QSVT sequence. To see why the R-convention of QSP most naturally maps to QSVT, take a look at the next section.</p>
+</div>
+</div>
+</section>
+<section id="qsvt-circuit" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="qsvt-circuit"><span class="header-section-number">6.3</span> QSVT circuit</h2>
+<p>Draw QSVT circuit. Explain that projects are not general. Explain that we will not draw circuits in implementation. Explain how to get controlled version of a circuit.</p>
+<p>Let’s implement the QSVT circuit in code for later use.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> projector_rotation(P, phi):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Computes exponential of a projector using relation e^{i (2P-1) x}= cos(x)+i(2P-1)sin(x)"""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="bu">len</span>(P)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.eye(N)<span class="op">*</span>np.cos(phi)<span class="op">+</span><span class="ot">1j</span><span class="op">*</span>(<span class="dv">2</span><span class="op">*</span>P<span class="op">-</span>np.eye(N))<span class="op">*</span>np.sin(phi)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_QSVT(U, PL, PR, phis):</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    phi_last <span class="op">=</span> phis[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(phis) <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">1</span>: <span class="co"># Even polynomial</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        phis_paired <span class="op">=</span> phis[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        phi_0 <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>: <span class="co"># Odd polynomial</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        phis_paired <span class="op">=</span> phis[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        phi_0 <span class="op">=</span> phis[<span class="dv">0</span>]</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> projector_rotation(PR, phi_last)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> phi_R, phi_L <span class="kw">in</span> np.array(phis_paired).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)[::<span class="op">-</span><span class="dv">1</span>]:</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        res <span class="op">=</span>  projector_rotation(PR, phi_R) <span class="op">@</span> U.conj().T <span class="op">@</span>  projector_rotation(PL, phi_L) <span class="op">@</span> U <span class="op">@</span> res</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> phi_0 <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        res <span class="op">=</span> projector_rotation(PL, phi_0) <span class="op">@</span> U <span class="op">@</span> res</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="why-qsvt-works" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="why-qsvt-works"><span class="header-section-number">6.4</span> Why QSVT works</h2>
+<p>Alright, how do we prove <span class="math inline">\(\eqref{QSVT even}\)</span> and <span class="math inline">\(\eqref{QSVT odd}\)</span>? I’d say that the full proof is a bit tedious and not very illuminating, but we can get a good intuition by looking at several particular cases. I will follow a recent exposition in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span> that simplifies the derivation. The key idea there is to leverage another special matrix decomposition, known as the <strong><em>CS decomposition</em></strong> (cosine-sine). It states that for any unitary matrix <span class="math inline">\(U\)</span> consisting of four blocks the following holds <span class="math display">\[U=\begin{pmatrix}U_{00} &amp; U_{01} \\ U_{10} &amp; U_{11}\end{pmatrix}=\begin{pmatrix}V_0 &amp; 0 \\ 0 &amp; V_1\end{pmatrix}\begin{pmatrix}C &amp; S \\ S &amp; -C\end{pmatrix}\begin{pmatrix}W_0 &amp; 0 \\ 0 &amp; W_1\end{pmatrix}^\dagger \ .\]</span></p>
+<p>here <span class="math inline">\(V_{0}, V_{1}, W_{0},W_{1}\)</span> are unitaries of an appropriate sizes. If all blocks in <span class="math inline">\(U\)</span> are of equal size, matrices <span class="math inline">\(C\)</span> and <span class="math inline">\(S\)</span> are diagonal and satisfy <span class="math inline">\(C^2+S^2=\mathbb{1}\)</span>, hence the name CS. For block of arbitrary sizes there will still be CS-sublocks, but you’d also have to carefully pad them with zeros and ones. I will not consider this case here.</p>
+<p>Important property of the CS-decomposition, which is not shared e.g.&nbsp;by the SVD, is that the unitaries sandwiching the CS-core are block-diagonal. For this reason, they commute through projector-rotations and effectively drop out of the QSVT sequence. At the same time, the middle matrix in CS-decomposition looks exactly as the R-signal matrix in QSP, which explains why we need to use QSP angles in R-convention to build QSVT circuit.</p>
+<p>With these ideas in place, the rest is mostly filling in the details. I will not do this here, but you are welcome to try and work out the full derivation or look in up in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span>.</p>
+</section>
+<section id="qubitization" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="qubitization"><span class="header-section-number">6.5</span> Qubitization</h2>
+<p>QSVT is closely related to a concept of <strong><em>qubitization</em></strong>, which I believe was introduced a bit earlier in the context of Hamiltonian simulation. The idea was again to adopt QSP to high-dimensional systems. I you go through the derivations in the previous section, you will note that you never have to deal with anything but <span class="math inline">\(2\times2\)</span> block matrices. So effectively, the problem was indeed reduced to a QSP of a two-level system. In jargon, we have qubitized the problem.</p>
+<p>Alright, we are now ready to tackle the applications of QSVT.</p>
+</section>
+</section>
+<section id="grovers-search" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Grover’s search</h1>
+<p>As is standard, I will open the list of QSVT applications with Grover’s search. I must note though that I find it to be conceptually a bit harder than many other applications. This is because we will deal with a block encoding in an apriori unknown basis, which is unusual. Anyway, let’s get going.</p>
+<section id="the-problem" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="the-problem"><span class="header-section-number">7.1</span> The problem</h2>
+<p>We aim to find an unknown computational basis state <span class="math inline">\(|m\rangle\)</span>. As our signal unitary we choose the Hadamard gate acting on all qubits <span class="math inline">\(U=H^{\otimes n}\)</span>. We know that <span class="math inline">\(\langle m|H^{\otimes n}|0\rangle=\frac{1}{\sqrt{N}}\)</span>. In other words,</p>
+<p><span class="math display">\[U = \frac{1}{\sqrt{N}} |m\rangle\langle 0|+\dots \ ,\]</span></p>
+<p>i.e.&nbsp;in a suitable basis, <span class="math inline">\(U\)</span> block encodes the transition amplitude between <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|m\rangle\)</span>. If we could apply a polynomial transformation, which approximates <span class="math inline">\(\theta(x-a)\)</span> with <span class="math inline">\(a&lt;\frac{1}{\sqrt{N}}\)</span>, we would effectively amplify the transition amplitude and construct a unitary <span class="math inline">\(U_\phi\)</span> that is almost guaranteed to prepare our marked state <span class="math inline">\(|m\rangle\)</span> starting with <span class="math inline">\(|0\rangle\)</span>.</p>
+<p>A difficulty is that we do not really know the basis of the block encoding, as this would be equivalent to knowing <span class="math inline">\(|m\rangle\)</span>. At the sime time, in QSVT we only need to access controlled versions of projectors corresponding to the block encoding, and this is exactly what Grover’s oracle does.</p>
+</section>
+<section id="projectors" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="projectors"><span class="header-section-number">7.2</span> Projectors</h2>
+<p>Grover’s oracle can be defined as <span class="math inline">\(G=\mathbb{1}-2|m\rangle\langle m|\)</span>. Actually, in practical applications Grover’s oracle is more often represented as an operator that flips the state of an auxilary qubit controlled by the state of the system, i.e.&nbsp;<span class="math inline">\(G|n\rangle|0\rangle=|n\rangle|0\rangle\)</span> for <span class="math inline">\(n\neq m\)</span> and <span class="math inline">\(G|m\rangle|0\rangle=|m\rangle|1\rangle\)</span>. In effect, this operator is nothing but the <span class="math inline">\(|m\rangle\)</span>-controlled NOT gate <span class="math inline">\(G=C_{|m\rangle\langle m|}NOT\)</span>. As we discussed in <a href="#sec-projector_rotations">Sec.&nbsp;4.8</a> it is sufficient to construct the projector rotation <span class="math inline">\(\Pi_R(\phi)\)</span>. The left projector is simply <span class="math inline">\(\Pi_L=|0\rangle\langle0|\)</span> and its controlled version is just the <span class="math inline">\(n+1\)</span> qubit Toffoli gate.</p>
+</section>
+<section id="polynomial-approximation" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="polynomial-approximation"><span class="header-section-number">7.3</span> Polynomial approximation</h2>
+<p>So we aim to approximate <span class="math inline">\(\theta(x-a)\)</span> for <span class="math inline">\(a\le \frac1{\sqrt{N}}\)</span>. As discussed in <a href="#sec-theta_approx">Sec.&nbsp;5.4</a>, this can be done using a polynomial of degree <span class="math inline">\(O(\frac{1}{a}\log\frac{1}{a\epsilon})=O(\sqrt{N}\log\frac{\sqrt{N}}{\epsilon})\)</span>. We know that Grover’s search can run in time <span class="math inline">\(\sqrt{N}\)</span> so the extra <span class="math inline">\(\log\sqrt{N}\)</span>, while not crucial, is unnecessary. Anyway, in the framework of QSVT finding a better scaling algorithm amounts to ‘just’ constructing a more efficient polynomial approximation. We won’t go there.</p>
+<p>Actually, I will not construct the polynomial approximations at all in subsequent implementation. Instead, I will use routines provided by <code>pyqsp</code> that besides building a QSP sequence from a polynomial also includes the approximation utils.</p>
+</section>
+<section id="implementation-1" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="implementation-1"><span class="header-section-number">7.4</span> Implementation</h2>
+<p>First let’s define and look at the approximating polynomials. To build them, we will need to use a function provided by <code>pyqsp</code> package, which approximates <span class="math inline">\(erf(-\delta x)\)</span>. Apparently, we can not simply specify the desired precision here, but instead have to give the degree of the polynomial and <span class="math inline">\(\delta\)</span>. I will go with the simplest options <span class="math inline">\(\operatorname{deg}p=\sqrt{N}, \delta=\sqrt{N}\)</span> which give a decent, but not ideal performance.</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sign_approximating_polynomial(num_qubits):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Polynomial that approximates the step function theta(x) for x&gt;= 1/N**0.5"""</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>num_qubits</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    target_function <span class="op">=</span> pyqsp.poly.PolySign()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For the Sign `pyqsp` does not determined the degree of the polynomial.</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We have to input it. I will take the closest odd number to N**0.5</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    degree <span class="op">=</span> np.ceil(N<span class="op">**</span><span class="fl">0.5</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> degree <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        degree <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This delta controls the width of our approximation around zero, but does not exacly</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># correspond to delta defined in the text, rather delta here ~ 1 / our delta.</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    delta <span class="op">=</span> N<span class="op">**</span><span class="fl">0.5</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the polynomial approximation.</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span>  quiet(target_function.generate)(degree, delta<span class="op">=</span>delta)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> p</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>plt.plot(x, np.sign(x), label<span class="op">=</span><span class="st">'sign(x)'</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> num_qubits <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">2</span>):</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> sign_approximating_polynomial(num_qubits)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, p(x), label<span class="op">=</span><span class="ss">f'qubits = </span><span class="sc">{</span>num_qubits<span class="sc">}</span><span class="ss">, deg=</span><span class="sc">{</span>p<span class="sc">.</span>degree()<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Polynomial approximation to sign(x)'</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>We see that indeed, as we increase the degree of the polynomial, the approximation around <span class="math inline">\(x=0\)</span> impoves. Now we are ready to peform full Grover’s serach by QSVT.</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> projector_from_state(state):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Builds |n&gt;&lt;n| from |n&gt;."""</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.outer(state, state.conj())</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>qubits <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>amplitudes <span class="op">=</span> []</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> num_qubits <span class="kw">in</span> qubits:</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>num_qubits</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define initial state |0&gt; and the associated projector.</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    all_zero_state <span class="op">=</span> np.zeros(N)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    all_zero_state[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    PR <span class="op">=</span> projector_from_state(all_zero_state)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define a random marked state |m&gt;. It will only be accessed via the corresponding projector.</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    marked_state <span class="op">=</span> np.zeros(N)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    marked_state[np.random.randint(<span class="dv">0</span>, N)] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    PL <span class="op">=</span> projector_from_state(marked_state)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Signal operator is the n-th tensor power of the Hadamard gate.</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    H <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>]])<span class="op">/</span>np.sqrt(<span class="dv">2</span>)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    U <span class="op">=</span> <span class="bu">reduce</span>(np.kron, [H]<span class="op">*</span>num_qubits)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We will approximate the step function.</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> sign_approximating_polynomial(num_qubits)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Determine QSP angles</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    phis <span class="op">=</span> pyqsp.angle_sequence.QuantumSignalProcessingPhases(p.coef, signal_operator<span class="op">=</span><span class="st">'Wx'</span>)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    phis <span class="op">=</span> angles_from_W_to_R(phis)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct the QSVT sequence</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    U_phi <span class="op">=</span> apply_QSVT(U, PL, PR, phis)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Determine the overlap with the marked state.</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Recall that takind the real part corresponds to combining two QSVT sequence and is not exactly trivial</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># at the level of circuits.</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    amplitude <span class="op">=</span> np.real(marked_state <span class="op">@</span> U_phi <span class="op">@</span> all_zero_state)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    amplitudes.append(amplitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Alright, here is the result.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>original_amplitudes <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>(<span class="op">-</span><span class="fl">0.5</span><span class="op">*</span>np.array(qubits))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>polynomial_values <span class="op">=</span> [sign_approximating_polynomial(n)(a) <span class="cf">for</span> n, a <span class="kw">in</span> <span class="bu">zip</span>(qubits, original_amplitudes)]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.plot(qubits, amplitudes, label<span class="op">=</span><span class="st">'amplified amplitudes'</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.plot(qubits, polynomial_values, <span class="st">'*'</span>, label<span class="op">=</span><span class="st">'values of approximating polynomial'</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.plot(qubits, [<span class="dv">2</span><span class="op">**</span>(<span class="op">-</span><span class="fl">0.5</span><span class="op">*</span>q) <span class="cf">for</span> q <span class="kw">in</span> qubits], label<span class="op">=</span><span class="st">'original amplitudes'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'num qubits'</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>plt.grid()<span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>We see that with our algorithm indeed significantly amplifies the original amplitudes with only <span class="math inline">\(\sqrt{N}\)</span> calls to Grover’s oracle, albeit not perfectly. Ideally, the amplified amplitudes stay constant as <span class="math inline">\(N\)</span> increases, while ours decay. However, this is entirely due to our choice of the polynomial approximation, which is demonstrated by plotting the values of the approximating polynomial. So our QSVT circuit works just as expected, but our approximating polynomials could be improved. I will not attempt to do it here.</p>
+</section>
+</section>
+<section id="hamiltonian-simulation" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Hamiltonian simulation</h1>
+<p>Hamiltonian simulation lands itself very naturally to the QSVT framework, although there are some technical details to watch out for. Let’s begin.</p>
+<section id="the-problem-1" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="the-problem-1"><span class="header-section-number">8.1</span> The problem</h2>
+<p>The task is, given a Hamiltonian <span class="math inline">\(H\)</span>, build a unitary <span class="math inline">\(e^{-iHt}\)</span>. That’s it. So we need just need to figure out how to apply <span class="math inline">\(f(x)=e^{-ixt}\)</span> with QSVT.</p>
+</section>
+<section id="watch-out-for-your-hamiltonian" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="watch-out-for-your-hamiltonian"><span class="header-section-number">8.2</span> Watch out for your Hamiltonian</h2>
+<p>Except that there may be subtleties. First, if <span class="math inline">\(||H||&gt;1\)</span> we could only block encode <span class="math inline">\(H/\alpha\)</span> with large enough <span class="math inline">\(\alpha\)</span>. But that’s fine, because simulating <span class="math inline">\(H\)</span> for time <span class="math inline">\(t\)</span> is the same as simulating <span class="math inline">\(H/\alpha\)</span> for time <span class="math inline">\(\alpha t\)</span>. Next, if <span class="math inline">\(H\)</span> have negative eigenvalues, these do not coincide with the singular values. One way to deal with that is to shift <span class="math inline">\(H\)</span> by a constant <span class="math inline">\(H+\alpha\)</span>, which can be achieved using the linear combination of unitaries. I will proceed assuming that <span class="math inline">\(||H||\le 1\)</span> and <span class="math inline">\(H\ge0\)</span>.</p>
+</section>
+<section id="solving-the-parity-problem" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="solving-the-parity-problem"><span class="header-section-number">8.3</span> Solving the parity problem</h2>
+<p>Exponential <span class="math inline">\(e^{-ixt}\)</span> is not of definite parity, so we will need to construct it even and odd parts separately, and then combine into a linear combination of unitaries using the following circuit.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/cossin.svg" class="img-fluid figure-img" width="300"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Exercise">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Try to guess which <span class="math inline">\(H\)</span> is the Hadamard gate and which is the Hamiltonian.</p>
+</div>
+</div>
+<p>In fact, this circuit will block encode <span class="math inline">\(\frac12 e^{-iHt}\)</span>. Since for any <span class="math inline">\(|\psi\rangle\)</span> we have <span class="math inline">\(|\frac12 e^{-iHt}|\psi\rangle|^2=\frac14\)</span> the algorithm will succeed with a constant probability <span class="math inline">\(\frac14\)</span>.</p>
+</section>
+<section id="approximating-polynomial" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="approximating-polynomial"><span class="header-section-number">8.4</span> Approximating polynomial</h2>
+<p>So now the task is to approximate <span class="math inline">\(\cos xt\)</span> and <span class="math inline">\(\sin x t\)</span> on <span class="math inline">\([0, 1]\)</span> to some precision <span class="math inline">\(\epsilon\)</span>. How should the result scale with <span class="math inline">\(t, \epsilon\)</span>? Let’s try to apply procedure from <a href="#sec-polynomial_how_to">Sec.&nbsp;5.3</a>. Since this procedure does not require a definite parity we will look at <span class="math inline">\(f(x)=e^{-ixt}\)</span>. First we need to linearly map the region where we want the approximation <span class="math inline">\([0,1]\)</span> to the standard domain of Chebyshev polynomials <span class="math inline">\([-1,1]\)</span>. We do this via <span class="math inline">\(y=2x-1 \to x=\frac{y+1}{2}\)</span>. Then we look at <span class="math inline">\(f(x(y))=e^{-i\frac{y+1}{2}t}\)</span>. In the Bernstein ellipse <span class="math inline">\(E_\rho\)</span> this function has the maximum absolute value <span class="math inline">\(e^{\frac\alpha2 t}\)</span>, achieved when <span class="math inline">\(y\)</span> has the largest imaginary part <span class="math inline">\(\operatorname{im} y=\frac{\rho-\rho^{-1}}{2}\approx \alpha\)</span> assuming <span class="math inline">\(\rho=1+\alpha, \alpha\ll1\)</span>. Therefore, by taking <span class="math inline">\(\alpha=\frac{1}{t}\)</span> we keep the target bounded by a constant in <span class="math inline">\(E_\rho\)</span> as we increase <span class="math inline">\(t\)</span>. According to <strong>?@sec-polynomial_approx</strong>, the smallest <span class="math inline">\(\delta\)</span> we can choose is <span class="math inline">\(\delta=\alpha^2=\frac{1}{t^2}\)</span> which gives the approximating polynomial of degree <span class="math inline">\(O(t^2\log t^2/\epsilon)\)</span>. While not terrible, this is quite suboptimal. Even on physical grounds, we expect that the complexity of the simulation problem should scale lineraly with <span class="math inline">\(t\)</span>, not quadratically. A better approximation can be obtained by direct truncation of the Chebyshev series for <span class="math inline">\(e^{-ixt}\)</span> and gives a polynomial approximation with degree scaling as <span class="math inline">\(t+\frac{\log \epsilon^{-1}}{\log(e+t^{-1}\log\epsilon^{-1})}\)</span>. I agree, this looks sort of weird, but for fixed <span class="math inline">\(\epsilon\)</span> and large enough <span class="math inline">\(t\)</span> scaling is linear in <span class="math inline">\(t\)</span>. I will not dig into details of how to derive this approximation, but you can look them up in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span> or <span class="citation" data-cites="Martyn2021">&nbsp;[<a href="#ref-Martyn2021" role="doc-biblioref">4</a>]</span>. Anyway, we are going to use the approximating polynomials determined by <code>pyqsp</code>.</p>
+</section>
+<section id="implementation-2" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="implementation-2"><span class="header-section-number">8.5</span> Implementation</h2>
+<p>First let’s define a class that will take an artibrary matrix <span class="math inline">\(A, ||A||\le1\)</span> and block encode it into a minimum number of qubits possible. We will use it here and in the next section.</p>
+<div class="cell" data-tags="[]" data-execution_count="5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BlockEncoding:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, M):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_rows <span class="op">=</span> M.shape[<span class="dv">0</span>]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_cols <span class="op">=</span> M.shape[<span class="dv">1</span>]</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.dim <span class="op">=</span> <span class="dv">2</span><span class="op">*</span><span class="va">self</span>.block_dimension(<span class="bu">max</span>(<span class="va">self</span>.num_cols, <span class="va">self</span>.num_rows))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.diagonal_block <span class="op">=</span> <span class="va">self</span>.pad_matrix(M, <span class="va">self</span>.dim<span class="op">//</span><span class="dv">2</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        U, S, WH <span class="op">=</span> np.linalg.svd(<span class="va">self</span>.diagonal_block)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.U <span class="op">=</span> U</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.S <span class="op">=</span> S</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.WH <span class="op">=</span> WH</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.off_diagonal_block <span class="op">=</span> <span class="va">self</span>.make_off_diagonal_block(<span class="va">self</span>.U, <span class="va">self</span>.S, <span class="va">self</span>.WH)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.unitary <span class="op">=</span> <span class="va">self</span>.unitary_from_blocks(</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.diagonal_block, </span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.off_diagonal_block)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.projector <span class="op">=</span> np.kron(np.diag([<span class="dv">1</span>, <span class="dv">0</span>]), np.eye(<span class="va">self</span>.dim<span class="op">//</span><span class="dv">2</span>))</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> block_dimension(n):</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Finds the minimum number of qubits to block encode a square matrix of dimension n"""</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">int</span>(<span class="dv">2</span><span class="op">**</span>np.ceil(np.log2(n)))</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> pad_matrix(M, dim):</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Pads a matrix with zeros make to make it into a d x d matrix.."""</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> np.zeros((dim, dim), dtype<span class="op">=</span>np.complex64)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        n_rows, n_cols <span class="op">=</span> M.shape</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        S[:n_rows,:n_cols] <span class="op">=</span> M</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> S</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> make_off_diagonal_block(u, s, wh):</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> np.<span class="bu">all</span>(s<span class="op">&lt;=</span><span class="dv">1</span>), <span class="ss">f'All singular values </span><span class="sc">{</span>s<span class="sc">}</span><span class="ss"> must be less than 1.'</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> u <span class="op">@</span> np.diag(np.sqrt(<span class="dv">1</span><span class="op">-</span>s<span class="op">**</span><span class="dv">2</span>)) <span class="op">@</span> wh</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> unitary_from_blocks(A, B):</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>        n <span class="op">=</span> A.shape[<span class="dv">0</span>]</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>        U <span class="op">=</span> np.zeros((<span class="dv">2</span><span class="op">*</span>n, <span class="dv">2</span><span class="op">*</span>n), dtype<span class="op">=</span>np.complex64)</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>        U[:n, :n] <span class="op">=</span> A</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>        U[:n,n:<span class="dv">2</span><span class="op">*</span>n] <span class="op">=</span> B</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        U[n:<span class="dv">2</span><span class="op">*</span>n, :n] <span class="op">=</span> B</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>        U[n:<span class="dv">2</span><span class="op">*</span>n, n:<span class="dv">2</span><span class="op">*</span>n] <span class="op">=</span> <span class="op">-</span>A</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> np.allclose(U <span class="op">@</span> U.conj().T, np.eye(<span class="dv">2</span><span class="op">*</span>n), atol<span class="op">=</span><span class="fl">1e-5</span>), <span class="st">'Ops, block encoding is not unitary.'</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> U</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now let’s build and look at approximating polynomials. In contrast to the sign function we used in Grover’s algorithm, here we can directly specify the desired time and accuracy, and the degree of the polynmial is determined by the package.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> trig_approximating_polynomial(t, epsilon, func):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> func <span class="op">==</span> <span class="st">'cos'</span>:</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        target_function <span class="op">=</span> pyqsp.poly.PolyCosineTX()</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> func <span class="op">==</span> <span class="st">'sin'</span>:</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        target_function <span class="op">=</span> pyqsp.poly.PolySineTX()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    coeffs <span class="op">=</span> quiet(target_function.generate)(tau<span class="op">=</span>t, epsilon<span class="op">=</span>epsilon)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.polynomial.Polynomial(coeffs)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.linspace(<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">4</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ti <span class="kw">in</span> t:</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, np.cos(x<span class="op">*</span>ti), label<span class="op">=</span><span class="ss">f't=</span><span class="sc">{</span>ti<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, <span class="dv">2</span><span class="op">*</span>trig_approximating_polynomial(ti, epsilon, <span class="st">'cos'</span>)(x), <span class="st">'*'</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>We see that our polynomials (plotted by stars) match the trigonometric functions well. So let’s go ahead and implement the whole QSVT circuit. In Grover’s example we looked how the results scale with the system size, here we instead will look at scaling with time.</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(seed)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fix the system size. The scalings should be independent.</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>num_qubits</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate a random Hamiltonian satisfying H&gt;0, and ||H||&lt;1 </span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> scipy.stats.unitary_group.rvs(N, random_state<span class="op">=</span>seed)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> np.random.uniform(low<span class="op">=</span><span class="dv">0</span>, high<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>(N,))</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>H <span class="op">=</span> V<span class="op">*</span>D <span class="op">@</span> V.conj().T</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Block encode the Hamiltonian.</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>block_encoding <span class="op">=</span> BlockEncoding(H)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>U <span class="op">=</span> block_encoding.unitary</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> block_encoding.projector</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters.</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.arange(<span class="dv">1</span>, <span class="dv">10</span>)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co"># We will keep track of the approximation quality and degrees of approximating polynomials.</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>accuracies <span class="op">=</span> []</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>degrees <span class="op">=</span> []</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ti <span class="kw">in</span> t:</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    U_phi <span class="op">=</span> []</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    total_degree <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct QSVT circuits for the cos and sin part separately.</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keep track of the total degree.</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> target_function <span class="kw">in</span> [<span class="st">'cos'</span>, <span class="st">'sin'</span>]:</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> trig_approximating_polynomial(ti, epsilon, target_function)</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>        phis <span class="op">=</span> pyqsp.angle_sequence.QuantumSignalProcessingPhases(p.coef, signal_operator<span class="op">=</span><span class="st">'Wx'</span>)</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>        phis <span class="op">=</span> angles_from_W_to_R(phis)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>        total_degree <span class="op">+=</span> <span class="bu">len</span>(phis)<span class="op">-</span><span class="dv">1</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>        U_phi.append(apply_QSVT(U, P, P, phis))</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>    degrees.append(total_degree)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Unpack constructed sequences.</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>    U_phi_cos, U_phi_sin <span class="op">=</span> U_phi</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Select real parts of the singular values.</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is not a trivial operation at circuit level.</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>    H_cos <span class="op">=</span> U_phi_cos[:N, :N]<span class="op">+</span>U_phi_cos[:N, :N].conj().T</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>    H_sin <span class="op">=</span> U_phi_sin[:N, :N]<span class="op">+</span>U_phi_sin[:N, :N].conj().T</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Assemble even and odd parts into an exponential.</span></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Again, not trivial at the circuit level.</span></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>    H_transformed <span class="op">=</span> H_cos <span class="op">-</span><span class="ot">1j</span><span class="op">*</span>H_sin</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Quantify accuracy of the result by the operator norm wrt exact anser.</span></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>    accuracy <span class="op">=</span> np.linalg.norm(H_transformed<span class="op">-</span>scipy.linalg.expm(<span class="op">-</span><span class="ot">1j</span><span class="op">*</span>H<span class="op">*</span>ti), <span class="bu">ord</span><span class="op">=</span><span class="dv">2</span>) <span class="co"># ord=2 == operator norm</span></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>    accuracies.append(accuracy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plt.plot(t, accuracies)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.axhline(epsilon, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'time'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Accuracy'</span>)<span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>plt.plot(t, degrees)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'time'</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'polynomial degree'</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cost scaling'</span>)<span class="op">;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Alright, so at least in the range we have chosen the error remains below the threshold while the degree of the polynomial appears to scale linearly with <span class="math inline">\(t\)</span>.</p>
+</section>
+</section>
+<section id="solving-linear-systems" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Solving linear systems</h1>
+<p>Our final example will be a linear system solver. Let’s begin at the beginning.</p>
+<section id="the-problem-2" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="the-problem-2"><span class="header-section-number">9.1</span> The problem</h2>
+<p>Given a linear system <span class="math inline">\(Ax=b\)</span> we aim to compute <span class="math inline">\(A^+b\)</span> where <span class="math inline">\(A^+\)</span> is the Moore-Penrose pseudo-inverse, see <a href="#sec-pseudo_inverse">Sec.&nbsp;3.4</a>. Again, framing the problem in QSVT terms is rather trivial, we only need to apply <span class="math inline">\(f(x)=\frac1x\)</span> to the singular values of <span class="math inline">\(A^\dagger\)</span>.</p>
+</section>
+<section id="watch-out-for-your-linear-system" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="watch-out-for-your-linear-system"><span class="header-section-number">9.2</span> Watch out for your linear system</h2>
+<p>If the original operator <span class="math inline">\(A\)</span> can be block embedded all its singular values satisfy <span class="math inline">\(\sigma_i\le1\)</span> (if this is not so, we should block embed <span class="math inline">\(A/\alpha\)</span> instead, similarly to the Hamiltonian simulation case). But then <span class="math inline">\(1/\sigma_i\)</span> will necessarily be greater than 1 and so <span class="math inline">\(A^+\)</span> could not be block embeded into a unitary. Moreover, the function <span class="math inline">\(\frac1x\)</span> blows up at <span class="math inline">\(x=0\)</span> and there is no hope to approximate it with a polynomial. Both there problems hint that we need to make an assumption on the range of singular values.</p>
+<p>We will assume that <span class="math inline">\(\frac{1}{\kappa}\le\sigma_i\le1\)</span>. Then <span class="math inline">\(\kappa\)</span> is known as the condition number of the system. It is an important figure of merit for classical sovlers as well. Now we can make the problem well-posed. The goal is to approximate <span class="math inline">\(f(x)=\frac{1}{2\kappa x}\)</span> for <span class="math inline">\(x\in[\frac{1}{\kappa}, 1]\)</span> (the additional factor <span class="math inline">\(\frac12\)</span> is just to make sure <span class="math inline">\(|f(x)|&lt;1\)</span> in the desired range).</p>
+</section>
+<section id="approximating-polynomial-1" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="approximating-polynomial-1"><span class="header-section-number">9.3</span> Approximating polynomial</h2>
+<p>Alright, how do we expect the complexity of the algorithm to scale with <span class="math inline">\(\kappa, \epsilon\)</span>?</p>
+<p>Let’s quickly run the procedure of <a href="#sec-polynomial_how_to">Sec.&nbsp;5.3</a>. First make a linear transformation <span class="math inline">\(y=\frac{2x-1-\kappa^{-1}}{1-\kappa^{-1}}\)</span> that maps <span class="math inline">\([\kappa{^-1},1]\)</span> to <span class="math inline">\([-1,1]\)</span>. We get <span class="math display">\[f(x(y))=\frac{\frac1{\kappa+1}}{y+\frac{\kappa+1}{\kappa-1}}\]</span></p>
+<p>This function has a pole at <span class="math inline">\(y=-\frac{\kappa+1}{\kappa-1}\)</span> and is maximazed in the Bernstein ellipse when <span class="math inline">\(y\)</span> approaches this pole along the real axis. For <span class="math inline">\(y\ge-1-\frac{1}{k+1}\)</span> we can write <span class="math inline">\(|f(x(y))|&lt;1\)</span> Therfore, <span class="math inline">\(f(x(y))\)</span> is bounded by <span class="math inline">\(1\)</span> in a Bernnstein ellipse <span class="math inline">\(E_\rho\)</span> of radius <span class="math inline">\(\rho=1+\alpha\)</span> with <span class="math inline">\(\alpha^2=\frac{2}{\kappa+1}\)</span>. Therofore, we can choose <span class="math inline">\(\delta\sim\frac{1}{\kappa}\)</span>. Note that <span class="math inline">\(y(-1)=-3+O(\kappa{-1})\)</span> and so we can choose <span class="math inline">\(b=2\)</span>, this does not affect the complexity. Therefore, in this case we expect the degree of the approximating polynomial to scale as <span class="math display">\[\operatorname{deg}p=O(\kappa\log \frac{\kappa}{\epsilon} )\ .\]</span></p>
+<p>A couple of quick commets. - This scaling is a significant improvement to the original HHL algorithm, which runs in <span class="math inline">\(O(\frac{\kappa^2\log N}{\epsilon})\)</span>. Apparently, this scaling is state-of-the-art result for quantum matrix inversion. - The matrix dimension <span class="math inline">\(N\)</span> does not enter our scaling explicitly. However, if the costs of block encoding <span class="math inline">\(A\)</span> are taken into account the result will likly scale with <span class="math inline">\(N\)</span>. - Merely finding <span class="math inline">\(A^{+}\)</span> is not a end-to-end quantum algorithm. In practice, you would also need a way to load the vector <span class="math inline">\(|b\rangle\)</span> in and be able to read out useful information from a quantum state <span class="math inline">\(|A^{+}b\rangle\)</span>, which are no trivial considerations. - The post-selection probability to get <span class="math inline">\(|A^+b\rangle\)</span> is proportional to <span class="math inline">\(|\frac{1}{2\kappa}A^+b|^2\ge \frac{1}{4\kappa^2}||A^+||^2\ge \frac{1}{4\kappa^2}\)</span>. It decays quadratically with <span class="math inline">\(\kappa\)</span> but can be expnentially enhanced via a classical repetition or a quantum amplitude amplification.</p>
+</section>
+<section id="implementation-3" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="implementation-3"><span class="header-section-number">9.4</span> Implementation</h2>
+<p>Alright, let’s inmplement our final example. First let’s build and look at approximating polynomials.</p>
+<div class="cell" data-execution_count="79">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xinverse_approximating_polynomial(kappa, epsilon):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Polynomal approxiamtion to 1/(2*kappa*x)"""</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    target_function <span class="op">=</span> pyqsp.poly.PolyOneOverX()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    coeffs, scale <span class="op">=</span> quiet(target_function.generate)(kappa<span class="op">=</span>kappa, epsilon<span class="op">=</span>epsilon, return_scale<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For some reason, pyqsp returns 1/x*scale with some `scale`</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># that might be different from 1/kappa. </span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We remove this scale from our polynomial.</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.polynomial.Polynomial(coeffs<span class="op">/</span>(scale<span class="op">*</span><span class="dv">2</span><span class="op">*</span>kappa))</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>kappa <span class="op">=</span> <span class="fl">3.5</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>plt.plot(x, <span class="dv">1</span><span class="op">/</span>(<span class="dv">2</span><span class="op">*</span>kappa<span class="op">*</span>x), label<span class="op">=</span><span class="st">'1/x'</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x, <span class="dv">1</span><span class="op">/</span>(<span class="dv">2</span><span class="op">*</span>kappa<span class="op">*</span>x)<span class="op">+</span>epsilon, <span class="dv">1</span><span class="op">/</span>(<span class="dv">2</span><span class="op">*</span>kappa<span class="op">*</span>x)<span class="op">-</span>epsilon, alpha<span class="op">=</span><span class="fl">0.3</span>, edgecolor<span class="op">=</span><span class="st">'b'</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> xinverse_approximating_polynomial(kappa, epsilon)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>plt.plot(x, p(x), label<span class="op">=</span><span class="st">'polynomial approximation'</span>)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>plt.axvline(<span class="dv">1</span><span class="op">/</span>kappa, ls<span class="op">=</span><span class="st">'--'</span>, c<span class="op">=</span><span class="st">'r'</span>)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>plt.axvline(<span class="op">-</span><span class="dv">1</span><span class="op">/</span>kappa, ls<span class="op">=</span><span class="st">'--'</span>, c<span class="op">=</span><span class="st">'r'</span>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f'kappa = </span><span class="sc">{</span>kappa<span class="sc">}</span><span class="ss">, epsilon=</span><span class="sc">{</span>epsilon<span class="sc">}</span><span class="ss">, degree=</span><span class="sc">{</span>p<span class="sc">.</span>degree()<span class="sc">}</span><span class="ss">'</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>This seems right. Let’s also write a function to generate random linear sysmtes with matrices <span class="math inline">\(A\)</span> satisfying <span class="math inline">\(A\in \mathbb{R}, ||A||\le1\)</span>. It’s nothing interesting, really.</p>
+<div class="cell" data-execution_count="80">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_A(kappa, num_qubits):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Construnct a random real operator A with ||A||&lt;1 and condition number &lt;= kappa.</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">        Size of A is n by m, which a both smaller than 2**num_qubits."""</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>num_qubits</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    n, m <span class="op">=</span> np.random.randint(N<span class="op">//</span><span class="dv">2</span>, N, size<span class="op">=</span><span class="dv">2</span>)  <span class="co"># Lets make N&gt;= n,m &gt;= N/2</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    V <span class="op">=</span> scipy.stats.ortho_group.rvs(n, random_state<span class="op">=</span>seed<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    W <span class="op">=</span> scipy.stats.ortho_group.rvs(m, random_state<span class="op">=</span>seed<span class="op">**</span><span class="dv">3</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    singular_values <span class="op">=</span> np.random.uniform(low<span class="op">=</span><span class="dv">1</span><span class="op">/</span>kappa, high<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span><span class="bu">min</span>(n, m))</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    Sigma <span class="op">=</span> np.zeros((n, m))</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    Sigma[:<span class="bu">min</span>(n, m), :<span class="bu">min</span>(n, m)] <span class="op">=</span> np.diag(singular_values)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> V <span class="op">@</span> Sigma <span class="op">@</span> W.conj().T</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now we are ready to proceed with the full-fledged QSVT application. This time we will look at how complexity scales with <span class="math inline">\(\kappa\)</span>. This scaling should be independent of other parameters.</p>
+<div class="cell" data-tags="[]" data-execution_count="91">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(seed)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>num_qubits</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>kappas <span class="op">=</span> np.linspace(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">10</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># We will keep track of accuracies and polynomial degrees.</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>errors <span class="op">=</span> []</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>degrees <span class="op">=</span> []</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> kappa <span class="kw">in</span> kappas:</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate a random linear system.</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> random_A(kappa, num_qubits)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    n, m <span class="op">=</span> A.shape</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Block encode it.</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    block_encoding <span class="op">=</span> BlockEncoding(A)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    U <span class="op">=</span> block_encoding.unitary</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    P <span class="op">=</span> block_encoding.projector</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Determine approximating polynomial and QSP angles.</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> xinverse_approximating_polynomial(kappa, epsilon)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    degrees.append(p.degree())</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    phis <span class="op">=</span> pyqsp.angle_sequence.QuantumSignalProcessingPhases(p.coef, signal_operator<span class="op">=</span><span class="st">'Wx'</span>)</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    phis <span class="op">=</span> angles_from_W_to_R(phis)</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The QSVT circuit itself.</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    U_phi <span class="op">=</span> apply_QSVT(U, P, P, phis)</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compare with the exact pseudo-inverse via the operator norm.</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    exact_pseudo_inverse <span class="op">=</span> np.linalg.pinv(A)</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>    our_pseudo_inverse <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>kappa<span class="op">*</span>np.real(U_phi.conj().T)[:m, :n] </span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> np.linalg.norm(our_pseudo_inverse<span class="op">-</span>exact_pseudo_inverse, <span class="bu">ord</span><span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>    errors.append(error)</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>plt.plot(kappas, errors)</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Errors'</span>)<span class="op">;</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'kappa'</span>)<span class="op">;</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>plt.axhline(epsilon, linestyle<span class="op">=</span><span class="st">'--'</span>, c<span class="op">=</span><span class="st">'r'</span>)</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>plt.plot(kappas, degrees)</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Complexity'</span>)<span class="op">;</span></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'degree'</span>)<span class="op">;</span></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'kappa'</span>)<span class="op">;</span></span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>This looks right, the error quanitified by the operator norm stays below the threshold while the degree of the approximating polynomial seems to grow linearly. This wraps up the experiment.</p>
+</section>
+</section>
+<section id="conclusion" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Conclusion</h1>
+<p>Come on, this post is already waay to long. The best I can do I can do is to skip the conclusion 😎. As always, feedback is highly appreciated.</p>
+
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-ArazzolaQSVT" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. M. Arrazola, <em><a href="https://pennylane.ai/qml/demos/tutorial_intro_qsvt.html">Intro to QSVT</a></em>, (2023).</div>
+</div>
+<div id="ref-Gilyen2019" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">A. Gilyén, Y. Su, G. H. Low, and N. Wiebe, <em><a href="https://doi.org/10.1145/3313276.3316366"><span class="nocase">Quantum singular value transformation and beyond: Exponential improvements for quantum matrix arithmetics</span></a></em>, Proceedings of the Annual ACM Symposium on Theory of Computing 193 (2019).</div>
+</div>
+<div id="ref-Tang2023" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">E. Tang and K. Tian, <em><a href="https://arxiv.org/abs/2302.14324v1"><span class="nocase">A CS guide to the quantum singular value transformation</span></a></em>, (2023).</div>
+</div>
+<div id="ref-Martyn2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">J. M. Martyn, Z. M. Rossi, A. K. Tan, and I. L. Chuang, <em><a href="https://doi.org/10.1103/PRXQuantum.2.040203"><span class="nocase">A Grand Unification of Quantum Algorithms</span></a></em>, PRX Quantum <strong>2</strong>, (2021).</div>
+</div>
+<div id="ref-pyqsp" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">I. Chuang and et al, <em><a href="https://github.com/ichuang/pyqsp">Pyqsp: Quantum Signal Processing</a></em>, (2022).</div>
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="idnm/blog" data-repo-id="R_kgDOJWB1vg" data-category="General" data-category-id="DIC_kwDOJWB1vs4CVvR7" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
