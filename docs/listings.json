@@ -8,6 +8,10 @@
     "items": []
   },
   {
+    "listing": "/posts/quantum_singular_value_transformation_intro/index.html",
+    "items": []
+  },
+  {
     "listing": "/index.html",
     "items": [
       "/posts/quantum_singular_value_transformation_intro/index.html",
@@ -23,9 +27,5 @@
       "/posts/entanglement/2021-07-12-entanglement.html",
       "/posts/how_was_this_blog_setup/2021-07-11-how this blog was set up.html"
     ]
-  },
-  {
-    "listing": "/posts/quantum_singular_value_transformation_intro/index.html",
-    "items": []
   }
 ]
