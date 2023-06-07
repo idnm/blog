@@ -206,7 +206,11 @@ window.MathJax = {
           Or grand unification of quantum algorithms, if you feel a bit grandiose.
         </div>
       </div>
-                </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">quantum concepts</div>
+                <div class="quarto-category">paper review</div>
+              </div>
+                  </div>
   </div>
     
   
@@ -242,7 +246,7 @@ window.MathJax = {
   <li><a href="#ingredients" id="toc-ingredients" class="nav-link" data-scroll-target="#ingredients"><span class="header-section-number">2.1</span> Ingredients</a></li>
   <li><a href="#circuit" id="toc-circuit" class="nav-link" data-scroll-target="#circuit"><span class="header-section-number">2.2</span> Circuit</a></li>
   <li><a href="#polynomials-from-qsp" id="toc-polynomials-from-qsp" class="nav-link" data-scroll-target="#polynomials-from-qsp"><span class="header-section-number">2.3</span> Polynomials from QSP</a></li>
-  <li><a href="#generalizing-qsp-polynomials" id="toc-generalizing-qsp-polynomials" class="nav-link" data-scroll-target="#generalizing-qsp-polynomials"><span class="header-section-number">2.4</span> Generalizing QSP polynomials</a></li>
+  <li><a href="#sec-general_poly" id="toc-sec-general_poly" class="nav-link" data-scroll-target="#sec-general_poly"><span class="header-section-number">2.4</span> Generalizing QSP polynomials</a></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">2.5</span> Implementation</a></li>
   </ul></li>
   <li><a href="#singular-value-decomposition" id="toc-singular-value-decomposition" class="nav-link" data-scroll-target="#singular-value-decomposition"><span class="header-section-number">3</span> Singular value decomposition</a>
@@ -251,7 +255,7 @@ window.MathJax = {
   <li><a href="#relation-to-eigenvalues" id="toc-relation-to-eigenvalues" class="nav-link" data-scroll-target="#relation-to-eigenvalues"><span class="header-section-number">3.2</span> Relation to eigenvalues</a></li>
   <li><a href="#sec-operator_norm" id="toc-sec-operator_norm" class="nav-link" data-scroll-target="#sec-operator_norm"><span class="header-section-number">3.3</span> Relation to operator norm</a></li>
   <li><a href="#sec-pseudo_inverse" id="toc-sec-pseudo_inverse" class="nav-link" data-scroll-target="#sec-pseudo_inverse"><span class="header-section-number">3.4</span> Moore-Penrose pseudo-inverse</a></li>
-  <li><a href="#how-to-define-polynomial-of-an-arbitrary-matrix" id="toc-how-to-define-polynomial-of-an-arbitrary-matrix" class="nav-link" data-scroll-target="#how-to-define-polynomial-of-an-arbitrary-matrix"><span class="header-section-number">3.5</span> How to define polynomial of an arbitrary matrix</a></li>
+  <li><a href="#sec-matrix_poly" id="toc-sec-matrix_poly" class="nav-link" data-scroll-target="#sec-matrix_poly"><span class="header-section-number">3.5</span> How to define polynomial of an arbitrary matrix</a></li>
   </ul></li>
   <li><a href="#sec-block" id="toc-sec-block" class="nav-link" data-scroll-target="#sec-block"><span class="header-section-number">4</span> Block encodings</a>
   <ul class="collapse">
@@ -264,20 +268,22 @@ window.MathJax = {
   <li><a href="#block-encoding-in-general-bases-and-projection-operators" id="toc-block-encoding-in-general-bases-and-projection-operators" class="nav-link" data-scroll-target="#block-encoding-in-general-bases-and-projection-operators"><span class="header-section-number">4.7</span> Block encoding in general bases and projection operators</a></li>
   <li><a href="#sec-projector_rotations" id="toc-sec-projector_rotations" class="nav-link" data-scroll-target="#sec-projector_rotations"><span class="header-section-number">4.8</span> Projector rotations from controlled projectors</a></li>
   </ul></li>
-  <li><a href="#approximating-functions-with-bounded-polynomials" id="toc-approximating-functions-with-bounded-polynomials" class="nav-link" data-scroll-target="#approximating-functions-with-bounded-polynomials"><span class="header-section-number">5</span> Approximating functions with bounded polynomials</a>
+  <li><a href="#approximating-functions-with-polynomials" id="toc-approximating-functions-with-polynomials" class="nav-link" data-scroll-target="#approximating-functions-with-polynomials"><span class="header-section-number">5</span> Approximating functions with polynomials</a>
   <ul class="collapse">
   <li><a href="#recap-of-the-problem" id="toc-recap-of-the-problem" class="nav-link" data-scroll-target="#recap-of-the-problem"><span class="header-section-number">5.1</span> Recap of the problem</a></li>
   <li><a href="#chebyshev-polynomials" id="toc-chebyshev-polynomials" class="nav-link" data-scroll-target="#chebyshev-polynomials"><span class="header-section-number">5.2</span> Chebyshev polynomials</a></li>
-  <li><a href="#sec-polynomial_how_to" id="toc-sec-polynomial_how_to" class="nav-link" data-scroll-target="#sec-polynomial_how_to"><span class="header-section-number">5.3</span> A recipie for building bounded Chebyshev approximations</a></li>
-  <li><a href="#sec-theta_approx" id="toc-sec-theta_approx" class="nav-link" data-scroll-target="#sec-theta_approx"><span class="header-section-number">5.4</span> Illustration: approximating the step function</a></li>
+  <li><a href="#chebyshev-series-and-bernstein-ellipse" id="toc-chebyshev-series-and-bernstein-ellipse" class="nav-link" data-scroll-target="#chebyshev-series-and-bernstein-ellipse"><span class="header-section-number">5.3</span> Chebyshev series and Bernstein ellipse</a></li>
+  <li><a href="#sec-polynomial_how_to" id="toc-sec-polynomial_how_to" class="nav-link" data-scroll-target="#sec-polynomial_how_to"><span class="header-section-number">5.4</span> Bounded Chebyshev approximations</a></li>
+  <li><a href="#sec-theta_approx" id="toc-sec-theta_approx" class="nav-link" data-scroll-target="#sec-theta_approx"><span class="header-section-number">5.5</span> Illustration: approximating the sign function</a></li>
   </ul></li>
-  <li><a href="#qsvt" id="toc-qsvt" class="nav-link" data-scroll-target="#qsvt"><span class="header-section-number">6</span> QSVT</a>
+  <li><a href="#sec-QSVT" id="toc-sec-QSVT" class="nav-link" data-scroll-target="#sec-QSVT"><span class="header-section-number">6</span> QSVT</a>
   <ul class="collapse">
   <li><a href="#recap" id="toc-recap" class="nav-link" data-scroll-target="#recap"><span class="header-section-number">6.1</span> Recap</a></li>
-  <li><a href="#ow-qsvt-works" id="toc-ow-qsvt-works" class="nav-link" data-scroll-target="#ow-qsvt-works"><span class="header-section-number">6.2</span> ow QSVT works</a></li>
+  <li><a href="#how-qsvt-works" id="toc-how-qsvt-works" class="nav-link" data-scroll-target="#how-qsvt-works"><span class="header-section-number">6.2</span> How QSVT works</a></li>
   <li><a href="#qsvt-circuit" id="toc-qsvt-circuit" class="nav-link" data-scroll-target="#qsvt-circuit"><span class="header-section-number">6.3</span> QSVT circuit</a></li>
-  <li><a href="#why-qsvt-works" id="toc-why-qsvt-works" class="nav-link" data-scroll-target="#why-qsvt-works"><span class="header-section-number">6.4</span> Why QSVT works</a></li>
-  <li><a href="#qubitization" id="toc-qubitization" class="nav-link" data-scroll-target="#qubitization"><span class="header-section-number">6.5</span> Qubitization</a></li>
+  <li><a href="#controlled-version-of-qsvt-circuit" id="toc-controlled-version-of-qsvt-circuit" class="nav-link" data-scroll-target="#controlled-version-of-qsvt-circuit"><span class="header-section-number">6.4</span> Controlled version of QSVT circuit</a></li>
+  <li><a href="#sec-qsvt_why" id="toc-sec-qsvt_why" class="nav-link" data-scroll-target="#sec-qsvt_why"><span class="header-section-number">6.5</span> Why QSVT works</a></li>
+  <li><a href="#qubitization" id="toc-qubitization" class="nav-link" data-scroll-target="#qubitization"><span class="header-section-number">6.6</span> Qubitization</a></li>
   </ul></li>
   <li><a href="#grovers-search" id="toc-grovers-search" class="nav-link" data-scroll-target="#grovers-search"><span class="header-section-number">7</span> Grover’s search</a>
   <ul class="collapse">
@@ -344,15 +350,22 @@ window.MathJax = {
 </div>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p><span class="citation" data-cites="ArazzolaQSVT">&nbsp;[<a href="#ref-ArazzolaQSVT" role="doc-biblioref">1</a>]</span> <span class="citation" data-cites="Gilyen2019">&nbsp;[<a href="#ref-Gilyen2019" role="doc-biblioref">2</a>]</span> <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span> <span class="citation" data-cites="Martyn2021">&nbsp;[<a href="#ref-Martyn2021" role="doc-biblioref">4</a>]</span></p>
-<p><strong><em>Quantum singular value transformation (QSVT)</em></strong> is a new framework developed in recent years that is now extensively used to understand and improve existing as well as construct new quantum algorithms. If you are willing to be a bit dramatic, QSVT has been claimed to provide a grand unification of many different quantum algorithms. So, how does it work?</p>
+<p><strong><em>Quantum singular value transformation (QSVT)</em></strong> is a modern framework for quantum algorithms encompassing a wide range of applications from quantum search, to Hamiltonian simulation, to machine learning problems, and beyond. If you are willing to be a bit dramatic, QSVT has been claimed to provide a grand unification of quantum algorithms. In this post, I intend to give a comprehensive introduction to the subject.</p>
+<p>I don’t think there is too much introductory material available so far, although I stress a great paper by Martyn et al. <span class="citation" data-cites="Martyn2021">&nbsp;[<a href="#ref-Martyn2021" role="doc-biblioref">1</a>]</span>. I would actually recommend it as the first read, instead. In many ways, my presentation here is similar and inspired by it. There are some distinctions, though.</p>
+<ul>
+<li>I use insights from a recent paper by Tang and Kian <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">2</a>]</span>, which simplify the derivation of QSVT and streamline the construction of polynomial approximations.</li>
+<li>The explanations here are interleaved with fully functional code samples.</li>
+<li>If nothing else, I frame some things differently, and this may click better.</li>
+</ul>
+<p>I also recommend a recent blog post by Arrazola <span class="citation" data-cites="ArrazolaQSVT">&nbsp;[<a href="#ref-ArrazolaQSVT" role="doc-biblioref">3</a>]</span>. It is relatively short, very well explained, and contains code snippets in <code>pennylane</code>. However, it is quite limited in scope.</p>
+<p>I will mostly focus on the concepts behind QSVT, but also implement several algorithms explicitly. A comprehensive list of the QSVT applications, as of 2019, can probably be found in <span class="citation" data-cites="Gilyen2019">&nbsp;[<a href="#ref-Gilyen2019" role="doc-biblioref">4</a>]</span> or <span class="citation" data-cites="GilyenThesis">&nbsp;[<a href="#ref-GilyenThesis" role="doc-biblioref">5</a>]</span>. I’m not sure if there is an up-to-date account.</p>
 <section id="a-high-level-overview" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="a-high-level-overview"><span class="header-section-number">1.1</span> A high-level overview</h2>
-<p>Constructing a quantum algorithm using QSVT consists of the following main steps. Don’t worry if this does not immediately make sense, the goal of this post is to elaborate and give examples.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="QSVT in a nutshell">
+<p>So, how does QSVT work? Constructing a quantum algorithm using QSVT consists of the following main steps. Don’t worry if this does not immediately make sense, the goal of this post is to elaborate and give examples.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="QSVT in a nutshell">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 QSVT in a nutshell
@@ -361,10 +374,10 @@ QSVT in a nutshell
 <div class="callout-body-container callout-body">
 <div style="font-size:17px">
 <ol type="1">
-<li>Express your problem of interest as applying a function <span class="math inline">\(f(x)\)</span> to (the singular values of) a <span class="math inline">\(A\to f(A)\)</span>.</li>
+<li>Express your problem of interest as applying a function <span class="math inline">\(f(x)\)</span> to (the singular values of) a matrix <span class="math inline">\(A\to f(A)\)</span>.</li>
 <li>Find a unitary circuit <span class="math inline">\(U\)</span> that block encodes your matrix, i.e.&nbsp;in a suitable basis <span class="math display">\[U=\begin{pmatrix}A&amp;*\\ *&amp;*\end{pmatrix} \ .\]</span></li>
 <li>Find a good enough polynomial approximation to the target function <span class="math inline">\(p(x)\approx f(x)\)</span>.</li>
-<li>Using quantum signal processing to construct a circuit <span class="math inline">\(U_\phi\)</span>, that block encodes <span class="math inline">\(p(A)\)</span>, i.e. <span class="math display">\[U_\phi=\begin{pmatrix}p(A)&amp;*\\ *&amp;*\end{pmatrix} \ .\]</span></li>
+<li>Using quantum signal processing construct a circuit <span class="math inline">\(U_\phi\)</span>, that block encodes <span class="math inline">\(p(A)\)</span>, i.e. <span class="math display">\[U_\phi=\begin{pmatrix}p(A)&amp;*\\ *&amp;*\end{pmatrix} \ .\]</span></li>
 </ol>
 </div>
 </div>
@@ -373,13 +386,32 @@ QSVT in a nutshell
 <ol type="1">
 <li><strong>Grover’s search.</strong> There is some marked state <span class="math inline">\(|m\rangle\)</span> of <span class="math inline">\(n\)</span> qubits that we need to find. In this case, we can take <span class="math inline">\(A\)</span> to be <span class="math inline">\(1\times 1\)</span> matrix containing a single matrix element <span class="math inline">\(a=\langle m|H^{\otimes n}|0\rangle\)</span>. If we can apply the sign-function to it <span class="math inline">\(x\to \operatorname{sign}(x)\)</span>, we will map an arbitrary amplitude <span class="math inline">\(a&gt;0\)</span> to 1, and hence build the circuit that is guaranteed to take the initial state <span class="math inline">\(|0\rangle\)</span> to the marked state <span class="math inline">\(|m\rangle\)</span>.</li>
 <li><strong>Quantum simulation.</strong> Here given a Hamiltonian <span class="math inline">\(H\)</span> we seek to construct a unitary <span class="math inline">\(e^{-iHt}\)</span>. Quite literally, this is the problem of applying <span class="math inline">\(f(x)=e^{-ixt}\)</span> to the eigenvalues of <span class="math inline">\(H\)</span>. Up to technicalities, eigenvalues can be transformed in the same way as singular values.</li>
-<li><strong>Solving linear equations.</strong> Given a matrix <span class="math inline">\(A\)</span> and a vector <span class="math inline">\(b\)</span> solve <span class="math inline">\(Ax=b\)</span> for <span class="math inline">\(x\)</span>, i.e.&nbsp;compute <span class="math inline">\(A^+b\)</span> where <span class="math inline">\(A^+\)</span> is the Moore-Penrose pseudo-inverse of <span class="math inline">\(A\)</span>. But pseudo-inverse <span class="math inline">\(A^+\)</span> is just equal to the usual hermitian conjugate <span class="math inline">\(A^\dagger\)</span> with singular values inverted, so here <span class="math inline">\(f(x)\propto \frac1x\)</span>.</li>
+<li><strong>Solving linear equations.</strong> Given a matrix <span class="math inline">\(A\)</span> and a vector <span class="math inline">\(b\)</span> solve <span class="math inline">\(Ax=b\)</span> for <span class="math inline">\(x\)</span>, i.e.&nbsp;compute <span class="math inline">\(A^+b\)</span>, where <span class="math inline">\(A^+\)</span> is the Moore-Penrose pseudo-inverse of <span class="math inline">\(A\)</span>. But pseudo-inverse <span class="math inline">\(A^+\)</span> is just equal to the usual hermitian conjugate <span class="math inline">\(A^\dagger\)</span> with singular values inverted, so here <span class="math inline">\(f(x)\propto \frac1x\)</span>.</li>
 </ol>
 <p>Many other applications of QSVT exist, but in this blog post I will focus on these three. Hopefully step (1) is starting to make sense now. How do we perform step (2) then, how to find the block encoding? To my understanding, this is typically the most challenging part, and has to be addressed case-by-case. I will give some intuition and examples of block encodings below in <a href="#sec-block">Sec.&nbsp;4</a>. Next, QSVT allows performing only polynomial transformations, but most problems of practical interest require applying non-polynomial functions. This is why we need step (3), which is finding the right polynomial approximation. Importantly, the degree of the approximating polynomial determines the complexity of the final quantum circuit, so this is an essential step as well. Finally, after you decided on the best approximating polynomial, you can implement it using techniques from the quantum signal processing, which is step (4). This should be straightforward in theory, while in practice there still may be issues with speed and numerical stability for large instances.</p>
 </section>
 <section id="what-i-will-and-will-not-discuss" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="what-i-will-and-will-not-discuss"><span class="header-section-number">1.2</span> What I will and will not discuss</h2>
-<p>Will - QSP, Block encodings (LCU), approximating polynomials - Proof of QSVT - Three quantum algorithms - Code implementation - pyqsp usage examples Will not - Exact circuits for each case - How to block encode in general - How to get approximating polynomials in practice - Other applications of QSVT</p>
+<p>Here are some of the topics that will be covered.</p>
+<ul>
+<li>Basic quantum signal processing.</li>
+<li>Basic concepts behind the singular value decomposition.</li>
+<li>Basic concepts and examples of block encodings, including the linear combination of unitaries.</li>
+<li>Some intuition behind approximating polynomials and expected scaling.</li>
+<li>How to construct QSVT circuits and why do they work.</li>
+<li>Many code samples, including explicit implementations of several quantum algorithms.</li>
+<li>Examples of how to use <code>pyqsp</code> <span class="citation" data-cites="pyqsp">&nbsp;[<a href="#ref-pyqsp" role="doc-biblioref">6</a>]</span> package for signal processing.</li>
+</ul>
+<p>Here are some of the important omissions.</p>
+<ul>
+<li>How to find QSP angles from a polynomial.</li>
+<li>How exactly to construct an approximating polynomial.</li>
+<li>How to do block encoding in general.</li>
+<li>Only consider a limited number of examples.</li>
+<li>I will not implement algorithms as quantum circuits, but merely as matrix multiplications. This allows to cut some corners, but is less pedagogic.</li>
+</ul>
+<p>In the end, this turned out to be a behemoth-sized post. Although I tried to break it up into small digestible pieces, do not expect a light read. Also, I tried my best to be pedagogical but also precise in technical detail. I welcome feedback on the presentation and suggestions on possible errors.</p>
+<p>Alright, with all disclaimers out of the way, we are ready to begin!</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/A_qsvt.svg" class="img-fluid figure-img"></p>
@@ -401,12 +433,17 @@ R(a)=\begin{pmatrix}a&amp;\sqrt{1-a^2}\\\sqrt{1-a^2} &amp; -a\end{pmatrix} \ . \
 <section id="circuit" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="circuit"><span class="header-section-number">2.2</span> Circuit</h2>
 <p>The most general quantum circuit you can build from these two ingredients is the following alternating sequence</p>
-<div class="callout callout-style-simple callout-note no-icon">
-<div class="callout-body d-flex">
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="QSP circuit">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
-<div class="callout-body-container">
+<div class="callout-title-container flex-fill">
+QSP circuit
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:17px">
 <p><span class="math display">\[\begin{align}
 U_\phi =S(\phi_0)\prod_{i=1}^d R(a) S(\phi_i) = S(\phi_0)R(a) S(\phi_1) R(a)\dots S(\phi_{d-1}) R(a) S(\phi_d) \label{QSP} \ .
 \end{align}\]</span></p>
@@ -415,7 +452,7 @@ U_\phi =S(\phi_0)\prod_{i=1}^d R(a) S(\phi_i) = S(\phi_0)R(a) S(\phi_1) R(a)\dot
 </div>
 <p>Now, if you actually compute <span class="math inline">\(U_\phi\)</span>, you’ll find it is of the following form (up to a global phase) <span class="math display">\[U_\phi= \begin{pmatrix} P(a) &amp; i Q(a)\sqrt{1-a^2} \\ i Q(a)^*\sqrt{1-a^2} &amp; P(a)^*\end{pmatrix} \ . \]</span> The key fact here is that both <span class="math inline">\(P(a)\)</span> and <span class="math inline">\(Q(a)\)</span> are <em>polynomials</em>.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="W and R signal conventions">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -424,7 +461,7 @@ W and R signal conventions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>One can choose different signal- and signal-processing operators. Our choice is the <span class="math inline">\(R\)</span>-convention. It will be most convenient for generalizing to QSVT. Another standard one is <span class="math inline">\(W\)</span>-convention, where the signal operator is <span class="math display">\[W(a)=\begin{pmatrix}a &amp; i\sqrt{1-a^2}\\i\sqrt{1-a^2} &amp; a\end{pmatrix} \ .\]</span> The two signal operators are related by <span class="math inline">\(R(a)=-i S(\pi/4) W(a) S(\pi/4)\)</span>. For <span class="math inline">\(W\)</span>-signal operator relation <span class="math inline">\(\eqref{QSP}\)</span> is exact, while for <span class="math inline">\(R(a)\)</span> there is an additional global phase <span class="math inline">\(i^d\)</span>. If we have an angle sequence <span class="math inline">\(\phi_i^W\)</span> implementing the desired polynomial transformation with <span class="math inline">\(W\)</span>-signal, the angles for <span class="math inline">\(R\)</span>-signal are <span class="math display">\[\phi_0^R=\phi_0^W+(2d-1)\frac{\pi}{4}, \quad \phi_d^R=\phi_d^W-\frac{\pi}{4}, \quad \phi_i^R=\phi_i^W-\frac{\pi}{2} (0 &lt; i&lt; d)\,\, \ .\]</span></p>
 </div>
@@ -442,8 +479,8 @@ W and R signal conventions
 </ol>
 <p>An important fact of QSP is that the reverse statement is also true - as long as a degree <span class="math inline">\(d\)</span> polynomial <span class="math inline">\(P\)</span> satisfies these conditions, there are <span class="math inline">\(d+1\)</span> angles <span class="math inline">\(\phi_i\)</span> that produce <span class="math inline">\(P\)</span> via the QSP <span class="math inline">\(\eqref{QSP}\)</span>. While the proof is not trivial, the statement looks reasonable. Indeed, a complex polynomial <span class="math inline">\(P\)</span> of degree <span class="math inline">\(d\)</span> and definite parity has about <span class="math inline">\(d\)</span> independent real coefficients, and this is exactly the number of angles we can tweak in the QSP. Since dimensions of the parameter spaces agree, it is plausible that they can map both ways.</p>
 </section>
-<section id="generalizing-qsp-polynomials" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="generalizing-qsp-polynomials"><span class="header-section-number">2.4</span> Generalizing QSP polynomials</h2>
+<section id="sec-general_poly" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-general_poly"><span class="header-section-number">2.4</span> Generalizing QSP polynomials</h2>
 <p>While many polynomials <span class="math inline">\(P\)</span> can be obtained in this way, there are important limitations. In particular, by property (3) <span class="math inline">\(|P(1)|=1\)</span>, which is often undesirable (say, you need to approximate <span class="math inline">\(f(x)\)</span> such that <span class="math inline">\(f(1)\neq1\)</span>). The trick is to look at the real part <span class="math inline">\(\operatorname{Re} P(a)\)</span>. While still bounded, it does not have to satisfy <span class="math inline">\(\operatorname{Re} P(1)=1\)</span> and is general enough for many applications. Then the problem is how to access <span class="math inline">\(\operatorname{Re}P\)</span>. One way is to measure the QSP operator in <span class="math inline">\(|\pm\rangle\)</span> basis. Indeed, you can check that</p>
 <p><span class="math display">\[
 \langle +|U_\phi|+\rangle=\operatorname{Re}P(a)+i\operatorname{Re}Q(a)\sqrt{1-a^2} \ .
@@ -456,12 +493,25 @@ W and R signal conventions
 <p></p><figcaption class="figure-caption">Fig.&nbsp;1: Block encoding real polynomial</figcaption><p></p>
 </figure>
 </div>
-<p>This trick more readily generalizes to QSVT. In effect, this circuit performs a block encoding of <span class="math inline">\(\frac12\left(U_\phi+U_{-\phi}\right)\)</span>. Since <span class="math inline">\(U_{-\phi}=U_{\phi}^*\)</span>, it block encodes <span class="math inline">\(\frac12\left(P(a)+P(a)^*\right)=\operatorname{Re}P(a)\)</span>. If the circuit above is not clear, don’t worry, I will discuss block encodings in <a href="#sec-block">Sec.&nbsp;4</a>. The same trick can be used to combine even and odd polynomials into a general one. In effect, <em>QSP can be used to block encode any bounded real polynomial</em>. This will be sufficient for our QSVT applications.</p>
+<p>This trick more readily generalizes to QSVT. In effect, this circuit performs a block encoding of <span class="math inline">\(\frac12\left(U_\phi+U_{-\phi}\right)\)</span>. Since <span class="math inline">\(U_{-\phi}=U_{\phi}^*\)</span>, it block encodes <span class="math inline">\(\frac12\left(P(a)+P(a)^*\right)=\operatorname{Re}P(a)\)</span>. If the circuit above is not clear, don’t worry, I will discuss block encodings in <a href="#sec-block">Sec.&nbsp;4</a>. The same trick can be repeated (using one more ancilla qubit) to combine even and odd polynomials into a general one. In effect</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<div style="font-size:17px">
+<p>Combining several QSP circuits, we can block encode any real polynomial <span class="math inline">\(P(x)\)</span> satisfying <span class="math inline">\(|P(x)|\le1\)</span> for <span class="math inline">\(x\in [-1,1]\)</span>. The number of signal operators required is proportional to <span class="math inline">\(\operatorname{deg}P(x)\)</span>.</p>
+</div>
+</div>
+</div>
+</div>
+<p>This will be sufficient for our QSVT applications.</p>
 </section>
 <section id="implementation" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="implementation"><span class="header-section-number">2.5</span> Implementation</h2>
-<p>Let’s now implement the QSP and see how it works in practice. First we define the <span class="math inline">\(R\)</span>-signal and signal-processing operators. To get QSP sequences we will use <code>pyqsp</code> python package <span class="citation" data-cites="pyqsp">&nbsp;[<a href="#ref-pyqsp" role="doc-biblioref">5</a>]</span>. Since it gives anges in the <span class="math inline">\(W\)</span>-convention, we will also need to convert them to our <span class="math inline">\(R\)</span>-convention. Finally, we define a function that assembles the QSP circuit.</p>
-<div class="cell" data-execution_count="3">
+<p>Let’s now implement the QSP and see how it works in practice. First we define the <span class="math inline">\(R\)</span>-signal and signal-processing operators. To get QSP sequences we will use <code>pyqsp</code> python package <span class="citation" data-cites="pyqsp">&nbsp;[<a href="#ref-pyqsp" role="doc-biblioref">6</a>]</span>. Since it gives anges in the <span class="math inline">\(W\)</span>-convention, we will also need to convert them to our <span class="math inline">\(R\)</span>-convention. Finally, we define a function that assembles the QSP circuit.</p>
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> R(a):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Singnal operator in the R-convention."""</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -499,7 +549,7 @@ W and R signal conventions
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now let’s take some arbitrary polynomial <span class="math inline">\(P\)</span>, determine the QSP angles <span class="math inline">\(P\to \phi\)</span>, and check that the real part of the QSP amplitude <span class="math inline">\(U_\phi[0,0]\)</span> reproduces the chosen polynomial.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that the polynomial must have definite parity and be bounded.</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> np.polynomial.Polynomial([<span class="fl">0.</span>, <span class="fl">0.1</span>, <span class="fl">0.</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.</span>, <span class="fl">0.4</span>]) </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -551,12 +601,27 @@ W and R signal conventions
 A^+=\sum_{\sigma_i\neq0}\sigma_i^{-1} |w_i\rangle \langle v_i| \ . \label{pseudo-inverse}
 \end{align}\]</span> For invertible matrices, <span class="math inline">\(A^+\)</span> coincides with the usual inverse <span class="math inline">\(A^{-1}\)</span>. For non-invertible ones, this is in a sense the closest you can get. Note that <span class="math inline">\(A^+\)</span> is equal to <span class="math inline">\(A^\dagger\)</span> with singular values inverted.</p>
 </section>
-<section id="how-to-define-polynomial-of-an-arbitrary-matrix" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="how-to-define-polynomial-of-an-arbitrary-matrix"><span class="header-section-number">3.5</span> How to define polynomial of an arbitrary matrix</h2>
+<section id="sec-matrix_poly" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="sec-matrix_poly"><span class="header-section-number">3.5</span> How to define polynomial of an arbitrary matrix</h2>
 <p>It is straightforward to define a polynomial of a hermitian matrix, e.g.&nbsp;for <span class="math inline">\(p(x)=x-x^2+x^4\)</span> we set <span class="math inline">\(p(H)=H-H^2+H^4\)</span>. Alternatively, we can say that the polynomial applies to eigenvalues of <span class="math inline">\(H\)</span>, i.e.&nbsp;if <span class="math inline">\(H=\sum_i \lambda_i |v_i\rangle\langle v_i|\)</span> then <span class="math inline">\(p(H)=\sum_i p(\lambda_i) |v_i\rangle\langle v_i|\)</span>.</p>
-<p>For a general matrix <span class="math inline">\(A\)</span> expressions like <span class="math inline">\(A^2\)</span> may not make sense, because of incompatible dimensions. More abstractly, for a generic operator <span class="math inline">\(A\)</span> the input space need not be the same as the output space, so applying <span class="math inline">\(A\)</span> twice is simply not defined. In principle, we could still define <span class="math inline">\(p(A)\)</span> by applying <span class="math inline">\(p\)</span> to the singular values of <span class="math inline">\(A\)</span>, similarly to the hermitian case. The more natural and useful definition is a bit different. For <span class="math inline">\(A=\sum_i \sigma_i|v_i\rangle\langle w_i|\)</span> define <span class="math display">\[\begin{align}
+<p>For a general matrix <span class="math inline">\(A\)</span> expressions like <span class="math inline">\(A^2\)</span> may not make sense, because of incompatible dimensions. More abstractly, for a generic operator <span class="math inline">\(A\)</span> the input space need not be the same as the output space, so applying <span class="math inline">\(A\)</span> twice is simply not defined. In principle, we could still define <span class="math inline">\(p(A)\)</span> by applying <span class="math inline">\(p\)</span> to the singular values of <span class="math inline">\(A\)</span>, similarly to the hermitian case. The more natural and useful definition is a bit different.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Polynomial of a general matrix">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Polynomial of a general matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:17px">
+<p>For <span class="math inline">\(A=\sum_i \sigma_i|v_i\rangle\langle w_i|\)</span> define <span class="math display">\[\begin{align}
 p(A)=\begin{cases} \sum_i p(\sigma_i)|v_i\rangle \langle w_i|,\qquad \text{$p$ is odd}\\ \sum_i p(\sigma_i)|w_i\rangle \langle w_i|,\qquad \text{$p$ is even} \end{cases}
 \end{align}\]</span></p>
+</div>
+</div>
+</div>
 <p>For example, for <span class="math inline">\(p(x)=1-x^2+x^4\)</span> we get <span class="math inline">\(p(A)=\mathbb{1}-A^\dagger A+(A^\dagger A)^2\)</span>, for <span class="math inline">\(p(x)=x-x^3\)</span> we get <span class="math inline">\(p(A)=A-AA^\dagger A\)</span>. The pattern should be clear. By alternating <span class="math inline">\(A\)</span> and <span class="math inline">\(A^\dagger\)</span> we make sure that the input space of a new operator is the output space of a preceding one. If the <span class="math inline">\(p(x)\)</span> is odd, <span class="math inline">\(p(A)\)</span> maps between the same space as <span class="math inline">\(A\)</span>. If <span class="math inline">\(p(x)\)</span> is even, <span class="math inline">\(p(A)\)</span> maps the input space of <span class="math inline">\(A\)</span> back to itself.</p>
 <p>We will see that this distinction between the even and odd polynomials spills over into QSVT.</p>
 </section>
@@ -580,7 +645,7 @@ p(A)=\begin{cases} \sum_i p(\sigma_i)|v_i\rangle \langle w_i|,\qquad \text{$p$ i
 <p>Often, the operator <span class="math inline">\(A\)</span> to be block encoded naturally acts on some <span class="math inline">\(n\)</span>-qubit system, perhaps <span class="math inline">\(A\)</span> is a Hamiltonian. In that case, assuming <span class="math inline">\(||A||\le 1\)</span>, we only need one additional qubit to block-encode <span class="math inline">\(A\)</span>. The result may look something like</p>
 <p><span class="math display">\[U=\begin{pmatrix} A &amp; \sqrt{1-AA^\dagger} \\ \sqrt{1-A^\dagger A} &amp; -A^\dagger \end{pmatrix}\ .\]</span></p>
 <div class="callout callout-style-default callout-note callout-titled" title="Exercise">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -589,13 +654,13 @@ Exercise
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Show that <span class="math inline">\(U\)</span> is unitary. You will need to show that <span class="math inline">\(A\sqrt{1-A^\dagger A}=\sqrt{1-AA^\dagger}A\)</span> which can be done via SVD.</p>
 </div>
 </div>
 </div>
-<p>Note that we can express the fact that <span class="math inline">\(U\)</span> block encodes <span class="math inline">\(A\)</span> by writing <span class="math inline">\(U=|0\rangle\langle0|\otimes A+\dots\)</span>.</p>
+<p>We can express the fact that <span class="math inline">\(U\)</span> block encodes <span class="math inline">\(A\)</span> by writing <span class="math inline">\(U=|0\rangle\langle0|\otimes A+\dots\)</span>.</p>
 </section>
 <section id="controlled-unitary-is-a-block-encoding" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="controlled-unitary-is-a-block-encoding"><span class="header-section-number">4.4</span> Controlled unitary is a block encoding</h2>
@@ -613,7 +678,7 @@ Exercise
 <p><span class="math display">\[\text{PREPARE}^\dagger\cdot\text{SELECT}\cdot\text{PREPARE} = \begin{pmatrix}\alpha_1 U_1+\dots \alpha_NU_N&amp; *\\ *&amp;* \end{pmatrix}\]</span></p>
 <p>i.e.&nbsp;it block encodes the desired linear combination.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Exercise">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -622,7 +687,7 @@ Exercise
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Prove this statement. Show also that <a href="#fig-uphi">Fig.&nbsp;1</a> is a particular case, and that it indeed block encodes <span class="math inline">\(\frac12\left(U_{\phi}+U_{-\phi}\right)\)</span> as claimed.</p>
 </div>
@@ -662,17 +727,17 @@ Exercise
 <p>Thus, with an additional ancilla qubit and the ability to perform <span class="math inline">\(C_\Pi NOT\)</span> we get to implement <span class="math inline">\(\Pi(\phi)\)</span>. In what follows, I will not worry about this implementation detail and assume direct access to <span class="math inline">\(\Pi(\phi)\)</span>.</p>
 </section>
 </section>
-<section id="approximating-functions-with-bounded-polynomials" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Approximating functions with bounded polynomials</h1>
-<p>Another key step in QSVT is approximating target functions with polynomials. This is a huge field on its own, and I can only scratch the surface. It may be tempting to view the polynomial approximation, but we probably shouldn’t. This is because the degree of the polynomial that gives a good enough approximation to your function determines the number of queries to the block encoded operators. Hence, directly controls the complexity of the resulting quantum algorithm. Let’s therefore try to gain some intuition about how polynomial approximations work and how they scale.</p>
+<section id="approximating-functions-with-polynomials" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Approximating functions with polynomials</h1>
+<p>Another key step in QSVT is approximating target functions with polynomials. This is a huge field on its own, and I can only scratch the surface. It may be tempting to view the polynomial approximation as a technical detail worth ignoring, but we probably shouldn’t. This is because the degree of the polynomial that gives a good enough approximation to your function determines the number of queries to the block encoded operators. Hence, it directly controls the complexity of the resulting quantum algorithm. Let’s therefore try to gain some intuition about how polynomial approximations work and how they scale.</p>
 <section id="recap-of-the-problem" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="recap-of-the-problem"><span class="header-section-number">5.1</span> Recap of the problem</h2>
-<p>So, originally we wanted to apply some function to singular values <span class="math inline">\(f(x)\)</span>. However, in QSP/QSVT we only know how to apply polynomials <span class="math inline">\(p(x)\)</span>. There are also restrictions on polynomials that we can implement.</p>
+<p>Our original intention was to apply some function <span class="math inline">\(f(x)\)</span> to the singular values. However, in QSP/QSVT we only know how to apply polynomials <span class="math inline">\(p(x)\)</span>, so we will need a polynomial that approximates the target function well. There are also restrictions on polynomials that we can implement.</p>
 <ol type="1">
-<li>The polynomial must be bounded in the physical range <span class="math inline">\(|p(x)|\le1\)</span> for <span class="math inline">\(-1\le x \le 1\)</span>.</li>
-<li>We can only implement directly even or odd <span class="math inline">\(p(x)\)</span>. If we need to approximate <span class="math inline">\(f(x)\)</span> of indefinite parity, we approximate its even and odd parts separately, then combine.</li>
+<li>The polynomial must be bounded: <span class="math inline">\(|p(x)|\le1\)</span> for <span class="math inline">\(-1\le x \le 1\)</span>.</li>
+<li>We can only implement directly even or odd <span class="math inline">\(p(x)\)</span>. If the target function <span class="math inline">\(f(x)\)</span> is of indefinite parity, we approximate its even and odd parts separately, then combine.</li>
 </ol>
-<p>In a typical application we only need to approximate <span class="math inline">\(f(x)\)</span> on a subset <span class="math inline">\((a,b)\subset (-1, 1)\)</span>. So the approximation task is to find <span class="math inline">\(p(x)\)</span> such that</p>
+<p>In a typical application we only need to approximate <span class="math inline">\(f(x)\)</span> on a subset <span class="math inline">\([a,b]\subset [-1, 1]\)</span>. So the approximation task is to find <span class="math inline">\(p(x)\)</span> such that</p>
 <ol type="1">
 <li><span class="math inline">\(|p(x)-f(x)|\le \epsilon\)</span> for <span class="math inline">\(x\in (a,b)\)</span>.</li>
 <li><span class="math inline">\(|p(x)|\le 1\)</span> for <span class="math inline">\(x\in(-1,1)\)</span>.</li>
@@ -685,94 +750,167 @@ Exercise
 <p></p><figcaption class="figure-caption">Approximation</figcaption><p></p>
 </figure>
 </div>
-<p>Note that <span class="math inline">\(|f(x)|\)</span> need not be bounded by 1 on <span class="math inline">\((-1,1)\)</span>, but only on <span class="math inline">\((a,b)\)</span> where we approximate it. Similarly, <span class="math inline">\(|p(x)|\)</span> only needs to be bounded by 1 on <span class="math inline">\((-1,1)\)</span>. In fact, because <span class="math inline">\(p(x)\)</span> is a polynomial, it will necessarily blow up for sufficiently large <span class="math inline">\(x\)</span>.</p>
+<p>Note that <span class="math inline">\(|f(x)|\)</span> need not be bounded by 1 on <span class="math inline">\([-1,1]\)</span>, but only on <span class="math inline">\([a,b]\)</span>, where we wish to approximate it. Similarly, <span class="math inline">\(|p(x)|\)</span> only needs to be bounded by 1 in <span class="math inline">\([-1,1]\)</span>. In fact, because <span class="math inline">\(p(x)\)</span> is a polynomial, it will necessarily blow up for sufficiently large <span class="math inline">\(x\)</span>.</p>
 </section>
 <section id="chebyshev-polynomials" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="chebyshev-polynomials"><span class="header-section-number">5.2</span> Chebyshev polynomials</h2>
 <p>One of the most popular polynomial bases for approximations are given by Chebyshev polynomials, which can be defined as</p>
 <p><span class="math display">\[T_n(x)=\cos(n\arccos x)=\frac12\left(\left(x+\sqrt{1-x^2}\right)^n+\left(x-\sqrt{1-x^2}\right)^n\right) \ .\]</span></p>
-<p>Alright, this does not look very intuitive, what is so special about them? Actually, I don’t know. Let’s maybe ask a simpler question first, why not use the good old Taylor expansion? This is probably the first thing that comes to mind when talking about a polynomial approximation. The problem is, Taylor series is designed to capture the behavior of a function near a particular point, and the quality of approximation degrades fast as we step outside a close vicinity. If if the Taylor series converges there, the convergence may be way too slow.</p>
-<p>To capture a behavior over a certain range of values, instead of a vicinity of a particular point, some other functional basis may be better. Probably a Fourier expansion will work well, except it is not polynomial. Now, let’s actually take a look at the Chebyshev polynomials.</p>
-<div class="cell" data-execution_count="6">
+<p>Alright, this does not look very intuitive, what is so special about them? Actually, I don’t know. Let’s maybe ask a simpler question first, why not use the good old Taylor expansion? This is probably the first thing that comes to mind when talking about a polynomial approximation. The problem is, the Taylor series is designed to capture the behavior of a function near a particular point, and the quality of approximation degrades quickly as we step outside the close vicinity. Even if the Taylor series converges there, the convergence may be way too slow.</p>
+<p>To capture the behavior over a certain range of values some other functional basis may be better. Probably a Fourier expansion will work well, except it is not polynomial. Now, let’s actually take a look at the Chebyshev polynomials.</p>
+<div class="cell" data-execution_count="4">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, plt.np.polynomial.Chebyshev.basis(n)(x), label<span class="op">=</span><span class="ss">f'$T_n$=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Chebyshev polynomials in (-1, 1)'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Chebyshev polynomials in [-1, 1])'</span>)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">100</span>)</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, plt.np.polynomial.Chebyshev.basis(n)(x), label<span class="op">=</span><span class="ss">f'$T_n$=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Chebyshev polynomials in (-2, 2)'</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Chebyshev polynomials in [-2, 2]'</span>)</span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Is it just me, or the Chebyshev polynomials actually look quite a lot like <span class="math inline">\(sin\)</span> and <span class="math inline">\(cos\)</span> functions in <span class="math inline">\((-1,1)\)</span> (left fig)? Note that they are also bounded there, and that they quickly blow up outside <span class="math inline">\((-1, 1)\)</span> (right fig).</p>
-<p>Now, as any respactable functional basis they have the property that an arbitrary reasonable function <span class="math inline">\(f(x)\)</span> can be expanded into the Chebyshev series <span class="math display">\[f(x)=\sum_{n\ge0} a_nT_n(x), \qquad x\in (-1, 1)\]</span> with decaying coefficients <span class="math inline">\(a_n\)</span>. One can bound <span class="math inline">\(a_n\)</span> as follows <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span> <span class="math display">\[a_n\le 2M\rho^{-n} \ .\]</span></p>
-<p>Parameters <span class="math inline">\(M\)</span> and <span class="math inline">\(\rho\)</span> need to be explained. Define the Bernstein ellipse <span class="math inline">\(E_{\rho}\)</span> as the set of poins on the complex plain that are bounded by the ellipse <span class="math inline">\(\frac{z+z^{-1}}{2}, |z|=\rho\)</span>, or alternatively <span class="math inline">\(\frac{\rho e^{i\phi}+\rho^{-1} e^{-i\phi}}{2},\phi\in (0,2\pi)\)</span>. Note that <span class="math inline">\(\rho&gt;1\)</span> and the interval <span class="math inline">\((-1,1)\)</span> is contained in <span class="math inline">\(E_\rho\)</span>. Here is a sketch.</p>
+<p>Is it just me, or the Chebyshev polynomials on <span class="math inline">\([-1,1]\)</span> (left fig) actually look quite a lot like trigonometric functions? Note that they are also bounded there, and that they quickly blow up outside <span class="math inline">\([-1, 1]\)</span> (right fig). For further intuition about the Chebyshev polynomials, you may wish to check out tis blog post by Jason Sachs <span class="citation" data-cites="Chebyshev">&nbsp;[<a href="#ref-Chebyshev" role="doc-biblioref">7</a>]</span>.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Chebyshev polynomials are most interesting for <span class="math inline">\(x\in [-1,1]\)</span>, but in QSP/QSVT applications we will linearly map this domain to <span class="math inline">\([a,b]\subset[-1,1]\)</span>, and so we will in fact be interested in how the Chebyshev polynomials behave outside <span class="math inline">\([-1,1]\)</span> as well.</p>
+</div>
+</div>
+</section>
+<section id="chebyshev-series-and-bernstein-ellipse" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="chebyshev-series-and-bernstein-ellipse"><span class="header-section-number">5.3</span> Chebyshev series and Bernstein ellipse</h2>
+<p>Now, as a respectable functional basis the Chebyshev polynomials have the property that an arbitrary reasonable function <span class="math inline">\(f(x)\)</span> can be expanded into the Chebyshev series <span class="math display">\[f(x)=\sum_{n\ge0} a_nT_n(x), \qquad x\in [-1, 1] \ .\]</span> Coefficients <span class="math inline">\(a_n\)</span> decay and can bound as follows <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">2</a>]</span></p>
+<p><span class="math display">\[\begin{align}
+a_n\le 2M\rho^{-n} \ . \label{an}
+\end{align}\]</span></p>
+<p>Parameters <span class="math inline">\(M\)</span> and <span class="math inline">\(\rho\)</span> need to be explained. Define the <strong><em>Bernstein ellipse</em></strong> <span class="math inline">\(E_{\rho}\)</span> as the subset of the complex plane inside the ellipse <span class="math inline">\(\frac{z+z^{-1}}{2}, |z|=\rho\)</span>, or alternatively <span class="math inline">\(\frac{\rho e^{i\phi}+\rho^{-1} e^{-i\phi}}{2},\phi\in (0,2\pi)\)</span>. Without loss of generality, we assume <span class="math inline">\(\rho\ge1\)</span>. The interval <span class="math inline">\([-1,1]\)</span> is contained in <span class="math inline">\(E_\rho\)</span>. Here is a sketch.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/ellipse.svg" class="img-fluid figure-img" width="400"></p>
 </figure>
 </div>
-<p>Now, assume that <span class="math inline">\(f(x)\)</span> can be analytically continued from <span class="math inline">\((-1,1)\)</span> to the interior of <span class="math inline">\(E_\rho\)</span> and. Then, <span class="math inline">\(M\)</span> the upper bound on the value of <span class="math inline">\(f(z)\)</span>, i.e.&nbsp;<span class="math inline">\(|f(z)|&lt;M, z\in E_\rho\)</span>. Alright, so for any fixed <span class="math inline">\(M\)</span> and <span class="math inline">\(\rho\)</span> the Chebyshev coefficients of <span class="math inline">\(f(x)\)</span> decay exponentially. Given this fact and that all Chebyshev polynomials are bounded by 1 on <span class="math inline">\(x\in(-1,1)\)</span> we find that truncation of the Chebyshev expansion satisfies <span class="math display">\[|f(x)-\sum_{m=0}^n a_m T_m(x)|\le \frac{2M\rho^{-n-1}}{\rho-1} \ . \]</span></p>
-<p>This approximation result is in general not sufficient for QSVT applications. The interval <span class="math inline">\((-1,1)\)</span> here should be really thought of as the interval <span class="math inline">\((a,b)\)</span> from the previous section, i.e.&nbsp;the subset where the target function needs to be approximated. This means that along with finding a good approximation on <span class="math inline">\((-1,1)\)</span> we also need to ensure that the resulting polynomial remains bounded in some region outside <span class="math inline">\((-1,1)\)</span>, which is an additional challenge.</p>
+<p>Now, assume that <span class="math inline">\(f(x)\)</span> can be analytically continued from <span class="math inline">\([-1,1]\)</span> to the interior of <span class="math inline">\(E_\rho\)</span>. Then, we denote by <span class="math inline">\(M\)</span> an upper bound on the value of <span class="math inline">\(f(z)\)</span>, i.e.&nbsp;<span class="math inline">\(|f(z)|\le M, z\in E_\rho\)</span>.</p>
+<p>In a typical application, we have a family of functions <span class="math inline">\(f_\lambda(x)\)</span> and want to look at the asymptotic of <span class="math inline">\(\lambda\to 0\)</span>. As <span class="math inline">\(\lambda\)</span> decreases, <span class="math inline">\(M\)</span> tends to increase. To counteract this and keep <span class="math inline">\(M\)</span> constant, we will need to shrink the Bernstein ellipse.</p>
+<p>Alright, so for any fixed <span class="math inline">\(M\)</span> and <span class="math inline">\(\rho\)</span> the Chebyshev coefficients of <span class="math inline">\(f(x)\)</span> decay exponentially <span class="math inline">\(\eqref{an}\)</span>. Given this fact and that all Chebyshev polynomials are bounded by 1 on <span class="math inline">\(x\in [-1,1]\)</span> we find that the truncated Chebyshev series satisfies <span class="math display">\[|f(x)-\sum_{m=0}^n a_m T_m(x)|_{[-1,1]}\le \frac{2M\rho^{-n-1}}{\rho-1} \ . \]</span></p>
+<p>However, this approximation result is in general not sufficient for QSVT applications. The interval <span class="math inline">\([-1,1]\)</span> here should be linearly mapped to a subset <span class="math inline">\([a,b]\)</span> from the previous section, i.e.&nbsp;the subset where the target function needs to be approximated. This means that along with finding a good approximation on <span class="math inline">\([-1,1]\)</span> we also need to ensure that the resulting polynomial remains bounded in some region outside <span class="math inline">\([-1,1]\)</span>, which is an additional challenge.</p>
 </section>
-<section id="sec-polynomial_how_to" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="sec-polynomial_how_to"><span class="header-section-number">5.3</span> A recipie for building bounded Chebyshev approximations</h2>
-<p>A general workaround for this problem is proposed in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span>. The idea is to take an approximation that behaves well on <span class="math inline">\((-1,1)\)</span> but blows up outside, and multiply it by a function that is close to 1 at <span class="math inline">\((-1, 1)\)</span> and rapidly decays outside. Then the product can be re-expanded in the Chebyshev basis and yield the desired result. Here is the summary of the procedure (Theorem 19 of <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span>).</p>
+<section id="sec-polynomial_how_to" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="sec-polynomial_how_to"><span class="header-section-number">5.4</span> Bounded Chebyshev approximations</h2>
+<p>A general approach to this problem is proposed in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">2</a>]</span>. The idea is to take an approximation that behaves well on <span class="math inline">\([-1,1]\)</span> but blows up outside, and multiply it by a function that is close to 1 at <span class="math inline">\([-1, 1]\)</span> and rapidly decays outside. Then the product can be re-expanded in the Chebyshev basis and yields the desired result. Here is what we get (Theorem 19 of <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">2</a>]</span>).</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Bounded approximation by Chebyshev polynomials">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Bounded approximation by Chebyshev polynomials
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size=17px">
 <p>Let <span class="math inline">\(f(x)\)</span> be analytic on <span class="math inline">\([-1, 1]\)</span> and analytically continuanable to <span class="math inline">\(E_\rho\)</span> where it is bounded by <span class="math inline">\(M\)</span>. Denote <span class="math inline">\(\rho=1+\alpha, \alpha&gt;0\)</span>. For any <span class="math inline">\(\epsilon\)</span> there is a polynomial <span class="math inline">\(p(x)\)</span> such that</p>
 <ol type="1">
 <li><span class="math inline">\(|f(x)-p(x)|_{[-1,1]}\le M\epsilon\)</span>.</li>
 <li><span class="math inline">\(|p(x)|_{[-1-\delta, 1+\delta]}\le M\)</span>.</li>
 <li><span class="math inline">\(|p(x)|_{[-b,-1-\delta]\cup [1+\delta, b]}\le M\epsilon\)</span>.</li>
 </ol>
+</div>
+</div>
+</div>
 <p>In words, <span class="math inline">\(p(x)\)</span> approximates <span class="math inline">\(f(x)\)</span> to relative precision <span class="math inline">\(\epsilon\)</span> on <span class="math inline">\([-1,1]\)</span>. Furthermore, <span class="math inline">\(p(x)\)</span> is bounded by a constant in some <span class="math inline">\(\delta\)</span>-neighborhood outside <span class="math inline">\([-1, 1]\)</span>. Finally, <span class="math inline">\(p(x)\)</span> is <span class="math inline">\(\epsilon\)</span>-close to zero outside this <span class="math inline">\(\delta\)</span>-neighborhood and up to a larger <span class="math inline">\(b\)</span>-neighborhood. Here is a sketch.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/approx_delta.svg" class="img-fluid figure-img" width="400"></p>
 </figure>
 </div>
-<p>The condition that <span class="math inline">\(p(x)\)</span> is zero ouside some <span class="math inline">\(\delta\)</span>-neighborhood is useful for approximating piece-wise smooth functions. Now, I haven’t yet told what are <span class="math inline">\(\delta, b\)</span> and, most importantly, what is the degree of the polynomial? According to <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span>, <span class="math inline">\(\delta\)</span> can be anywhere in <span class="math inline">\((0, \frac{min(1,\alpha^2)}{C})\)</span> for a sufficiently large but constant <span class="math inline">\(C\)</span>. You can choose <span class="math inline">\(b&gt;1+\delta\)</span> freely. Then, the desired polynomial has degree <span class="math display">\[\begin{align}
+<p>The condition that <span class="math inline">\(p(x)\)</span> is zero ouside some <span class="math inline">\(\delta\)</span>-neighborhood is useful for approximating piece-wise smooth functions. Now, I didn’t yet tell what are <span class="math inline">\(\delta\)</span> and <span class="math inline">\(b\)</span> and, most importantly, what is the degree of the polynomial? According to <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">2</a>]</span>, <span class="math inline">\(\delta\)</span> can be anywhere in <span class="math inline">\((0, \frac{min(1,\alpha^2)}{C})\)</span> for a sufficiently large but constant <span class="math inline">\(C\)</span>. And you get to choose <span class="math inline">\(b&gt;1+\delta\)</span> freely. Then, the desired polynomial has degree <span class="math display">\[\begin{align}
 \operatorname{deg}p(x)=O\left(\frac{b}{\delta}\log \frac{b}{\delta \epsilon}\right) \label{pdeg} \ .
 \end{align}\]</span></p>
-<p>Some important features of this formula 1. If you insist on a good approximation at the point of discontinuity, you pay linear price. I.e. the degree of the polynomial scales linearly (modulo log factor) with <span class="math inline">\(\delta^{-1}\)</span>. 1. If you want your polynomial approximation to be bounde far enough away from <span class="math inline">\([-1,1]\)</span> you pay linear price, i.e.&nbsp;the degree scales linearly with <span class="math inline">\(b\)</span>. 1. Dependence on the error is logarithmic, which is nice.</p>
+<p>Some important features of this result.</p>
+<ol type="1">
+<li>If you insist on a good approximation at the point of discontinuity, you pay a linear price. I.e. the degree of the polynomial scales linearly (modulo the log factor) with <span class="math inline">\(\delta^{-1}\)</span>.</li>
+<li>If you want your polynomial approximation to be bounded far enough away from <span class="math inline">\([-1,1]\)</span> you pay a linear price, i.e.&nbsp;the degree scales linearly (modulo the log factor) with <span class="math inline">\(b\)</span>.</li>
+<li>Neatly, dependence on the error <span class="math inline">\(\epsilon\)</span> is only logarithmic.</li>
+</ol>
 </section>
-<section id="sec-theta_approx" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="sec-theta_approx"><span class="header-section-number">5.4</span> Illustration: approximating the step function</h2>
-<p>In many applications of QSVT it is actually very helpful to approximate the step function <span class="math inline">\(\theta(x-a)\)</span> for some small <span class="math inline">\(a\)</span>. This will also help us illustrate the approximation results described above.</p>
-<p>A problem with this step function is that it is not of definite parity, so we will instead aim to approximate its odd part <span class="math inline">\(f(x)=\frac12\left(\theta(x-a)+\theta(-x-a)\right)\)</span>. The two parts of this piecewise-smooth function are just constants <span class="math inline">\(\pm1\)</span>, and hence <span class="math inline">\(M=1\)</span> for arbitrary <span class="math inline">\(\rho\)</span>. The only thing we need to take care of is that the discontinuity region, where our approximation fails, is small enough <span class="math inline">\(\delta\le a\)</span>. This implies that there is a polynomial of degree <span class="math inline">\(O(\frac1a\log\frac1{a\epsilon})\)</span> that does the job.</p>
-<p>In this case and some other cases the approximation bound stated in the previous section does not give the tighest result. For instance, approximating the step function is possible with a polynomial of degree <span class="math inline">\(O(\frac1a\log\frac1\epsilon)\)</span>, i.e.&nbsp;the additional <span class="math inline">\(\log\frac1{a}\)</span> factor is not necessary. The overhead we get from applying the procedure above is often modest, a may be a good price to pay for the universality of the approach.</p>
+<section id="sec-theta_approx" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="sec-theta_approx"><span class="header-section-number">5.5</span> Illustration: approximating the sign function</h2>
+<p>In many applications of QSVT it is actually very helpful to approximate the sign function <span class="math inline">\(\operatorname{sign}(x)\)</span>. This will also help us illustrate the approximation results described above.</p>
+<p>Note that <span class="math inline">\(\operatorname{sign}(x)=\theta(x)-\theta(-x)\)</span>, where <span class="math inline">\(\theta(x)\)</span> is the step function. We can approximate each <span class="math inline">\(\theta(\pm x)\)</span> separately, then combine. We will require that our approximation is <span class="math inline">\(\epsilon\)</span>-close to <span class="math inline">\(\operatorname{sign}(x)\)</span> outside a small region <span class="math inline">\((-a,a)\)</span> around the discontinuity.</p>
+<p>Take for concreteness <span class="math inline">\(\theta(x)\)</span>. For <span class="math inline">\(x&gt;0\)</span> it is smooth and in fact constant, so <span class="math inline">\(M=1\)</span> for arbitrary <span class="math inline">\(\rho\)</span>. The only thing we need to take care of is that the discontinuity region, where our approximation fails, is small enough <span class="math inline">\(\delta\le a\)</span>. This implies that there is a polynomial of degree <span class="math inline">\(O(\frac1a\log\frac1{a\epsilon})\)</span> that does the job.</p>
+<p>In this and some other cases, the approximation bound stated in the previous section does not give the tightest result. For instance, approximating the sign function is possible with a polynomial of degree <span class="math inline">\(O(\frac1a\log\frac1\epsilon)\)</span>, i.e.&nbsp;the additional <span class="math inline">\(\log\frac1{a}\)</span> factor is not necessary. However, the overhead we get from applying the procedure above is often modest, a may be a good price to pay for the universality of the approach.</p>
 </section>
 </section>
-<section id="qsvt" class="level1" data-number="6">
+<section id="sec-QSVT" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> QSVT</h1>
 <p>Phew! That was quite a bit of preparing. However, we now have all the ingredients in place to explain how (and also a bit why) QSVT works.</p>
 <section id="recap" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="recap"><span class="header-section-number">6.1</span> Recap</h2>
-<p>Let’s recap what is the setup.</p>
+<p>Let’s recap the setup.</p>
 <ol type="1">
 <li>The goal is to perform a functional transformation on the singular values of some operator <span class="math inline">\(A\to f(A)\)</span>.</li>
-<li>We are provided with a unitary <span class="math inline">\(U\)</span> that block encodes <span class="math inline">\(A\)</span>, i.e.&nbsp;<span class="math inline">\(U=B_L\begin{pmatrix} A&amp;*\\*&amp;*\end{pmatrix}B_R^\dagger\)</span> (in many cases of interest <span class="math inline">\(B_L=B_R=\mathbb{1}\)</span>).</li>
+<li>We are provided with a unitary <span class="math inline">\(U\)</span> that block encodes <span class="math inline">\(A\)</span>, i.e.&nbsp;<span class="math inline">\(U=B_L\begin{pmatrix} A&amp;*\\ *&amp;*\end{pmatrix}B_R^\dagger\)</span>.</li>
 <li>We are provided with projectors <span class="math inline">\(\Pi_L,\Pi_R\)</span> that describe this block encoding, i.e.&nbsp;<span class="math inline">\(\Pi_L U \Pi_R=B_L\begin{pmatrix} A&amp;0\\0&amp;0\end{pmatrix}B_R^\dagger\)</span> and can perform projector rotations <span class="math inline">\(\Pi_L(\phi), \Pi_R(\phi)\)</span>.</li>
 <li>We figured out what is a good polynomial approximation to our target function <span class="math inline">\(p(x)\approx f(x)\)</span>.</li>
 </ol>
 <p>From these ingredients, the QSVT builds a unitary <span class="math inline">\(U_\phi\)</span> that block encodes the desired polynomial transformation.</p>
 </section>
-<section id="ow-qsvt-works" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="ow-qsvt-works"><span class="header-section-number">6.2</span> ow QSVT works</h2>
+<section id="how-qsvt-works" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="how-qsvt-works"><span class="header-section-number">6.2</span> How QSVT works</h2>
 <p>Alright, how to build <span class="math inline">\(U_\phi\)</span>? A bit awkwardly, we will have to separately describe two cases, when <span class="math inline">\(p(x)\)</span> is even and when it is odd. So, for <span class="math inline">\(p(x)\)</span> even (the number of QSP phases is odd)</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="QSVT circuit (even)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+QSVT circuit (even)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:17px">
 <p><span class="math display">\[\begin{align}
 U_\phi = \left(\prod_{i=0}^{d/2-1}\Pi_R(\phi_{2i})U^\dagger\Pi_L(\phi_{2i+1})U \right) \Pi_R(\phi_d),\qquad U_\phi=B_R\begin{pmatrix}p(A) &amp; *\\ * &amp; *\end{pmatrix} B_R^\dagger\ . \label{QSVT even}
 \end{align}\]</span></p>
-<p>For <span class="math inline">\(p(x)\)</span> odd (the number of QSP phases even) <span class="math display">\[\begin{align}
-U_{\phi}=\Pi_L(\phi_{0})U\prod_{i=1}^{(d-1)/2}\Pi_R(\phi_{2i-1})U^\dagger\Pi_L(\phi_{2i})U \Pi_R(\phi_d),\qquad U_\phi=B_L\begin{pmatrix}p(A) &amp; *\\ * &amp; *\end{pmatrix} B_R^\dagger \label{QSVT odd}
+</div>
+</div>
+</div>
+<p>For <span class="math inline">\(p(x)\)</span> odd (the number of QSP phases even)</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="QSVT circuit (odd)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+QSVT circuit (odd)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:17px">
+<p><span class="math display">\[\begin{align}
+U_{\phi}=\Pi_L(\phi_{0})U\prod_{i=1}^{(d-1)/2}\Pi_R(\phi_{2i-1})U^\dagger\Pi_L(\phi_{2i})U \Pi_R(\phi_d),\qquad U_\phi=B_L\begin{pmatrix}p(A) &amp; *\\ * &amp; *\end{pmatrix} B_R^\dagger \ . \label{QSVT odd}
 \end{align}\]</span></p>
-<p>Recall that we defined polynomial of a matrix <span class="math inline">\(p(A)\)</span> in <strong>?@sec-polymatrix</strong>, and that it had the same personality split into even/odd cases. The angles <span class="math inline">\(\phi\)</span> are <em>the same</em> angles that we would use to apply <span class="math inline">\(p(x)\)</span> in QSP with R-conventions.</p>
+</div>
+</div>
+</div>
+<p>Recall that we defined the polynomial of a matrix <span class="math inline">\(p(A)\)</span> in <a href="#sec-matrix_poly">Sec.&nbsp;3.5</a>, and that it also had a personality split into even/odd cases. The angles <span class="math inline">\(\phi\)</span> are <em>the same</em> angles that we would use to apply <span class="math inline">\(p(x)\)</span> in QSP with <em><span class="math inline">\(R\)</span>-convention</em>. Overall, this is pretty similar to how QSP circuits work.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -783,15 +921,18 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>One thing I tripped over. In QSP, we have different signal conventions and need to use a different angle sequence for each. Now I just told you that for QSVT we need to borrow QSP angles in the R-convention. Don’t we need to specify how exactly is our operator <span class="math inline">\(A\)</span> block encoded in <span class="math inline">\(U\)</span> then? No, we need not. The difference between QSP and QSVT is that in QSP we apply the same signal operator throughout, while in QSVT we alternate between <span class="math inline">\(U\)</span> and <span class="math inline">\(U^\dagger\)</span>. Because different block encodings are related by unitary transformations, these differences cancel in the QSVT sequence. To see why the R-convention of QSP most naturally maps to QSVT, take a look at the next section.</p>
+<p>One thing I tripped over. In QSP, we have different signal conventions and need to use a different angle sequence for each. Now I just told you that for QSVT we need to borrow QSP angles in the <span class="math inline">\(R\)</span>-convention. Don’t we need to specify how exactly is our operator <span class="math inline">\(A\)</span> block encoded in <span class="math inline">\(U\)</span> then? No, we need not. The difference between QSP and QSVT is that in QSP we apply the same signal operator throughout, while in QSVT we alternate between <span class="math inline">\(U\)</span> and <span class="math inline">\(U^\dagger\)</span>. Because different block encodings are related by unitary transformations, these differences cancel in the QSVT sequence. To see why the R-convention of QSP most naturally maps to QSVT, take a look at section <a href="#sec-qsvt_why">Sec.&nbsp;6.5</a>.</p>
 </div>
 </div>
 </section>
 <section id="qsvt-circuit" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="qsvt-circuit"><span class="header-section-number">6.3</span> QSVT circuit</h2>
-<p>Draw QSVT circuit. Explain that projects are not general. Explain that we will not draw circuits in implementation. Explain how to get controlled version of a circuit.</p>
+<p>Let’s take a moment to visualize the QSVT as a quantum circuit. In the simplest case, which often holds in practice, <span class="math inline">\(B_L=B_R=\mathbb{1}\)</span> and <span class="math inline">\(\Pi=\Pi_R=\Pi_L=|0\rangle^{\otimes k}\langle0|^{\otimes k}\)</span>, i.e.&nbsp;<span class="math inline">\(\Pi\)</span> projects onto the all-zero state of <span class="math inline">\(k\)</span> ancillariy qubits. Then, <span class="math inline">\(C_\Pi NOT\)</span> is just the Toffoli gate controlled by these <span class="math inline">\(k\)</span> qubits. Recall that a projector rotation <span class="math inline">\(\Pi(\phi)\)</span> can be assembled from two <span class="math inline">\(C_\Pi NOT\)</span> gates, as described in <a href="#sec-projector_rotations">Sec.&nbsp;4.8</a>.</p>
+<p>In this case, the whole QSVT circuit looks something like (image borrowed from <a href="https://pure.uva.nl/ws/files/35292358/Thesis.pdf">András Gilyén’s thesis</a>)</p>
+<p><img src="figures/qsvt_circuit.png" class="img-fluid"></p>
+<p>For more general block encodings, the picture is a bit different, yet quite similar.</p>
 <p>Let’s implement the QSVT circuit in code for later use.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> projector_rotation(P, phi):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Computes exponential of a projector using relation e^{i (2P-1) x}= cos(x)+i(2P-1)sin(x)"""</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="bu">len</span>(P)</span>
@@ -820,28 +961,59 @@ Note
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="why-qsvt-works" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="why-qsvt-works"><span class="header-section-number">6.4</span> Why QSVT works</h2>
-<p>Alright, how do we prove <span class="math inline">\(\eqref{QSVT even}\)</span> and <span class="math inline">\(\eqref{QSVT odd}\)</span>? I’d say that the full proof is a bit tedious and not very illuminating, but we can get a good intuition by looking at several particular cases. I will follow a recent exposition in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span> that simplifies the derivation. The key idea there is to leverage another special matrix decomposition, known as the <strong><em>CS decomposition</em></strong> (cosine-sine). It states that for any unitary matrix <span class="math inline">\(U\)</span> consisting of four blocks the following holds <span class="math display">\[U=\begin{pmatrix}U_{00} &amp; U_{01} \\ U_{10} &amp; U_{11}\end{pmatrix}=\begin{pmatrix}V_0 &amp; 0 \\ 0 &amp; V_1\end{pmatrix}\begin{pmatrix}C &amp; S \\ S &amp; -C\end{pmatrix}\begin{pmatrix}W_0 &amp; 0 \\ 0 &amp; W_1\end{pmatrix}^\dagger \ .\]</span></p>
-<p>here <span class="math inline">\(V_{0}, V_{1}, W_{0},W_{1}\)</span> are unitaries of an appropriate sizes. If all blocks in <span class="math inline">\(U\)</span> are of equal size, matrices <span class="math inline">\(C\)</span> and <span class="math inline">\(S\)</span> are diagonal and satisfy <span class="math inline">\(C^2+S^2=\mathbb{1}\)</span>, hence the name CS. For block of arbitrary sizes there will still be CS-sublocks, but you’d also have to carefully pad them with zeros and ones. I will not consider this case here.</p>
-<p>Important property of the CS-decomposition, which is not shared e.g.&nbsp;by the SVD, is that the unitaries sandwiching the CS-core are block-diagonal. For this reason, they commute through projector-rotations and effectively drop out of the QSVT sequence. At the same time, the middle matrix in CS-decomposition looks exactly as the R-signal matrix in QSP, which explains why we need to use QSP angles in R-convention to build QSVT circuit.</p>
-<p>With these ideas in place, the rest is mostly filling in the details. I will not do this here, but you are welcome to try and work out the full derivation or look in up in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span>.</p>
+<section id="controlled-version-of-qsvt-circuit" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="controlled-version-of-qsvt-circuit"><span class="header-section-number">6.4</span> Controlled version of QSVT circuit</h2>
+<p>Recall that to obtain general polynomials with QSP we need to perform a trick discussed in <a href="#sec-general_poly">Sec.&nbsp;2.4</a>. It requires controlled versions of the full QSVT unitary <span class="math inline">\(C(U_\phi)\)</span>. Since constructing a controlled version is difficult in general, you might worry that implementing <span class="math inline">\(C(U_\phi)\)</span> is costly and can alter the scaling of the algorithm. Turns out, constructing controlled version of QSVT circuits is pretty simple. Indeed, I claim that, in the even case <span class="math inline">\(\eqref{QSVT even}\)</span></p>
+<p><span class="math display">\[
+C(U_\phi)=\left(\prod_{i=0}^{d/2-1}C(\Pi_R(\phi_{2i}))U^\dagger C(\Pi_L(\phi_{2i+1}))U \right) C(\Pi_R(\phi_d)) \ ,
+\]</span> i.e.&nbsp;it suffices to only control the projector rotations. Why? Right, if the control qubit is not activated, projectors drop out and all pairs of <span class="math inline">\(U^\dagger, U\)</span> combine and cancel. Otherwise, we get the QSVT circuit back.</p>
+<p>In the odd case, the situation is similar, except for a single unmatched application of <span class="math inline">\(U\)</span>. So we will simply need to control the projectors and <em>a single</em> signal unitary <span class="math inline">\(U\)</span>.</p>
+<p>For completeness, the following circuit shows how to build a controlled version of a projector rotation.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/controlled_rotation.svg" class="img-fluid figure-img" width="300"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Exercise">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Convince yourself the claims we’ve made are valid. Check that the above circuit is indeed a controlled projector.</p>
+</div>
+</div>
+</div>
 </section>
-<section id="qubitization" class="level2" data-number="6.5">
-<h2 data-number="6.5" class="anchored" data-anchor-id="qubitization"><span class="header-section-number">6.5</span> Qubitization</h2>
-<p>QSVT is closely related to a concept of <strong><em>qubitization</em></strong>, which I believe was introduced a bit earlier in the context of Hamiltonian simulation. The idea was again to adopt QSP to high-dimensional systems. I you go through the derivations in the previous section, you will note that you never have to deal with anything but <span class="math inline">\(2\times2\)</span> block matrices. So effectively, the problem was indeed reduced to a QSP of a two-level system. In jargon, we have qubitized the problem.</p>
-<p>Alright, we are now ready to tackle the applications of QSVT.</p>
+<section id="sec-qsvt_why" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="sec-qsvt_why"><span class="header-section-number">6.5</span> Why QSVT works</h2>
+<p>Alright, how do we prove <span class="math inline">\(\eqref{QSVT even}\)</span> and <span class="math inline">\(\eqref{QSVT odd}\)</span>? I’d say that the full proof is a bit tedious and not very illuminating, and the main difficulty to deal with is non-squaredness of <span class="math inline">\(A\)</span>. If we assume <span class="math inline">\(A\)</span> is square, we can sketch the proof quite simply.</p>
+<p>I will follow a recent exposition in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">2</a>]</span> that simplifies the derivation. The key idea there is to leverage another special matrix decomposition, known as the <strong><em>CS decomposition</em></strong> (cosine-sine). It states that for any unitary matrix <span class="math inline">\(U\)</span> consisting of four blocks, the following decomposition exists <span class="math display">\[U=\begin{pmatrix}A_{00} &amp; A_{01} \\ A_{10} &amp; A_{11}\end{pmatrix}=\begin{pmatrix}V_0 &amp; 0 \\ 0 &amp; V_1\end{pmatrix}\begin{pmatrix}C &amp; S \\ S &amp; -C\end{pmatrix}\begin{pmatrix}W_0 &amp; 0 \\ 0 &amp; W_1\end{pmatrix}^\dagger \ .\]</span></p>
+<p>Here <span class="math inline">\(V_{0}, V_{1}, W_{0},W_{1}\)</span> are unitaries of appropriate sizes. If all blocks in <span class="math inline">\(U\)</span> are of equal size, matrices <span class="math inline">\(C\)</span> and <span class="math inline">\(S\)</span> are diagonal and satisfy <span class="math inline">\(C^2+S^2=\mathbb{1}\)</span>, hence the name cosine-sine decomposition. For blocks of arbitrary sizes, there will still be CS-subblocks, but you’d also have to carefully pad them with zeros and ones. I will not consider this case here.</p>
+<p>An important property of the CS-decomposition, which is not shared e.g.&nbsp;by the SVD, is that the unitaries sandwiching the CS-core are block-diagonal. For this reason, they commute through projector-rotations and effectively drop out of the QSVT sequence. At the same time, the middle matrix in CS-decomposition looks exactly like the <span class="math inline">\(R\)</span>-signal matrix in QSP, which explains why we need to use QSP angles in the <span class="math inline">\(R\)</span>-convention to build QSVT circuits.</p>
+<p>With these ideas in place, the rest is mostly filling in the details. I will not do this here, but you are welcome to try and work out the full derivation or look it up in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">2</a>]</span>.</p>
+</section>
+<section id="qubitization" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="qubitization"><span class="header-section-number">6.6</span> Qubitization</h2>
+<p>QSVT is closely related to the concept of <strong><em>qubitization</em></strong>, which I believe was introduced a bit earlier in the context of the Hamiltonian simulation. The idea was again to adopt QSP to high-dimensional systems. If you go through the derivations in the previous section, you’ll find that nothing else is required other than dealing with <span class="math inline">\(2\times2\)</span> block matrices. So effectively, the problem was indeed reduced to a QSP of a two-level system. In jargon, we qubitized the problem. <span class="citation" data-cites="Martyn2021">&nbsp;[<a href="#ref-Martyn2021" role="doc-biblioref">1</a>]</span> explains qubitization a bit differently and in a way that may help to establish a more conceptual connection between relate QSP and QSVT. You are welcome to take a look.</p>
+<p>Alright, we are now ready to tackle some of the QSVT applications.</p>
 </section>
 </section>
 <section id="grovers-search" class="level1" data-number="7">
 <h1 data-number="7"><span class="header-section-number">7</span> Grover’s search</h1>
-<p>As is standard, I will open the list of QSVT applications with Grover’s search. I must note though that I find it to be conceptually a bit harder than many other applications. This is because we will deal with a block encoding in an apriori unknown basis, which is unusual. Anyway, let’s get going.</p>
+<p>As is standard, I will open the list of QSVT applications with Grover’s search. I must note though, that I find it a bit harder conceptually than many other applications. This is because we will deal with a block encoding in an a priori unknown basis, which is unusual. Anyway, let’s get going.</p>
 <section id="the-problem" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="the-problem"><span class="header-section-number">7.1</span> The problem</h2>
-<p>We aim to find an unknown computational basis state <span class="math inline">\(|m\rangle\)</span>. As our signal unitary we choose the Hadamard gate acting on all qubits <span class="math inline">\(U=H^{\otimes n}\)</span>. We know that <span class="math inline">\(\langle m|H^{\otimes n}|0\rangle=\frac{1}{\sqrt{N}}\)</span>. In other words,</p>
+<p>We aim to find an unknown computational basis state <span class="math inline">\(|m\rangle\)</span> of <span class="math inline">\(n\)</span> qubits. As our signal unitary, we choose the Hadamard gate acting on all qubits <span class="math inline">\(U=H^{\otimes n}\)</span>. We know that <span class="math inline">\(\langle m|H^{\otimes n}|0\rangle=\frac{1}{\sqrt{N}}\)</span>. In other words,</p>
 <p><span class="math display">\[U = \frac{1}{\sqrt{N}} |m\rangle\langle 0|+\dots \ ,\]</span></p>
 <p>i.e.&nbsp;in a suitable basis, <span class="math inline">\(U\)</span> block encodes the transition amplitude between <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|m\rangle\)</span>. If we could apply a polynomial transformation, which approximates <span class="math inline">\(\theta(x-a)\)</span> with <span class="math inline">\(a&lt;\frac{1}{\sqrt{N}}\)</span>, we would effectively amplify the transition amplitude and construct a unitary <span class="math inline">\(U_\phi\)</span> that is almost guaranteed to prepare our marked state <span class="math inline">\(|m\rangle\)</span> starting with <span class="math inline">\(|0\rangle\)</span>.</p>
-<p>A difficulty is that we do not really know the basis of the block encoding, as this would be equivalent to knowing <span class="math inline">\(|m\rangle\)</span>. At the sime time, in QSVT we only need to access controlled versions of projectors corresponding to the block encoding, and this is exactly what Grover’s oracle does.</p>
+<p>A difficulty is that we do not really know the basis of the block encoding, as this would be equivalent to knowing <span class="math inline">\(|m\rangle\)</span>. At the same time, in QSVT we only need to access controlled versions of projectors corresponding to the block encoding, and this is exactly what Grover’s oracle does.</p>
 </section>
 <section id="projectors" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="projectors"><span class="header-section-number">7.2</span> Projectors</h2>
@@ -849,13 +1021,13 @@ Note
 </section>
 <section id="polynomial-approximation" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="polynomial-approximation"><span class="header-section-number">7.3</span> Polynomial approximation</h2>
-<p>So we aim to approximate <span class="math inline">\(\theta(x-a)\)</span> for <span class="math inline">\(a\le \frac1{\sqrt{N}}\)</span>. As discussed in <a href="#sec-theta_approx">Sec.&nbsp;5.4</a>, this can be done using a polynomial of degree <span class="math inline">\(O(\frac{1}{a}\log\frac{1}{a\epsilon})=O(\sqrt{N}\log\frac{\sqrt{N}}{\epsilon})\)</span>. We know that Grover’s search can run in time <span class="math inline">\(\sqrt{N}\)</span> so the extra <span class="math inline">\(\log\sqrt{N}\)</span>, while not crucial, is unnecessary. Anyway, in the framework of QSVT finding a better scaling algorithm amounts to ‘just’ constructing a more efficient polynomial approximation. We won’t go there.</p>
-<p>Actually, I will not construct the polynomial approximations at all in subsequent implementation. Instead, I will use routines provided by <code>pyqsp</code> that besides building a QSP sequence from a polynomial also includes the approximation utils.</p>
+<p>So we aim to approximate <span class="math inline">\(\theta(x-a)\)</span> for <span class="math inline">\(a\le \frac1{\sqrt{N}}\)</span>. Equivalently, we can approximate <span class="math inline">\(\operatorname{sign}(x)\)</span> with resolution <span class="math inline">\(\delta^{-1}=a\)</span> around the point of discontinuity <span class="math inline">\(x=0\)</span>. As discussed in <a href="#sec-theta_approx">Sec.&nbsp;5.5</a>, this can be done using a polynomial of degree <span class="math inline">\(O(\frac{1}{a}\log\frac{1}{a\epsilon})=O(\sqrt{N}\log\frac{\sqrt{N}}{\epsilon})\)</span>. We know that Grover’s search can run in time <span class="math inline">\(\sqrt{N}\)</span> so the extra <span class="math inline">\(\log\sqrt{N}\)</span>, while not crucial, is unnecessary. Anyway, in the framework of QSVT finding a better scaling algorithm amounts to ‘just’ constructing a more efficient polynomial approximation. We won’t go there.</p>
+<p>Actually, I will not construct the polynomial approximations at all in subsequent implementations. Instead, I will use routines provided by <code>pyqsp</code> that besides building a QSP sequence from a polynomial also includes the approximation utils.</p>
 </section>
 <section id="implementation-1" class="level2" data-number="7.4">
 <h2 data-number="7.4" class="anchored" data-anchor-id="implementation-1"><span class="header-section-number">7.4</span> Implementation</h2>
-<p>First let’s define and look at the approximating polynomials. To build them, we will need to use a function provided by <code>pyqsp</code> package, which approximates <span class="math inline">\(erf(-\delta x)\)</span>. Apparently, we can not simply specify the desired precision here, but instead have to give the degree of the polynomial and <span class="math inline">\(\delta\)</span>. I will go with the simplest options <span class="math inline">\(\operatorname{deg}p=\sqrt{N}, \delta=\sqrt{N}\)</span> which give a decent, but not ideal performance.</p>
-<div class="cell" data-execution_count="8">
+<p>First, let’s define and look at the approximating polynomials. To build them, we will use a function provided by <code>pyqsp</code> package, which approximates <span class="math inline">\(erf(-\Delta x)\)</span>. Apparently, we can not simply specify the desired precision here, but instead have to give the degree of the polynomial and <span class="math inline">\(\Delta\)</span>. I will go with the simplest options <span class="math inline">\(\operatorname{deg}p=\sqrt{N}, \Delta=\sqrt{N}\)</span> which give a decent, but not ideal performance.</p>
+<div class="cell" data-scrolled="true" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sign_approximating_polynomial(num_qubits):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Polynomial that approximates the step function theta(x) for x&gt;= 1/N**0.5"""</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -870,11 +1042,11 @@ Note
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        degree <span class="op">+=</span> <span class="dv">1</span></span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This delta controls the width of our approximation around zero, but does not exacly</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># correspond to delta defined in the text, rather delta here ~ 1 / our delta.</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    delta <span class="op">=</span> N<span class="op">**</span><span class="fl">0.5</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># correspond to delta defined in the text, rather Delta here ~ 1 / our delta.</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    Delta <span class="op">=</span> N<span class="op">**</span><span class="fl">0.5</span></span>
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the polynomial approximation.</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span>  quiet(target_function.generate)(degree, delta<span class="op">=</span>delta)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span>  quiet(target_function.generate)(degree, delta<span class="op">=</span>Delta)</span>
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> p</span>
 <span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
@@ -892,8 +1064,8 @@ Note
 <p><img src="index_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>We see that indeed, as we increase the degree of the polynomial, the approximation around <span class="math inline">\(x=0\)</span> impoves. Now we are ready to peform full Grover’s serach by QSVT.</p>
-<div class="cell" data-execution_count="9">
+<p>We see that indeed, as we increase the degree of the polynomial, the approximation around <span class="math inline">\(x=0\)</span> improves. Now we are ready to perform the full Grover search by QSVT.</p>
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> projector_from_state(state):</span>
@@ -941,7 +1113,7 @@ Note
 <span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    amplitudes.append(amplitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Alright, here is the result.</p>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>original_amplitudes <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>(<span class="op">-</span><span class="fl">0.5</span><span class="op">*</span>np.array(qubits))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>polynomial_values <span class="op">=</span> [sign_approximating_polynomial(n)(a) <span class="cf">for</span> n, a <span class="kw">in</span> <span class="bu">zip</span>(qubits, original_amplitudes)]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -956,7 +1128,7 @@ Note
 <p><img src="index_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>We see that with our algorithm indeed significantly amplifies the original amplitudes with only <span class="math inline">\(\sqrt{N}\)</span> calls to Grover’s oracle, albeit not perfectly. Ideally, the amplified amplitudes stay constant as <span class="math inline">\(N\)</span> increases, while ours decay. However, this is entirely due to our choice of the polynomial approximation, which is demonstrated by plotting the values of the approximating polynomial. So our QSVT circuit works just as expected, but our approximating polynomials could be improved. I will not attempt to do it here.</p>
+<p>We see that our algorithm indeed significantly amplifies the original amplitudes with only <span class="math inline">\(\sqrt{N}\)</span> calls to the oracle, albeit not perfectly. Ideally, the amplified amplitudes stay constant as <span class="math inline">\(N\)</span> increases, while ours decay. However, this is entirely due to our choice of the polynomial approximation, which is demonstrated by plotting the values of the approximating polynomial. So our QSVT circuit works just as expected, but our approximating polynomials could be improved. I will not attempt to do it here.</p>
 </section>
 </section>
 <section id="hamiltonian-simulation" class="level1" data-number="8">
@@ -968,7 +1140,7 @@ Note
 </section>
 <section id="watch-out-for-your-hamiltonian" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="watch-out-for-your-hamiltonian"><span class="header-section-number">8.2</span> Watch out for your Hamiltonian</h2>
-<p>Except that there may be subtleties. First, if <span class="math inline">\(||H||&gt;1\)</span> we could only block encode <span class="math inline">\(H/\alpha\)</span> with large enough <span class="math inline">\(\alpha\)</span>. But that’s fine, because simulating <span class="math inline">\(H\)</span> for time <span class="math inline">\(t\)</span> is the same as simulating <span class="math inline">\(H/\alpha\)</span> for time <span class="math inline">\(\alpha t\)</span>. Next, if <span class="math inline">\(H\)</span> have negative eigenvalues, these do not coincide with the singular values. One way to deal with that is to shift <span class="math inline">\(H\)</span> by a constant <span class="math inline">\(H+\alpha\)</span>, which can be achieved using the linear combination of unitaries. I will proceed assuming that <span class="math inline">\(||H||\le 1\)</span> and <span class="math inline">\(H\ge0\)</span>.</p>
+<p>Except that there may be subtleties. First, if <span class="math inline">\(||H||&gt;1\)</span> we could only block encode <span class="math inline">\(H/\alpha\)</span> with large enough <span class="math inline">\(\alpha\)</span>. But that’s fine, because simulating <span class="math inline">\(H\)</span> for time <span class="math inline">\(t\)</span> is the same as simulating <span class="math inline">\(H/\alpha\)</span> for time <span class="math inline">\(\alpha t\)</span>. Next, if <span class="math inline">\(H\)</span> has negative eigenvalues, these do not coincide with the singular values. One way to deal with that is to shift <span class="math inline">\(H\)</span> by a constant <span class="math inline">\(H+\alpha\)</span>, which can be achieved using the linear combination of unitaries. I will proceed assuming that <span class="math inline">\(||H||\le 1\)</span> and <span class="math inline">\(H\ge0\)</span>.</p>
 </section>
 <section id="solving-the-parity-problem" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="solving-the-parity-problem"><span class="header-section-number">8.3</span> Solving the parity problem</h2>
@@ -995,12 +1167,15 @@ Exercise
 </section>
 <section id="approximating-polynomial" class="level2" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="approximating-polynomial"><span class="header-section-number">8.4</span> Approximating polynomial</h2>
-<p>So now the task is to approximate <span class="math inline">\(\cos xt\)</span> and <span class="math inline">\(\sin x t\)</span> on <span class="math inline">\([0, 1]\)</span> to some precision <span class="math inline">\(\epsilon\)</span>. How should the result scale with <span class="math inline">\(t, \epsilon\)</span>? Let’s try to apply procedure from <a href="#sec-polynomial_how_to">Sec.&nbsp;5.3</a>. Since this procedure does not require a definite parity we will look at <span class="math inline">\(f(x)=e^{-ixt}\)</span>. First we need to linearly map the region where we want the approximation <span class="math inline">\([0,1]\)</span> to the standard domain of Chebyshev polynomials <span class="math inline">\([-1,1]\)</span>. We do this via <span class="math inline">\(y=2x-1 \to x=\frac{y+1}{2}\)</span>. Then we look at <span class="math inline">\(f(x(y))=e^{-i\frac{y+1}{2}t}\)</span>. In the Bernstein ellipse <span class="math inline">\(E_\rho\)</span> this function has the maximum absolute value <span class="math inline">\(e^{\frac\alpha2 t}\)</span>, achieved when <span class="math inline">\(y\)</span> has the largest imaginary part <span class="math inline">\(\operatorname{im} y=\frac{\rho-\rho^{-1}}{2}\approx \alpha\)</span> assuming <span class="math inline">\(\rho=1+\alpha, \alpha\ll1\)</span>. Therefore, by taking <span class="math inline">\(\alpha=\frac{1}{t}\)</span> we keep the target bounded by a constant in <span class="math inline">\(E_\rho\)</span> as we increase <span class="math inline">\(t\)</span>. According to <strong>?@sec-polynomial_approx</strong>, the smallest <span class="math inline">\(\delta\)</span> we can choose is <span class="math inline">\(\delta=\alpha^2=\frac{1}{t^2}\)</span> which gives the approximating polynomial of degree <span class="math inline">\(O(t^2\log t^2/\epsilon)\)</span>. While not terrible, this is quite suboptimal. Even on physical grounds, we expect that the complexity of the simulation problem should scale lineraly with <span class="math inline">\(t\)</span>, not quadratically. A better approximation can be obtained by direct truncation of the Chebyshev series for <span class="math inline">\(e^{-ixt}\)</span> and gives a polynomial approximation with degree scaling as <span class="math inline">\(t+\frac{\log \epsilon^{-1}}{\log(e+t^{-1}\log\epsilon^{-1})}\)</span>. I agree, this looks sort of weird, but for fixed <span class="math inline">\(\epsilon\)</span> and large enough <span class="math inline">\(t\)</span> scaling is linear in <span class="math inline">\(t\)</span>. I will not dig into details of how to derive this approximation, but you can look them up in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">3</a>]</span> or <span class="citation" data-cites="Martyn2021">&nbsp;[<a href="#ref-Martyn2021" role="doc-biblioref">4</a>]</span>. Anyway, we are going to use the approximating polynomials determined by <code>pyqsp</code>.</p>
+<p>So now the task is to approximate <span class="math inline">\(\cos xt\)</span> and <span class="math inline">\(\sin x t\)</span> on <span class="math inline">\([0, 1]\)</span> to some precision <span class="math inline">\(\epsilon\)</span>. How should the result scale with <span class="math inline">\(t, \epsilon\)</span>?</p>
+<p>Let’s try to apply the procedure from <a href="#sec-polynomial_how_to">Sec.&nbsp;5.4</a>. Since this procedure does not require a definite parity, we can understand the scaling by looking directly at <span class="math inline">\(f(x)=e^{-ixt}\)</span>.</p>
+<p>First we need to linearly map the region where we want the approximation <span class="math inline">\([0,1]\)</span> to the standard domain of Chebyshev polynomials <span class="math inline">\([-1,1]\)</span>. We do this via <span class="math inline">\(y=2x-1 \to x=\frac{y+1}{2}\)</span>. Then we look at <span class="math inline">\(f(x(y))=e^{-i\frac{y+1}{2}t}\)</span>. In the Bernstein ellipse <span class="math inline">\(E_\rho\)</span> this function has the maximum absolute value <span class="math inline">\(e^{\frac\alpha2 t}\)</span>, achieved when <span class="math inline">\(y\)</span> has the largest imaginary part <span class="math inline">\(\operatorname{im} y=\frac{\rho-\rho^{-1}}{2}\approx \alpha\)</span> assuming <span class="math inline">\(\rho=1+\alpha, \alpha\ll1\)</span>. Therefore, by taking <span class="math inline">\(\alpha=\frac{1}{t}\)</span> we keep the target bounded by a constant in <span class="math inline">\(E_\rho\)</span> as we increase <span class="math inline">\(t\)</span>.</p>
+<p>According to <a href="#sec-polynomial_how_to">Sec.&nbsp;5.4</a>, the smallest <span class="math inline">\(\delta\)</span> we can choose is <span class="math inline">\(\delta=\alpha^2=\frac{1}{t^2}\)</span>, which leads to the approximating polynomial of degree <span class="math inline">\(O(t^2\log t^2/\epsilon)\)</span>. While not terrible, this is quite suboptimal. Even on physical grounds, we expect that the complexity of the simulation problem should scale lineraly with <span class="math inline">\(t\)</span>, not quadratically. A better approximation can be obtained by direct truncation of the Chebyshev series for <span class="math inline">\(e^{-ixt}\)</span> and gives a polynomial approximation with degree scaling as <span class="math inline">\(O(t+\frac{\log \epsilon^{-1}}{\log(e+t^{-1}\log\epsilon^{-1})})\)</span>. I agree, this equation looks weird, but for fixed <span class="math inline">\(\epsilon\)</span> and large enough <span class="math inline">\(t\)</span> the scaling is linear in <span class="math inline">\(t\)</span>. I will not dig into details of how to derive this approximation, but you can look them up in <span class="citation" data-cites="Tang2023">&nbsp;[<a href="#ref-Tang2023" role="doc-biblioref">2</a>]</span> or <span class="citation" data-cites="Martyn2021">&nbsp;[<a href="#ref-Martyn2021" role="doc-biblioref">1</a>]</span>. Anyway, we are going to use the approximating polynomials determined by <code>pyqsp</code>.</p>
 </section>
 <section id="implementation-2" class="level2" data-number="8.5">
 <h2 data-number="8.5" class="anchored" data-anchor-id="implementation-2"><span class="header-section-number">8.5</span> Implementation</h2>
-<p>First let’s define a class that will take an artibrary matrix <span class="math inline">\(A, ||A||\le1\)</span> and block encode it into a minimum number of qubits possible. We will use it here and in the next section.</p>
-<div class="cell" data-tags="[]" data-execution_count="5">
+<p>First let’s define a class that will take an arbitrary matrix <span class="math inline">\(A, ||A||\le1\)</span> and block encode it into a minimum number of qubits possible. We will use it here and in the next section.</p>
+<div class="cell" data-tags="[]" data-execution_count="9">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BlockEncoding:</span>
@@ -1059,8 +1234,8 @@ Exercise
 <span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> U</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Now let’s build and look at approximating polynomials. In contrast to the sign function we used in Grover’s algorithm, here we can directly specify the desired time and accuracy, and the degree of the polynmial is determined by the package.</p>
-<div class="cell" data-execution_count="12">
+<p>Now let’s build and look at approximating polynomials. In contrast to the sign function we used in Grover’s algorithm, here we can directly specify the desired time and accuracy, and the degree of the polynomial is determined by the package.</p>
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> trig_approximating_polynomial(t, epsilon, func):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -1089,7 +1264,7 @@ Exercise
 </div>
 </div>
 <p>We see that our polynomials (plotted by stars) match the trigonometric functions well. So let’s go ahead and implement the whole QSVT circuit. In Grover’s example we looked how the results scale with the system size, here we instead will look at scaling with time.</p>
-<div class="cell" data-execution_count="13">
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">42</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(seed)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1150,7 +1325,7 @@ Exercise
 <span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>    accuracy <span class="op">=</span> np.linalg.norm(H_transformed<span class="op">-</span>scipy.linalg.expm(<span class="op">-</span><span class="ot">1j</span><span class="op">*</span>H<span class="op">*</span>ti), <span class="bu">ord</span><span class="op">=</span><span class="dv">2</span>) <span class="co"># ord=2 == operator norm</span></span>
 <span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>    accuracies.append(accuracy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="14">
+<div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plt.plot(t, accuracies)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.axhline(epsilon, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
@@ -1168,7 +1343,7 @@ Exercise
 <p><img src="index_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Alright, so at least in the range we have chosen the error remains below the threshold while the degree of the polynomial appears to scale linearly with <span class="math inline">\(t\)</span>.</p>
+<p>Alright, so at least in the range we have chosen, the error remains below the threshold while the degree of the polynomial appears to scale linearly with <span class="math inline">\(t\)</span>.</p>
 </section>
 </section>
 <section id="solving-linear-systems" class="level1" data-number="9">
@@ -1180,20 +1355,42 @@ Exercise
 </section>
 <section id="watch-out-for-your-linear-system" class="level2" data-number="9.2">
 <h2 data-number="9.2" class="anchored" data-anchor-id="watch-out-for-your-linear-system"><span class="header-section-number">9.2</span> Watch out for your linear system</h2>
-<p>If the original operator <span class="math inline">\(A\)</span> can be block embedded all its singular values satisfy <span class="math inline">\(\sigma_i\le1\)</span> (if this is not so, we should block embed <span class="math inline">\(A/\alpha\)</span> instead, similarly to the Hamiltonian simulation case). But then <span class="math inline">\(1/\sigma_i\)</span> will necessarily be greater than 1 and so <span class="math inline">\(A^+\)</span> could not be block embeded into a unitary. Moreover, the function <span class="math inline">\(\frac1x\)</span> blows up at <span class="math inline">\(x=0\)</span> and there is no hope to approximate it with a polynomial. Both there problems hint that we need to make an assumption on the range of singular values.</p>
-<p>We will assume that <span class="math inline">\(\frac{1}{\kappa}\le\sigma_i\le1\)</span>. Then <span class="math inline">\(\kappa\)</span> is known as the condition number of the system. It is an important figure of merit for classical sovlers as well. Now we can make the problem well-posed. The goal is to approximate <span class="math inline">\(f(x)=\frac{1}{2\kappa x}\)</span> for <span class="math inline">\(x\in[\frac{1}{\kappa}, 1]\)</span> (the additional factor <span class="math inline">\(\frac12\)</span> is just to make sure <span class="math inline">\(|f(x)|&lt;1\)</span> in the desired range).</p>
+<p>If the original operator <span class="math inline">\(A\)</span> can be block embedded all its singular values satisfy <span class="math inline">\(\sigma_i\le1\)</span> (if this is not so, we should block embed <span class="math inline">\(A/\alpha\)</span> with some <span class="math inline">\(\alpha&gt;1\)</span> instead). But then <span class="math inline">\(1/\sigma_i\)</span> will necessarily be greater than 1 and so <span class="math inline">\(A^+\)</span> could not be block encoded into a unitary. Moreover, the function <span class="math inline">\(\frac1x\)</span> blows up at <span class="math inline">\(x=0\)</span>, and there is no hope to approximate it with a polynomial. Both these problems hint that we need to make an assumption on the range of singular values.</p>
+<p>We will assume that <span class="math inline">\(\frac{1}{\kappa}\le\sigma_i\le1\)</span>, and <span class="math inline">\(\kappa\)</span> is known as the condition number of the system. It is an important figure of merit for classical solvers as well. Now we can make the problem well-posed. Our goal is to approximate <span class="math inline">\(f(x)=\frac{1}{2\kappa x}\)</span> for <span class="math inline">\(x\in[\frac{1}{\kappa}, 1]\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Why one half?">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why one half?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The additional factor <span class="math inline">\(\frac12\)</span> is included to make <span class="math inline">\(|f(x)|\le\frac12\)</span>. If <span class="math inline">\(f(x)\)</span> reaches <span class="math inline">\(1\)</span> at the approximating range, then the polynomial approximation can reach <span class="math inline">\(1+\epsilon\)</span>, and will not be implementable by QSP. We can be more accurate and define the target function like <span class="math inline">\(f(x)=\frac{1}{(1+\epsilon)\kappa x}\)</span>, or be less careful and simply put in the <span class="math inline">\(\frac12\)</span> factor.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="approximating-polynomial-1" class="level2" data-number="9.3">
 <h2 data-number="9.3" class="anchored" data-anchor-id="approximating-polynomial-1"><span class="header-section-number">9.3</span> Approximating polynomial</h2>
 <p>Alright, how do we expect the complexity of the algorithm to scale with <span class="math inline">\(\kappa, \epsilon\)</span>?</p>
-<p>Let’s quickly run the procedure of <a href="#sec-polynomial_how_to">Sec.&nbsp;5.3</a>. First make a linear transformation <span class="math inline">\(y=\frac{2x-1-\kappa^{-1}}{1-\kappa^{-1}}\)</span> that maps <span class="math inline">\([\kappa{^-1},1]\)</span> to <span class="math inline">\([-1,1]\)</span>. We get <span class="math display">\[f(x(y))=\frac{\frac1{\kappa+1}}{y+\frac{\kappa+1}{\kappa-1}}\]</span></p>
-<p>This function has a pole at <span class="math inline">\(y=-\frac{\kappa+1}{\kappa-1}\)</span> and is maximazed in the Bernstein ellipse when <span class="math inline">\(y\)</span> approaches this pole along the real axis. For <span class="math inline">\(y\ge-1-\frac{1}{k+1}\)</span> we can write <span class="math inline">\(|f(x(y))|&lt;1\)</span> Therfore, <span class="math inline">\(f(x(y))\)</span> is bounded by <span class="math inline">\(1\)</span> in a Bernnstein ellipse <span class="math inline">\(E_\rho\)</span> of radius <span class="math inline">\(\rho=1+\alpha\)</span> with <span class="math inline">\(\alpha^2=\frac{2}{\kappa+1}\)</span>. Therofore, we can choose <span class="math inline">\(\delta\sim\frac{1}{\kappa}\)</span>. Note that <span class="math inline">\(y(-1)=-3+O(\kappa{-1})\)</span> and so we can choose <span class="math inline">\(b=2\)</span>, this does not affect the complexity. Therefore, in this case we expect the degree of the approximating polynomial to scale as <span class="math display">\[\operatorname{deg}p=O(\kappa\log \frac{\kappa}{\epsilon} )\ .\]</span></p>
-<p>A couple of quick commets. - This scaling is a significant improvement to the original HHL algorithm, which runs in <span class="math inline">\(O(\frac{\kappa^2\log N}{\epsilon})\)</span>. Apparently, this scaling is state-of-the-art result for quantum matrix inversion. - The matrix dimension <span class="math inline">\(N\)</span> does not enter our scaling explicitly. However, if the costs of block encoding <span class="math inline">\(A\)</span> are taken into account the result will likly scale with <span class="math inline">\(N\)</span>. - Merely finding <span class="math inline">\(A^{+}\)</span> is not a end-to-end quantum algorithm. In practice, you would also need a way to load the vector <span class="math inline">\(|b\rangle\)</span> in and be able to read out useful information from a quantum state <span class="math inline">\(|A^{+}b\rangle\)</span>, which are no trivial considerations. - The post-selection probability to get <span class="math inline">\(|A^+b\rangle\)</span> is proportional to <span class="math inline">\(|\frac{1}{2\kappa}A^+b|^2\ge \frac{1}{4\kappa^2}||A^+||^2\ge \frac{1}{4\kappa^2}\)</span>. It decays quadratically with <span class="math inline">\(\kappa\)</span> but can be expnentially enhanced via a classical repetition or a quantum amplitude amplification.</p>
+<p>Let’s quickly run the procedure of <a href="#sec-polynomial_how_to">Sec.&nbsp;5.4</a>. First make a linear transformation <span class="math inline">\(y=\frac{2x-1-\kappa^{-1}}{1-\kappa^{-1}}\)</span> that maps <span class="math inline">\([\kappa{^-1},1]\)</span> to <span class="math inline">\([-1,1]\)</span>. We get <span class="math display">\[f(x(y))=\frac{\frac1{\kappa+1}}{y+\frac{\kappa+1}{\kappa-1}} \ .\]</span></p>
+<p>This function has a pole at <span class="math inline">\(y=-\frac{\kappa+1}{\kappa-1}\)</span> and is maximized in the Bernstein ellipse when <span class="math inline">\(y\)</span> approaches this pole along the real axis. For <span class="math inline">\(y\ge-1-\frac{1}{k+1}\)</span> we can write <span class="math inline">\(|f(x(y))|&lt;1\)</span> Therfore, <span class="math inline">\(f(x(y))\)</span> is bounded by <span class="math inline">\(1\)</span> in a Bernstein ellipse <span class="math inline">\(E_\rho\)</span> of radius <span class="math inline">\(\rho=1+\alpha\)</span> with <span class="math inline">\(\alpha^2=\frac{2}{\kappa+1}\)</span>. Therefore, we can choose <span class="math inline">\(\delta\sim\frac{1}{\kappa}\)</span>. Note that <span class="math inline">\(y(-1)=-3+O(\kappa{-1})\)</span> and so we can choose <span class="math inline">\(b=2\)</span>, this does not affect the complexity. Therefore, in this case we expect the degree of the approximating polynomial to scale as <span class="math display">\[\operatorname{deg}p=O(\kappa\log \frac{\kappa}{\epsilon} )\ .\]</span></p>
+<p>A couple of quick comments.</p>
+<ul>
+<li>This scaling is a significant improvement to the original HHL algorithm, which runs in <span class="math inline">\(O(\frac{\kappa^2\log N}{\epsilon})\)</span>. Apparently, this scaling is state-of-the-art result for quantum matrix inversion.</li>
+<li>The matrix dimension <span class="math inline">\(N\)</span> does not enter our scaling explicitly. However, if the costs of block encoding <span class="math inline">\(A\)</span> are taken into account the result will likly scale with <span class="math inline">\(N\)</span>.</li>
+<li>Merely finding <span class="math inline">\(A^{+}\)</span> is not a end-to-end quantum algorithm. In practice, you would also need a way to load the vector <span class="math inline">\(|b\rangle\)</span> in and be able to read out useful information from a quantum state <span class="math inline">\(|A^{+}b\rangle\)</span>, which are no trivial considerations.</li>
+<li>The post-selection probability to get <span class="math inline">\(|A^+b\rangle\)</span> is proportional to <span class="math inline">\(|\frac{1}{2\kappa}A^+b|^2\ge \frac{1}{4\kappa^2}\)</span> (the smallest singular value of <span class="math inline">\(A^+\)</span> is at least 1). It decays quadratically with <span class="math inline">\(\kappa\)</span>, but can be exponentially enhanced via a classical repetition or a quantum amplitude amplification.</li>
+</ul>
 </section>
 <section id="implementation-3" class="level2" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="implementation-3"><span class="header-section-number">9.4</span> Implementation</h2>
 <p>Alright, let’s inmplement our final example. First let’s build and look at approximating polynomials.</p>
-<div class="cell" data-execution_count="79">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xinverse_approximating_polynomial(kappa, epsilon):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Polynomal approxiamtion to 1/(2*kappa*x)"""</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -1229,7 +1426,7 @@ Exercise
 </div>
 </div>
 <p>This seems right. Let’s also write a function to generate random linear sysmtes with matrices <span class="math inline">\(A\)</span> satisfying <span class="math inline">\(A\in \mathbb{R}, ||A||\le1\)</span>. It’s nothing interesting, really.</p>
-<div class="cell" data-execution_count="80">
+<div class="cell" data-execution_count="14">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_A(kappa, num_qubits):</span>
@@ -1253,11 +1450,11 @@ Exercise
 </details>
 </div>
 <p>Now we are ready to proceed with the full-fledged QSVT application. This time we will look at how complexity scales with <span class="math inline">\(\kappa\)</span>. This scaling should be independent of other parameters.</p>
-<div class="cell" data-tags="[]" data-execution_count="91">
+<div class="cell" data-tags="[]" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">1</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(seed)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>num_qubits</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.2</span></span>
@@ -1310,12 +1507,12 @@ Exercise
 <p><img src="index_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>This looks right, the error quanitified by the operator norm stays below the threshold while the degree of the approximating polynomial seems to grow linearly. This wraps up the experiment.</p>
+<p>This looks right, the error quantified by the operator norm stays below the threshold while the degree of the approximating polynomial seems to grow linearly. This wraps up the experiment.</p>
 </section>
 </section>
 <section id="conclusion" class="level1" data-number="10">
 <h1 data-number="10"><span class="header-section-number">10</span> Conclusion</h1>
-<p>Come on, this post is already waay to long. The best I can do I can do is to skip the conclusion 😎. As always, feedback is highly appreciated.</p>
+<p>Come on, this post is already waay too long. I think skipping the conclusion is the way to go 😎. As always, feedback is highly appreciated.</p>
 
 
 
@@ -1330,20 +1527,26 @@ Exercise
 No matching items
 </div>
 </div><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" role="list">
-<div id="ref-ArazzolaQSVT" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. M. Arrazola, <em><a href="https://pennylane.ai/qml/demos/tutorial_intro_qsvt.html">Intro to QSVT</a></em>, (2023).</div>
-</div>
-<div id="ref-Gilyen2019" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">A. Gilyén, Y. Su, G. H. Low, and N. Wiebe, <em><a href="https://doi.org/10.1145/3313276.3316366"><span class="nocase">Quantum singular value transformation and beyond: Exponential improvements for quantum matrix arithmetics</span></a></em>, Proceedings of the Annual ACM Symposium on Theory of Computing 193 (2019).</div>
+<div id="ref-Martyn2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. M. Martyn, Z. M. Rossi, A. K. Tan, and I. L. Chuang, <em><a href="https://doi.org/10.1103/PRXQuantum.2.040203"><span class="nocase">A Grand Unification of Quantum Algorithms</span></a></em>, PRX Quantum <strong>2</strong>, (2021).</div>
 </div>
 <div id="ref-Tang2023" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[3] </div><div class="csl-right-inline">E. Tang and K. Tian, <em><a href="https://arxiv.org/abs/2302.14324v1"><span class="nocase">A CS guide to the quantum singular value transformation</span></a></em>, (2023).</div>
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">E. Tang and K. Tian, <em><a href="https://arxiv.org/abs/2302.14324v1"><span class="nocase">A CS guide to the quantum singular value transformation</span></a></em>, (2023).</div>
 </div>
-<div id="ref-Martyn2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[4] </div><div class="csl-right-inline">J. M. Martyn, Z. M. Rossi, A. K. Tan, and I. L. Chuang, <em><a href="https://doi.org/10.1103/PRXQuantum.2.040203"><span class="nocase">A Grand Unification of Quantum Algorithms</span></a></em>, PRX Quantum <strong>2</strong>, (2021).</div>
+<div id="ref-ArrazolaQSVT" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">J. M. Arrazola, <em><a href="https://pennylane.ai/qml/demos/tutorial_intro_qsvt.html">Intro to QSVT</a></em>, (2023).</div>
+</div>
+<div id="ref-Gilyen2019" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">A. Gilyén, Y. Su, G. H. Low, and N. Wiebe, <em><a href="https://doi.org/10.1145/3313276.3316366"><span class="nocase">Quantum singular value transformation and beyond: Exponential improvements for quantum matrix arithmetics</span></a></em>, Proceedings of the Annual ACM Symposium on Theory of Computing 193 (2019).</div>
+</div>
+<div id="ref-GilyenThesis" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">A. Gilyén, <em><a href="https://dare.uva.nl/search?identifier=20e9733e-6014-402d-afa9-20f3cc4a0568">Quantum Singular Value Transformation&amp; Its Algorithmic Applications</a></em>, (2019).</div>
 </div>
 <div id="ref-pyqsp" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[5] </div><div class="csl-right-inline">I. Chuang and et al, <em><a href="https://github.com/ichuang/pyqsp">Pyqsp: Quantum Signal Processing</a></em>, (2022).</div>
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">I. Chuang and et al, <em><a href="https://github.com/ichuang/pyqsp">Pyqsp: Quantum Signal Processing</a></em>, (2022).</div>
+</div>
+<div id="ref-Chebyshev" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">J. Sachs, <em><a href="https://www.embeddedrelated.com/showarticle/152.php">Chebyshev Approximation and How It Can Help You Save Money, Win Friends, and Influence People</a></em>, (2012).</div>
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
