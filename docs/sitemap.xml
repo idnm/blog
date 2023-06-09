@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://idnm.github.io/blog/posts/matrix_representation_of_quantum_circuits/2021-08-18-matrix representation of quantum circuits.html</loc>
+    <lastmod>2023-06-09T11:33:46.280Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/qutrit_gate/2022-11-15-Qutrit.html</loc>
+    <lastmod>2023-06-09T11:33:48.696Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/machine_learning_compilation_experiments/2021-12-13-machine learning compilation of quantum circuits -- experiments.html</loc>
+    <lastmod>2023-06-09T11:33:51.928Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/what_to_do_with_a_quantum_computer/what_to_do_with_a_quantum_computer.html</loc>
+    <lastmod>2023-06-09T11:33:57.080Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/classiq_toffoli/2022-06-21-classiq toffoli.html</loc>
+    <lastmod>2023-06-09T11:34:05.988Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/entanglement/2021-07-12-entanglement.html</loc>
+    <lastmod>2023-06-09T11:34:07.688Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/machine_learning_quantum_ecc/2022-06-16-machine learning error correction codes.html</loc>
+    <lastmod>2023-06-09T11:34:09.772Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/how_was_this_blog_setup/2021-07-11-how this blog was set up.html</loc>
+    <lastmod>2023-06-09T11:34:11.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/machine_learning_compilation_of_qunatum_circuits/2021-07-22-machine learning compilation of quantum circuits.html</loc>
+    <lastmod>2023-06-09T11:34:14.028Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/some_analytic_facts_about_vqa/2022-05-17-some analytic facts about variational algorithms.html</loc>
+    <lastmod>2023-06-09T11:34:16.184Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/quantum_singular_value_transformation_intro/index.html</loc>
+    <lastmod>2023-06-09T11:34:23.184Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/classiq_state_preparation/2022-06-21-classiq lognormal.html</loc>
+    <lastmod>2023-06-09T11:34:28.209Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/index.html</loc>
+    <lastmod>2023-06-09T11:34:30.373Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/about.html</loc>
+    <lastmod>2023-06-09T11:34:30.845Z</lastmod>
+  </url>
+</urlset>

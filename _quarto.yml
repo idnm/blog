@@ -2,11 +2,14 @@ project:
   type: website
   output-dir: docs
 website:
+  site-url: https://idnm.github.io/blog/
   title: "Notes on Quantum Computing"
   favicon: kika.jpeg
   navbar:
     right:
       - about.qmd
+      - icon: rss
+        href: index.xml
   google-analytics: "G-1154MLY31V"
 format:
   html:
