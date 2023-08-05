@@ -10,7 +10,537 @@
 <atom:link href="https://idnm.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.3.319</generator>
-<lastBuildDate>Tue, 06 Jun 2023 21:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 17 Jul 2023 21:00:00 GMT</lastBuildDate>
+<item>
+  <title>Where do quantum speedups come from?</title>
+  <link>https://idnm.github.io/blog/posts/where_quantum_speedups_come_from/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<ol type="1">
+<li>A lot of confusion about the source of quantum advantage.</li>
+<li>Usual suspects
+<ol type="1">
+<li>Large Hilbert space</li>
+<li>Entanglement</li>
+<li>Superposition</li>
+</ol></li>
+<li>Simple but accurate explanation hard to come by.</li>
+<li>Many simplistic explanations fail because they apply to probabilistic computing as well
+<ol type="1">
+<li>Large space dimension for probabilities</li>
+<li>No interference</li>
+<li>Stochastic matrices can be simulated? Always increase entropy</li>
+<li>Quasi-probability distr, Wigner functions</li>
+</ol></li>
+<li>And then there are classical waves.
+<ol type="1">
+<li>But no exponential modes</li>
+</ol></li>
+<li>Entanglement is curios, but not crucial
+<ol type="1">
+<li>Entanglement ensures explorig Hilbert space</li>
+<li>Stabilizer circuits can be simulated</li>
+<li>Quantum correlations are not directly related to computational advantage</li>
+</ol></li>
+<li>Algorithms vs quantum circuits.</li>
+<li>Post a bit different, try to give as simple explanation as possible.</li>
+<li>Couldn’t do it, but technical parts separated.</li>
+<li>Takeaway.
+<ul>
+<li>Dimension of the hilbert space+superposition given a polynomial amount of qubits</li>
+</ul></li>
+<li>The answer not completely satisfactory, the subject is suble.</li>
+</ol>
+<section id="is-this-even-a-real-question" class="level1">
+<h1>Is this even a real question?</h1>
+<p>This post will be a bit different from others, in that I’ll try to give a high level review instead of diving in detail into a specific topic. Also, since this is my personal blog, I figured I will give some personal background on this one.</p>
+<p>I got involved in the field of quantum computing relatively recently, in 2021. Before that, while working in theoretical physics, I didn’t even know the field exists, let alone is taking off at the industrial scale (yes, I’m known for my breadth of knowledge). After the transition into quantum, I’ve tried to catch up on many levels – from understanding the fundamentals, to getting up to speed with state of the art in hardware and algorithms, to carrying out some original research. Although I made some progress in all directions, you can imagine how fragmented and incomplete my picture of the field is. While there is still a ton of topics I’d like to understand better, one particular question have been sitting on the back of my mind for quite a while.</p>
+<p><strong><em>What quantum computers will actually be good for?</em></strong></p>
+<p>ChatGPT is probably a good way to summarize a folk knowledge. So, I asked it this exact question and got a pretty long list (click to unfold).</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled" title="Sure, here's a numbered list of some potential applications of quantum computers:">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Sure, here’s a numbered list of some potential applications of quantum computers:
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Cryptography: Quantum computers have the potential to break many of the currently used encryption methods and could be used to develop new, more secure encryption methods that are resistant to quantum attacks.</li>
+<li>Optimization: Quantum computers could be used to solve optimization problems exponentially faster than classical computers, potentially revolutionizing industries ranging from finance to transportation to healthcare.</li>
+<li>Chemistry and materials science: Quantum computers can simulate the behavior of molecules and materials at the quantum level, which could help in the development of new drugs and materials.</li>
+<li>Machine learning and artificial intelligence: Quantum computers could potentially outperform classical computers in tasks such as image and speech recognition, which could have applications in areas such as autonomous vehicles and robotics.</li>
+<li>Financial modeling: Quantum computers could be used to quickly analyze large amounts of financial data and predict stock prices or other market trends.</li>
+<li>Supply chain optimization: Quantum computers could be used to optimize supply chain operations, such as routing and scheduling, to improve efficiency and reduce costs.</li>
+<li>Weather forecasting: Quantum computers could be used to simulate complex weather patterns and improve the accuracy of weather forecasting.</li>
+<li>Energy production: Quantum computers could be used to optimize energy production and distribution, potentially reducing energy costs and improving energy efficiency.</li>
+<li>Particle physics: Quantum computers could be used to analyze data from particle accelerators and help physicists understand the behavior of particles at the subatomic level.</li>
+<li>Transportation: Quantum computers could be used to optimize transportation networks, including traffic flow, route planning, and logistics.</li>
+</ol>
+</div>
+</div>
+</div>
+<p>And indeed, all these topics, and many more, are frequently covered in popular discussions and technical papers on quantum computing. Probably for a non-expert, it would be nearly impossible to critically sort through these and resist the impression that quantum computers will be good for everything (and soon). However, my exposure to the field already made me skeptical about many of the usually proposed applications. And I felt a pressing need to sort this out for myself. I now feel like I’ve mostly done my homework on this one, and here is what I found.</p>
+<p><strong><em>We don’t really know yet what quantum computers will be good for.</em></strong></p>
+<p>And among the zoo of proposed applications, most are rather speculative, while a single one seems to stand out as most promising. You can read on to see what I have to back up these claims, or jump directly to the very short summary section (Section&nbsp;10).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://idnm.github.io/blog/posts/where_quantum_speedups_come_from/what_to_use_qc_for.svg" class="img-fluid figure-img" width="800"></p>
+</figure>
+</div>
+<section id="disclaimers" class="level2">
+<h2 class="anchored" data-anchor-id="disclaimers">Disclaimers</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I will specifically focus on quantum computation, not sensing or communication. Moreover, I will look for practical, useful problems, not just any possible demonstration of quantum advantage.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>As mentioned, my expertise in the field is limited. So take my assessment critically. I will cite many sources, but of course they are subject to my selection bias. Also, I’m more than happy to be proven wrong in this case. Feel free to leave the feedback.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I do not attempt to make the references comprehensive, e.g.&nbsp;I won’t cite original work of Grover or Shor. This is a blog post, come on. On the contrary, I will try to limit citations to those directly relevant to my arguments.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="types-of-quantum-algorithms" class="level1">
+<h1>Types of quantum algorithms</h1>
+<p>While there are a great many specific versions of quantum algorithms (see a pretty comprehensive list at <span class="citation" data-cites="zoo">&nbsp;[1]</span>), they can be divided in a few broad categories. Back in 2003 the one and only Peter Shor wrote a short essay “Why haven’t more quantum algorithms been found?” <span class="citation" data-cites="Shor2003">&nbsp;[2]</span>. There he points out three main types of quantum algorithms that were known to date.</p>
+<ul>
+<li>Those using the quantum Fourier transform to find periodicity. The most famous example is the integer factoring algorithm due to Shor himself.</li>
+<li>Algorithms similar or derived from Grover’s search.</li>
+<li>Algorithms for quantum simulation.</li>
+</ul>
+<p>By the way, if you are interested “why haven’t more quantum algorithms been found”, then according to Shor, it is probably because (1) quantum algorithms are so unusual that we do not have a good way to think about and invent them or (2) maybe there are just a few quantum algorithms, after all. You may wonder how much have changed in the past 20 years. Apparently, not that much. I would add three more positions to the list.</p>
+<ul>
+<li>Big data/machine learning algorithms, e.g.&nbsp;HHL algorithm.</li>
+<li>NISQ “algorithms”.</li>
+<li>Algorithms for quantum data.</li>
+</ul>
+<p>The key new addition here is the class of big data/machine learning algorithms. The most important example is an algorithm for linear systems, discovered by Harrow, Hassidim and Lloyd and known as HHL algorithm. Another broad class is NISQ algorithms, of which variational quantum algorithms (VQA) are the primary example. Finally, there is a new paradigm emerging, which asks if we can do more with a quantum computer if our data is not classical, but quantum. I will discuss each of them in turn.</p>
+<p>As far as I can tell, that’s basically it. Of course, there have been a great deal of progress since 2003 in finding new applications for the existing primitives, refining their efficiency, and even building unifying frameworks (see e.g. <span class="citation" data-cites="Martyn2021">&nbsp;[3]</span>). But the broad classification outlined above still seems to apply. I list a number of omissions in section Section&nbsp;9, and I’m happy to expand it base on the feedback.</p>
+</section>
+<section id="wait-isnt-the-quantum-advantage-already-here" class="level1">
+<h1>Wait, isn’t the quantum advantage already here?</h1>
+<p>Before going through the list sketched above, let’s briefly touch on the quantum advantage experiments. They certainly made a big splash, and call to be addressed. So far, four groups reported quantum advantage. The first and most known result comes from Google <span class="citation" data-cites="Arute2019">&nbsp;[4]</span>, then there were two academic groups in China <span class="citation" data-cites="Wu2021">&nbsp;[5]</span>-<span class="citation" data-cites="Zhong2020">&nbsp;[6]</span>, and last year it was Xanadu <span class="citation" data-cites="Madsen2022">&nbsp;[7]</span>. All these quantum advantage experiments were in <em>sampling</em> tasks, meaning the goal was to sample from a certain probability distribution that is believed to be hard to sample from classically. While debates up to this day continue on whether these quantum advantage experiments can in fact be spoofed by a classical computer, I’m willing to assume that the sampling tasks of this kind give a real and short-term achievable quantum advantage.</p>
+<p>The problem is, <em>no useful applications of these sampling tasks</em> are known. This claim may sound too strong, as there are papers proposing different uses. For example, here is a review from Xanadu on possible applications of the Gaussian Boson Sampling <span class="citation" data-cites="Bromley2019">&nbsp;[8]</span>. Unfortunately, these are only heuristics. I’m not familiar with this subfield in any technical detail, so my argument is a behavioral one. Since these sampling experiments are already available, there is a huge incentive to produce practical results or at least come up with strong theoretical proposals. And this does not seem to be happening. Until I’ll see a surge of activity in this area, I’ll assume these sampling experiments are unfortunately not useful.</p>
+<p>I must admit this is bothering me. We found something, that quantum computers can do better than classical, why can’t we use it? There must be a way, right? If we can’t, is there a good explanation? I don’t know one, but my discomfort was a bit relieved after reading a perspective by Harrow and Montanaro <span class="citation" data-cites="Harrow2018">&nbsp;[9]</span>. There, they introduce sampling experiments as computational analogs of Bell’s experiments. Indeed, although <a href="https://idnm.github.io/blog/posts/entanglement/2021-07-12-entanglement.html">we know</a> that quantum correlations can be stronger than classical, this does not lead directly to useful applications. Alright, I’ll leave it at that.</p>
+</section>
+<section id="nisq-algorithms-dont-work" class="level1">
+<h1>NISQ algorithms don’t work</h1>
+<p>Noisy-Intermediate-Scale-Quantum (NISQ) algorithms <span class="citation" data-cites="Bharti2022">&nbsp;[10]</span> account for most of the prospective applications of quantum computing, or at least you can get such an impression. There are NISQ algorithms for almost everything – optimization, machine learning, simulation, and even NISQ versions of algorithms such as factoring or HHL. However, these “algorithms” are in fact heuristics that come with many theoretical and practical problems. Let’s take a closer look.</p>
+<section id="variational-quantum-algorithms" class="level2">
+<h2 class="anchored" data-anchor-id="variational-quantum-algorithms">Variational quantum algorithms</h2>
+<p>The main bundle of NISQ algorithms are variational quantum algorithms (VQA) <span class="citation" data-cites="Cerezo2020">&nbsp;[11]</span>. The two most studied examples are Quantum Approximate Optimization Algorithm (QAOA) and Variational Quantum Eigensolver (VQE). QAOA mostly focuses on ground state preparation for classical Ising Hamiltonians, which in facts covers a huge range of problems related to combinatorial optimization. VQE typically addresses Hamiltonians that arise from physics or chemistry, but largely does the same thing. I think the line between different types of VQA is quite blurry.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Variational quantum algorithms" style="minimal">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Variational quantum algorithms
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Quite generally, variational quantum algorithms aim to find a low energy state of some Hamiltonian <img src="https://latex.codecogs.com/png.latex?H"> encoding the problem of interest. They start with a trivial quantum state <img src="https://latex.codecogs.com/png.latex?%7C0%5Crangle"> and apply a parameterized quantum circuit to it <img src="https://latex.codecogs.com/png.latex?U(%5Ctheta)%7C0%5Crangle">. The resulting energy <img src="https://latex.codecogs.com/png.latex?E(%5Ctheta)=%5Clangle0%7CU%5E%5Cdagger(%5Ctheta)HU(%5Ctheta)%7C0%5Crangle"> is minimized by adjusting parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> classically.</p>
+<p>Parameterized quantum circuits <img src="https://latex.codecogs.com/png.latex?U(%5Ctheta)"> can be informed by the problem as in QAOA, which seeks to approximate the adiabatic evolution, or completely problem-agnostic as in Hardware-Efficient ansatze.</p>
+</div>
+</div>
+</div>
+<p>Here is my simple-minded and a bit cynic take on the idea behind variational quantum “algorithms”, which I think would be better called heuristics. Real quantum algorithms (without quotes) typically require circuits that are very deep. The current generation of quantum devices is pretty inaccurate, errors in two-qubit gates are of the order of <img src="https://latex.codecogs.com/png.latex?0.1-1%5C%25">. If you apply many gates, there will be nothing but noise at the output, and the computation is not useful. VQA approach the problem as follows. Alright, we do not know algorithms with shallow circuits, but let’s try to build some. We’ll prepare a quantum circuit that is sufficiently shallow to have a non-zero signal-to-noise ratio, and introduce <em>parameters</em> in there. While we do not know if any values of these parameters correspond to a useful computation, let’s try to adjust them (classical optimization loop) so that the circuit does something useful.</p>
+<p>I mean, it is not a bad idea, and in many respects similar to how classical machine learning works. The problem seems to be, the current hardware only allows circuits so shallow, that you may optimize them all you want, no interesting results will follow. Another practical problem is that evaluation of the energy function <img src="https://latex.codecogs.com/png.latex?E(%5Ctheta)"> requires taking a ton of samples, which is slow and expensive. On the theoretical side, the loss landscape of most VQA appears to be pretty terrible, featuring barren plateaus and many bad local minimums. So even with a perfect hardware, there are no guarantees for good results.</p>
+</section>
+<section id="quantum-machine-learning" class="level2">
+<h2 class="anchored" data-anchor-id="quantum-machine-learning">Quantum machine learning</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="Supervised quantum machine learning models" style="minimal">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Supervised quantum machine learning models
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>A typical quantum model for a supervised learning task looks very similar to VQA instances described above <img src="https://latex.codecogs.com/png.latex?E(x,%5Ctheta)=%5Clangle0%7CU%5E%5Cdagger(x,%5Ctheta)%20H%20U(x,%5Ctheta)%7C0%5Crangle%20%5C%20."> Only here, part of the parameters <img src="https://latex.codecogs.com/png.latex?x"> are now not model “weights” to be adjusted, but instead encode the training data. The rest of the parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> are to be optimized to yield a better loss function <img src="https://latex.codecogs.com/png.latex?E(x,%5Ctheta)">.</p>
+</div>
+</div>
+</div>
+<p>Quantum machine learning (QML) <span class="citation" data-cites="Biamonte2017">&nbsp;[12]</span> sounds quite fancy, but it shares much of the problems with VQA. Additional questions you might ask about QML models is whether they have and edge over classical in data encoding, expressivity, generalize better etc. To the best of my understanding, all claims that some QML models are somehow better than classical counterparts are heuristic, inconclusive, or only work for extremely artificial datasets. Moreover, let me quote a recent perspective <span class="citation" data-cites="Schuld2022">&nbsp;[13]</span> by Schuld and Killoran titled “Is quantum advantage the right goal for quantum machine learning?”</p>
+<blockquote class="blockquote">
+<p>Contrary to commercial expectations – machine learning may turn out to be one of the hardest applications to show a practical quantum advantage for.</p>
+</blockquote>
+<p>Why? By all means take a look at the paper if you are interested, but a short answer is that</p>
+<blockquote class="blockquote">
+<p>Quantum machine learning research is trying to beat large, high-performing algorithms for problems that are conceptually hard to study.</p>
+</blockquote>
+<p>In other words, classical machine learning is so efficient it sets a very high bar; it’s hard to theoretically analyze how it works, let alone prove quantum advantage; and we can’t collect any meaningful empirical data on QML because we only have toy hardware yet.</p>
+</section>
+<section id="noisy-summary" class="level2">
+<h2 class="anchored" data-anchor-id="noisy-summary">Noisy summary</h2>
+<p>There are many more versions of NISQ algorithms beyond VQA and QML. However, they all come with significant challenges. I quote an extensive recent review <span class="citation" data-cites="Bharti2022">&nbsp;[10]</span></p>
+<blockquote class="blockquote">
+<p>At the moment of documenting this review, there is no known demonstration of industrially relevant quantum advantage.</p>
+</blockquote>
+<p>On top of that, to the best of my knowledge, there are also no theoretical guarantees that NISQ algorithms can lead to quantum advantage at all. So, NISQ algorithms seemed like a low-hanging fruit, but despite all the work of the past years, useful applications have not been demonstrated. Even the industry now seems to become less optimistic about NISQ, and focus more on the fault-tolerant algorithms, and so will we.</p>
+</section>
+</section>
+<section id="error-correction-eats-polynomial-speedups" class="level1">
+<h1>Error correction eats polynomial speedups</h1>
+<p>One of the earliest discovered, best known, and simplest to explain quantum algorithms is due to Lov Grover.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Grover's algorithm" style="minimal">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Grover’s algorithm
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Grover’s algorithm is often described as a search through an unstructured database. When there are <img src="https://latex.codecogs.com/png.latex?N"> entries and no structure to the database whatsoever, classically you need to make <img src="https://latex.codecogs.com/png.latex?N/2"> queries on average to find what are you looking for. Grover’s algorithm allows using about <img src="https://latex.codecogs.com/png.latex?%5Csqrt%7BN%7D"> quantum queries, yielding a quadratic speed-up.</p>
+</div>
+</div>
+</div>
+<p>Although Grover’s algorithm is one of the central results in quantum computing, there are many ways to challenge its practical significance <span class="citation" data-cites="AaronsonGrover">&nbsp;[14]</span>. Here I will focus on a particular one, associated with the cost of its fault-tolerant implementation. This line of attack is important because it applies to many other algorithms with polynomial speed-ups, including variants of quantum optimization, Monte-Carlo, some machine learning tasks, etc.</p>
+<p>As discussed in the NISQ section, decoherence and gate errors make it impossible to run deep circuits on current devices. Sure, we expect that the error rates will go down in the future, but even orders of magnitude improvements won’t be enough. The principle answer to this challenge is error correction and fault-tolerant computation. By encoding the logical states in many physical qubits it is possible to arbitrarily suppress effective error rates. Asymptotically, the overhead of error correction in terms of physical to logical qubit ratio is polylog, and looks insignificant. However, the constant factors involved can be a dealbreaker. What follows below is my coarse rundown based on papers <span class="citation" data-cites="Babbush2020">&nbsp;[15]</span> and <span class="citation" data-cites="Hoefler2023">&nbsp;[16]</span>.</p>
+<p>In the dominating paradigm of fault-tolerant computing, the bottleneck is in production of the magic states. Roughly, one magic state is consumed to perform a single non-trivial computational primitive, such as the Toffoli gate. Producing a single magic state involves hundreds of physical qubits, multiple code cycles, and a lot of the classical processing to guide the behavior of the quantum system. Rough estimations show that executing a single Toffoli gate can be 10 <em>orders</em> of magnitude slower than executing the NAND gate, its classical counterpart. This looks troublesome, doesn’t it?</p>
+<p>But won’t this huge constant factor become irrelevant for large enough problem sizes? After all, we have a quadratic speed-up. Yes it will, but you should also consider how big that problem will be. Because the quantum computer starts with this huge handicap, it can take years of runtime to catch up with a classical solver. So the problem sizes where you would see the quantum advantage are so large, that they will take too long to solve even for a quantum computer. So this scenario does not look practical, in the end.</p>
+<p>With very optimistic projections of how quantum computing will progress, problems with higher polynomial speed-ups, say quartic, become to look feasible. However, it appears that problems with exponential speed-up are really our best bet, and so we turn to them.</p>
+</section>
+<section id="breaking-rsa-is-not-a-big-deal" class="level1">
+<h1>Breaking RSA is not a big deal</h1>
+<p>It was a true breakthrough by Shor to show that the integer factoring problem can be solved efficiently by a quantum computer, exponentially faster than with any known classical algorithm. While you’d still need a huge fault-tolerant machine to pull that out in practice <span class="citation" data-cites="Gidney2021">&nbsp;[17]</span>, Shor’s algorithm does defy most of the objections aplicable to other quantum algorithms.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Shor's algorithm" style="minimal">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Shor’s algorithm
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Shor’s algorithm allows factoring an integer into primes in time scaling polynomially with the number of digits. It is probably one of the hardest among the archetypical quantum algorithms to explain. However, the difficult part is entirely in the classical pre- and post-processing steps, where the factoring problem is reduced to finding a period of some function and factorization is extracted from an approximate solution.</p>
+<p>The key quantum subroutine used is the quantum Fourier transform (QFT), which is simple to sketch. By definition, starting with a computational basis state <img src="https://latex.codecogs.com/png.latex?%7Cn%5Crangle"> it prepares a linear combination of all basis states <img src="https://latex.codecogs.com/png.latex?%7Cm%5Crangle"> with amplitudes given by the coefficients of the discrete Fourier transform.</p>
+<p><img src="https://latex.codecogs.com/png.latex?QFT%7Cn%5Crangle%20=%20%5Cfrac%7B1%7D%7B%5Csqrt%7BN%7D%7D%5Csum_%7Bm%5Cin%5C%7B0,1%5C%7D%5EN%7D%20e%5E%7B2%5Cpi%20i%20%5Cfrac%7Bnm%7D%7BN%7D%7D%7Cm%5Crangle"></p>
+<p>The Fourier transform of a periodic function is peaked at the values related to the period, so that it exposes the information about the original prime factorization problem. The important part is that the quantum Fourier transform can be implemented efficiently, i.e.&nbsp;by a polynomially-sized quantum circuit.</p>
+</div>
+</div>
+</div>
+<p>The only problem – <em>it is not really useful</em>. Yes, you can break RSA, but so what? There are other encryption schemes that so far seem to be safe against quantum adversaries. Once the quantum computers of necessary scale are available, the cryptographic world will need to adjust, and there will be some potential for adventures in the meantime. But in the end, the impact will be quite limited. Quoting Matthias Troyer <span class="citation" data-cites="HPQC">&nbsp;[18]</span></p>
+<blockquote class="blockquote">
+<p>So factoring might fund most of the field now, it’s not a killer app in the end.</p>
+</blockquote>
+<p>Now, there are other applications of factoring beyond cracking RSA, as there are other period-finding algorithms exploiting QFT, but these are mostly very special number-theoretic problems. While useful in principle, they seem much too limited in scope to provide the impact we expect from the quantum computing.</p>
+</section>
+<section id="big-data-algorithms-are-tricky" class="level1">
+<h1>Big data algorithms are tricky</h1>
+<p>There is a large class of quantum algorithms that can be broadly described as big data or (fault-tolerant) quantum machine learning algorithms. The initial inspiration and the key subroutine in many of them is provided by HHL algorithm, allowing to efficiently solve large systems of linear equations. Other options include clustering, support vector machines, principal component analysis, differential equations etc.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="HHL algorithm" style="minimal">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+HHL algorithm
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>HHL is often described as an algorithm to solve a linear system of <img src="https://latex.codecogs.com/png.latex?N"> equations</p>
+<p><img src="https://latex.codecogs.com/png.latex?Ax=b"></p>
+<p>in time scaling as <img src="https://latex.codecogs.com/png.latex?%5Clog%20N">, providing an exponential speed-up over classical algorithms. This scaling really requires an explanation, since even writing down the full solution <img src="https://latex.codecogs.com/png.latex?(x_1,%5Cdots,%20x_N)"> would take <img src="https://latex.codecogs.com/png.latex?O(N)"> time and negate the speed-up.</p>
+<p>HHL assumes that vector <img src="https://latex.codecogs.com/png.latex?b"> is as available as a quantum state <img src="https://latex.codecogs.com/png.latex?%7Cb%5Crangle"> belonging to <img src="https://latex.codecogs.com/png.latex?%5Clog%20N"> dimensional Hilbert space, whose amplitudes encode the entries of <img src="https://latex.codecogs.com/png.latex?b">. Similarly, the output of the algorithm is a quantum state <img src="https://latex.codecogs.com/png.latex?%7Cx%5Crangle">, and not its individual amplitudes. To produce the solution, one needs to apply operator <img src="https://latex.codecogs.com/png.latex?e%5E%7B-iAt%7D">, which only allows an efficient quantum circuit for very special types of matrices <img src="https://latex.codecogs.com/png.latex?A">. Finally, the matrix <img src="https://latex.codecogs.com/png.latex?A"> also needs to be well conditioned, meaning that the ratio of its highest to lowest eigenvalue is not too large (does not scale polynomially with <img src="https://latex.codecogs.com/png.latex?N">).</p>
+</div>
+</div>
+</div>
+<p>There are fundamental factors limiting applicability of the big data algorithms. My discussion here is mostly based on a short and wonderfully written commentary piece by Scott Aaronson “Read the fine print” <span class="citation" data-cites="Aaronson2015">&nbsp;[19]</span>. The big data quantum algorithms aim to provide an exponential speed-up to tasks like matrix inversion, which take polynomial time classically. Which means, quantum algorithms need to be done in logarithmic time. But in general, <img src="https://latex.codecogs.com/png.latex?%5Clog%20N"> time is not even sufficient to read in the problem specification, say <img src="https://latex.codecogs.com/png.latex?N%5Ctimes%20N"> matrix, or output a full solution, say an <img src="https://latex.codecogs.com/png.latex?N">-dimensional vector.</p>
+<p>Thus, big data algorithms assume that the initial data is encoded as amplitudes of quantum states <img src="https://latex.codecogs.com/png.latex?%7C%5Cpsi_0%5Crangle"> in a Hilbert space of dimension <img src="https://latex.codecogs.com/png.latex?%5Clog%20N">, and output a solution in the same form <img src="https://latex.codecogs.com/png.latex?%7C%5Cpsi%5Crangle">. Hence, you need a very efficient way to load or generate the input data in your quantum memory, and be able to read out interesting results from a few expectation values of <img src="https://latex.codecogs.com/png.latex?%7C%5Cpsi%5Crangle"> (instead of all of its amplitudes). An operator transforming <img src="https://latex.codecogs.com/png.latex?%7C%5Cpsi_0%5Crangle"> to <img src="https://latex.codecogs.com/png.latex?%7C%5Cpsi%5Crangle"> also requires an efficient quantum circuit implementation and can not correspond, say, to a general <img src="https://latex.codecogs.com/png.latex?N%5Ctimes%20N"> matrix.</p>
+<p>Finally, after you’ve restricted the problem in all these ways, it gets harder to exclude that some classical algorithm can take advantage of all the additional structure to run equally fast. This is not just a pedantic remark to wave away. Recently, many of the machine learning algorithms have been “de-quantized”, i.e.&nbsp;their efficient classical substitutes have been found <span class="citation" data-cites="Tang2022">&nbsp;[20]</span>. While de-quantized algorithms typically impose even more constraints on a problem, e.g.&nbsp;that the linear problem be low-rank <span class="citation" data-cites="Arrazola">&nbsp;[21]</span>, and can be polynomially slower, they add another layer of subtlety to finding big data algorithms with quantum advantage.</p>
+<p>While not insurmountable, all these considerations are highly restrictive in practice. The HHL algorithm appeared in 2009, and in his 2015 essay Scott Aaronson mentions only two (and somewhat contrived) end-to-end proposals addressing all the caveats. Probably there are more today, but I do not know of a well-established useful big data problem that is just waiting for an appropriate fault-tolerant machine to appear to rock the world. I’ll still mention an interesting recent proposal <span class="citation" data-cites="Liu2023">&nbsp;[22]</span>, which aims to accelerate the training of <em>classical</em> neural networks. I also can’t resist quoting this passage from the paper</p>
+<blockquote class="blockquote">
+<p>Frankly, the core thesis of this work is that a main application of quantum computers may be in the training of classical neural networks.</p>
+</blockquote>
+</section>
+<section id="the-boring-old-stuff-quantum-simulation" class="level1">
+<h1>The boring old stuff: quantum simulation</h1>
+<section id="quantum-dynamics" class="level2">
+<h2 class="anchored" data-anchor-id="quantum-dynamics">Quantum dynamics</h2>
+<p>Quantum simulation is the application that is often cited as having kick-started the field. At the same time, it is still widely believed to have the best shot at useful quantum advantage.</p>
+<p>It is a very natural application, since no convoluted procedure to fold and squeeze a classical problem into a quantum domain is required. Instead, it looks at the task that is obviously quantum in origin, and proposes an efficient way to solve it with a quantum computer.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Quantum Simulation" style="minimal">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quantum Simulation
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Quantum simulation is designed to take an initial quantum state <img src="https://latex.codecogs.com/png.latex?%7C%5Cpsi_0%5Crangle"> and carry out its evolution under some Hamiltonian <img src="https://latex.codecogs.com/png.latex?H">, i.e.&nbsp;to find</p>
+<p><img src="https://latex.codecogs.com/png.latex?%7C%5Cpsi(t)%5Crangle=e%5E%7B-iHt%7D%7C%5Cpsi_0%5Crangle%20%5C%20."></p>
+<p>For a Hamiltonian which is sparse, e.g.&nbsp;consists of not too many local terms <img src="https://latex.codecogs.com/png.latex?H=%5Csum_k%7BH_k%7D">, one can use the Trotter-Suzuki approximation <img src="https://latex.codecogs.com/png.latex?e%5E%7B(A+B)%5CDelta%20t%7D=e%5E%7BA%5CDelta%20t%7De%5E%7BB%5CDelta%20t%7D+O(%5CDelta%20t%5E2)"> to reduce the simulation of the full Hamiltonian evolution over some small time period <img src="https://latex.codecogs.com/png.latex?%5CDelta%20t"> to a simulation of separate local terms, which is in principle straightforward</p>
+<p><img src="https://latex.codecogs.com/png.latex?e%5E%7B-i%20H%20%5CDelta%20t%7D=%5Cprod_k%20e%5E%7B-i%20H_k%20%5CDelta%20t%7D+O(%5CDelta%20t%5E2)%20%5C%20."></p>
+<p>Evolution over a finite time period <img src="https://latex.codecogs.com/png.latex?t"> can then be produced by a sequence of short evolutions <img src="https://latex.codecogs.com/png.latex?e%5E%7B-iHt%7D=%5Cleft(e%5E%7B-iH%5CDelta%20t%7D%5Cright)%5E%7B%5Cfrac%7Bt%7D%7B%5CDelta%20t%7D%7D">. The error coming from “Trotterization” of each small time step can be reduced by making <img src="https://latex.codecogs.com/png.latex?%5CDelta%20t"> smaller, at the cost of increasing the circuit depth polynomially.</p>
+</div>
+</div>
+</div>
+<p>While numerous classical methods for approximate simulation of quantum systems have been developed, with great success in many cases, they are not sufficient in general. This is another important point about the simulation problem – the difficulty of the classical approach is well appreciated, so quantum computer is really expected to make the difference here.</p>
+<p>Is quantum simulation useful? I mean, it obviously is, but how exactly? There are definitely implications for fundamental science such as probing complicated quantum dynamics, new phases of matter, quantum chaos and so on. But what about designing a high-temperature superconductor or a new battery? Unfortunately, I am not aware of a rigorous connection between the ability to do quantum simulation and producing practically useful outcomes. So far it seems to be more about exploring the physics/chemistry with the new tools and beyond the regimes the current techniques allow. For this reason, it’s not clear that analog quantum simulators, which will be ultimately limited in their accuracy, will have applications beyond basic science <span class="citation" data-cites="Daley2022">&nbsp;[23]</span>.</p>
+</section>
+<section id="quantum-phase-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="quantum-phase-estimation">Quantum phase estimation</h2>
+<p>There is another flavor of quantum simulation that leads to more deterministic results. The archetypical algorithm here is the quantum phase estimation (QPE).</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Quantum phase estimation" style="minimal">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quantum phase estimation
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Quantum phase estimation (QPE) can be thought of as an efficient quantum circuit to perform a projective energy measurement.</p>
+<p>It allows finding eigenvalues and preparing eigenstates of a Hamiltonian <img src="https://latex.codecogs.com/png.latex?H">, provided one can efficiently implement controlled evolution operators <img src="https://latex.codecogs.com/png.latex?e%5E%7B-iHt%7D">. Usually, QPE is formulated as an algorithm for finding eigenvalues of a unitary operator <img src="https://latex.codecogs.com/png.latex?U"> given its eigenstate <img src="https://latex.codecogs.com/png.latex?%7C%5Clambda%5Crangle"> with an unknown eigenvalue. QPE proceeds by applying powers of <img src="https://latex.codecogs.com/png.latex?U"> (<img src="https://latex.codecogs.com/png.latex?U,%20U%5E2,%20U%5E4,%5Cdots">) to state <img src="https://latex.codecogs.com/png.latex?%7C%5Clambda%5Crangle">, each controlled by its own auxiliary qubit. The state of the auxiliary qubits then contains a lot of information about <img src="https://latex.codecogs.com/png.latex?%5Clambda">, roughly one bit of accuracy per qubit, and this information can be efficiently revealed after performing a quantum Fourier transform on the auxiliary qubits.</p>
+<p>If the original state <img src="https://latex.codecogs.com/png.latex?%7C%5Cpsi%5Crangle"> is not an eigenstate of <img src="https://latex.codecogs.com/png.latex?U">, QPE performs a projective energy measurement. It will output some energy <img src="https://latex.codecogs.com/png.latex?E"> and prepare the corresponding state <img src="https://latex.codecogs.com/png.latex?%7C%5Clambda_E%5Crangle"> with probability proportional to the overlap of <img src="https://latex.codecogs.com/png.latex?%7C%5Clangle%5Cpsi%7C%5Clambda_E%5Crangle%7C%5E2">.</p>
+</div>
+</div>
+</div>
+<p>Quantum phase estimation can yield high-accuracy information about the eigenstates of a Hamiltonian. In many practical questions of quantum chemistry, this exactly what you want to know. There is a caveat, though. Most interesting in practice are ground and low-energy states, and for QPE to reveal information about them, the initial state for the algorithm needs to have sufficiently high overlap with low-energy states. In general this problem is QMA-hard (not expected to be efficiently solvable even on a quantum computer), and whether it is solvable in practical scenarios is still not settled conclusively <span class="citation" data-cites="Lee2022">&nbsp;[24]</span>.</p>
+</section>
+</section>
+<section id="sec-missed" class="level1">
+<h1>What did I miss?</h1>
+<p>While I believe that the list of algorithms we went through captures all the main players competing for quantum advantage, it is of course not all comprehensive. Here I will mention some omissions. I also plan to extend this section based on feedback.</p>
+<p>So here are some of the algorithms I didn’t mention, in no particular order.</p>
+<ul>
+<li>Quantum annealing. This is a NISQ optimization algorithm working on analog principles, and is subject to the same criticism as other NISQ algorithms. Mainly, it’s a heuristic (no theoretical guarantees) and a quantum advantage have not been demonstrated in practice.</li>
+<li>As an example of new algorithmic developments, here is a recent paper <span class="citation" data-cites="Babbush2023">&nbsp;[25]</span> titled “Exponential quantum speedup in simulating coupled classical oscillators”. To my understanding, it is most similar to the big data algorithms described above, and shares the same limitations. In particular, I believe a practical application have not been identified.</li>
+<li>Quantum computers can be provably efficient when the input data is quantum. E.g. a quantum computer can learn properties of a quantum state better <span class="citation" data-cites="Huang2021">&nbsp;[26]</span>. While a very interesting avenue, I believe it lacks practical use cases yet.</li>
+</ul>
+</section>
+<section id="sec-summary" class="level1">
+<h1>Short summary</h1>
+<p>Here is a very short summary and some key references.</p>
+<p>While it is easy to get an impression that quantum computers will be good for everything, finding a tangible and useful application appears to be really hard if you resist wishful thinking and insist on solid evidence.</p>
+<ul>
+<li>There is a NISQ algorithm for anything <span class="citation" data-cites="Bharti2022">&nbsp;[10]</span>. However, they try to make use of short noisy circuits, and this does not seem to work neither in practice nor in theory. In particular, this applies to NISQ machine learning <span class="citation" data-cites="Schuld2022">&nbsp;[13]</span>.</li>
+<li>Algorithms with quadratic (and likely any polynomial) speed-ups become impractical once the cost of error correction is factored in <span class="citation" data-cites="Babbush2020">&nbsp;[15]</span>, <span class="citation" data-cites="Hoefler2023">&nbsp;[16]</span>.</li>
+<li>While interesting theoretically, Shor’s and related algorithms are limited to a narrow range of number-theoretic problems. Breaking RSA is not a real application.</li>
+<li>Big data/fault-tolerant machine learning algorithms only work under highly restrictive conditions <span class="citation" data-cites="Aaronson2015">&nbsp;[19]</span>, <span class="citation" data-cites="Tang2022">&nbsp;[20]</span>, and finding the right applications is an open problem.</li>
+<li>Quantum simulation looks like the best bet. It is both naturally hard classically, and efficient quantumly. However, both quantum dynamics and quantum phase estimation come with their caveats that remain to be addressed <span class="citation" data-cites="Lee2022">&nbsp;[24]</span>.</li>
+</ul>
+<p>If you take this critical view to the extreme, there isn’t yet a single use-case for a quantum computer (even the future, fault-tolerant one) with a guaranteed impact. So not only the quantum hardware, but quantum algorithms themselves appear to still be under construction 🏗️.</p>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<section id="nothing-ive-said-here-is-new" class="level2">
+<h2 class="anchored" data-anchor-id="nothing-ive-said-here-is-new">Nothing I’ve said here is new</h2>
+<p>If you think that the perspective taken in this blog post is in any way novel or radical, it’s not. While the points I made here are not often voiced or put in writing, many experts have been saying similar things for years. Here are some references.</p>
+<ul>
+<li>I highly recommend this talk <span class="citation" data-cites="HPQC">&nbsp;[18]</span> given by Matthias Troyer way back in 2014. Or a more recent one <span class="citation" data-cites="TPQA">&nbsp;[27]</span> from 2021. Interestingly, they are pretty similar in content, and in particular Troyer seems to entirely ignore the variational algorithms, and maybe for a good reason. There is also a recent short write-up by him and collaborators <span class="citation" data-cites="Hoefler2023">&nbsp;[16]</span>.</li>
+<li>In a 2021 talk Ryan Babbush <span class="citation" data-cites="BabbushTalk">&nbsp;[28]</span> (in conclusions part) says that the community still needs to figure out, with clarity, what will quantum computers be useful for. He says this in the context of early fault-tolerant computation, but I think the point applies more broadly.</li>
+<li>Here is a piece by a renowned condensed matter physicist Sankar Das Sarma <span class="citation" data-cites="Sarma">&nbsp;[29]</span>, arguing that potential applications of NISQ are highly overstated.</li>
+<li>Here are two presentations by Owen Lockwood <span class="citation" data-cites="LockwoodNISQ">&nbsp;[30]</span>, <span class="citation" data-cites="LockwoodQML">&nbsp;[31]</span> critically assessing the state of NISQ algorithms and NISQ QML. Owen might not have the weight of other people I reference here, but I found his take on things original and informative.</li>
+<li>Here is a pretty critical LinkedIn post by Victor Galitski <span class="citation" data-cites="Galitski">&nbsp;[32]</span>. It is again a mostly a critique of NISQ, with focus mainly on socio-economic rather than algorithmic side of things, but still worth a read.</li>
+<li>Finally, I’ll mention this popular interview with John Preskill <span class="citation" data-cites="Preskill">&nbsp;[33]</span>, where he mentions (section ‘simulation’) that quantum simulation is still probably our best grounded expectation for practical quantum advantage.</li>
+</ul>
+</section>
+<section id="i-may-have-a-bias-problem" class="level2">
+<h2 class="anchored" data-anchor-id="i-may-have-a-bias-problem">I may have a bias problem</h2>
+<p>Alright, you might have noticed that even this list gets increasingly less rigorous. My investigation, which started as a noble search for truth, quickly turned into a confirmation bias exercise. Indeed, I quite quickly started to err on the side that ‘we still don’t really know what quantum computers will be good for’, and enjoyed finding support for this view. While this may not be a great journalistic work, I still think this point of view is seriously underrepresented and worth voicing. At the same time, I’m really open to changing my mind, as I have all the reasons to want the field to succeed, and the sooner, the better.</p>
+</section>
+<section id="quantum-computing-is-gonna-be-a-rock-star-one-day" class="level2">
+<h2 class="anchored" data-anchor-id="quantum-computing-is-gonna-be-a-rock-star-one-day">Quantum computing is gonna be a rock star one day</h2>
+<p>I must also say that in the long run, a radical impact of quantum computing looks inevitable to me. This is a fundamentally new way of information processing, and this must make a difference. As Scott Aaronson have argued, if for fundamental reasons large scale quantum computers can never be built, it would be a new and revolutionary law of physics. I’d say that similarly, if we could ‘prove’ that quantum computers can not be useful, this would be a new remarkable law of nature worth discovering. From what we know now, it looks extremely unlikely. However, use cases for truly novel technologies are hard to forecast.</p>
+</section>
+<section id="what-looks-the-most-promising-at-the-moment" class="level2">
+<h2 class="anchored" data-anchor-id="what-looks-the-most-promising-at-the-moment">What looks the most promising at the moment?</h2>
+<p>In searching for practical quantum advantage, several requirements need to be met.</p>
+<ol type="1">
+<li>There must be a problem that a quantum computer can solve efficiently.</li>
+<li>Evidence that a classical computer can’t.</li>
+<li>Last but not least, the problem must be useful.</li>
+</ol>
+<p>If you think about it, this list is as much about the problem we want to solve as it is about the power of quantum algorithms. And finding the right problems, although possible in theory, turns out to be very challenging in practice.</p>
+<p>It is exciting to try applying quantum algorithms to problems that appear to have no direct relation to the quantum world whatsoever. Basically, we start with (1) and then try to comply to (2) and (3). Say, we have an idea about how to solve certain large linear systems of equations and then try to find a subset of those that are useful and intractable classically. And while there may be gems on this path, a lot of evidence now shows that finding the right problems of this kind is really tricky. One early impressive success is Shor’s algorithm, but It may still be the only well-established example.</p>
+<p>On the other hand, one can tackle obviously quantum-inspired problems. Quite recently, people started to look at cases when the input data is quantum rather than classical, and there the quantum advantage is already established, but no wide uses have been suggested yet. I’d say that the simulation of quantum systems for physics and chemistry appears to be our most grounded proposal for where to look for a practical quantum advantage. It addresses an obviously important problem known to be classically hard by decades of intensive research. So (2) and (3) are covered, and (1) also comes naturally. Indeed, people also often describe quantum simulation as a native task for a quantum computer. I quote an elegant passage from <span class="citation" data-cites="Daley2022">&nbsp;[23]</span></p>
+<blockquote class="blockquote">
+<p>This is the ‘native’ and most natural application of quantum computers, where we aim to use a quantum computer to mimic the rules that describe physical microscopic quantum systems. These problems are computationally challenging for the same underpinning reason that quantum computers can be powerful.</p>
+</blockquote>
+<p>Alright, I’ll leave it at that. As usual, any feedback is welcome.</p>
+
+
+
+
+</section>
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body">
+<div id="ref-zoo" class="csl-entry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">S. Jordan, <em><a href="https://quantumalgorithmzoo.org/">Quantum Algorithm Zoo</a></em>, (2022).</div>
+</div>
+<div id="ref-Shor2003" class="csl-entry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">P. W. Shor, <em><a href="https://doi.org/10.1145/602382.602408"><span class="nocase">Why haven’t more quantum algorithms been found?</span></a></em>, Journal of the ACM (JACM) <strong>50</strong>, 87 (2003).</div>
+</div>
+<div id="ref-Martyn2021" class="csl-entry">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">J. M. Martyn, Z. M. Rossi, A. K. Tan, and I. L. Chuang, <em><a href="https://doi.org/10.1103/PRXQuantum.2.040203"><span class="nocase">A Grand Unification of Quantum Algorithms</span></a></em>, PRX Quantum <strong>2</strong>, (2021).</div>
+</div>
+<div id="ref-Arute2019" class="csl-entry">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">F. Arute et al., <em><a href="https://doi.org/10.1038/s41586-019-1666-5"><span class="nocase">Quantum supremacy using a programmable superconducting processor</span></a></em>, Nature 2019 574:7779 <strong>574</strong>, 505 (2019).</div>
+</div>
+<div id="ref-Wu2021" class="csl-entry">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">Y. Wu et al., <em><a href="https://doi.org/10.1103/PhysRevLett.127.180501"><span class="nocase">Strong quantum computational advantage using a superconducting quantum processor</span></a></em>, Physical Review Letters <strong>127</strong>, (2021).</div>
+</div>
+<div id="ref-Zhong2020" class="csl-entry">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">H.-S. Zhong et al., <em><a href="https://doi.org/10.1126/science.abe8770"><span class="nocase">Quantum computational advantage using photons</span></a></em>, Science <strong>370</strong>, 1460 (2020).</div>
+</div>
+<div id="ref-Madsen2022" class="csl-entry">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">L. S. Madsen et al., <em><a href="https://doi.org/10.1038/s41586-022-04725-x"><span class="nocase">Quantum computational advantage with a programmable photonic processor</span></a></em>, Nature 2022 606:7912 <strong>606</strong>, 75 (2022).</div>
+</div>
+<div id="ref-Bromley2019" class="csl-entry">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">T. R. Bromley, J. M. fla, S. Jahangiri, J. Izaac, N. Quesada, A. D. Gran, M. Schuld, J. Swinarton, Z. Zabaneh, and N. Killoran, <em><a href="https://doi.org/10.1088/2058-9565/ab8504"><span class="nocase">Applications of Near-Term Photonic Quantum Computers: Software and Algorithms</span></a></em>, Quantum Science and Technology <strong>5</strong>, (2019).</div>
+</div>
+<div id="ref-Harrow2018" class="csl-entry">
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline">A. W. Harrow and A. Montanaro, <em><a href="https://doi.org/10.1038/nature23458"><span class="nocase">Quantum computational supremacy</span></a></em>, Nature <strong>549</strong>, 203 (2017).</div>
+</div>
+<div id="ref-Bharti2022" class="csl-entry">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline">K. Bharti et al., <em><a href="https://doi.org/10.1103/RevModPhys.94.015004"><span class="nocase">Noisy intermediate-scale quantum algorithms</span></a></em>, Reviews of Modern Physics <strong>94</strong>, 015004 (2022).</div>
+</div>
+<div id="ref-Cerezo2020" class="csl-entry">
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline">M. Cerezo et al., <em><a href="https://doi.org/10.1038/s42254-021-00348-9"><span>Variational Quantum Algorithms</span></a></em>, Nature Reviews Physics <strong>3</strong>, 625 (2020).</div>
+</div>
+<div id="ref-Biamonte2017" class="csl-entry">
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline">J. Biamonte, P. Wittek, N. Pancotti, P. Rebentrost, N. Wiebe, and S. Lloyd, <em><a href="https://doi.org/10.1038/nature23474"><span class="nocase">Quantum machine learning</span></a></em>, Nature <strong>549</strong>, 195 (2017).</div>
+</div>
+<div id="ref-Schuld2022" class="csl-entry">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline">M. Schuld and N. Killoran, <em><a href="https://doi.org/10.1103/PRXQuantum.3.030101"><span class="nocase">Is quantum advantage the right goal for quantum machine learning?</span></a></em>, PRX Quantum <strong>3</strong>, (2022).</div>
+</div>
+<div id="ref-AaronsonGrover" class="csl-entry">
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline">S. Aaronson, <em><a href="https://scottaaronson.blog/?p=7143">Of Course Grover’s Algorithm Offers a Quantum Advantage!</a></em>, (2023).</div>
+</div>
+<div id="ref-Babbush2020" class="csl-entry">
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline">R. Babbush, J. McClean, M. Newman, C. Gidney, S. Boixo, and H. Neven, <em><a href="https://doi.org/10.1103/PRXQuantum.2.010103"><span class="nocase">Focus beyond quadratic speedups for error-corrected quantum advantage</span></a></em>, PRX Quantum <strong>2</strong>, (2020).</div>
+</div>
+<div id="ref-Hoefler2023" class="csl-entry">
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline">T. Hoefler, T. Häner, and M. Troyer, <em><a href="https://doi.org/10.1145/3571725"><span class="nocase">Disentangling Hype from Practicality: On Realistically Achieving Quantum Advantage</span></a></em>, Communications of the ACM <strong>66</strong>, 82 (2023).</div>
+</div>
+<div id="ref-Gidney2021" class="csl-entry">
+<div class="csl-left-margin">[17] </div><div class="csl-right-inline">C. Gidney and M. Ekerå, <em><a href="https://doi.org/10.22331/q-2021-04-15-433"><span class="nocase">How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits</span></a></em>, Quantum <strong>5</strong>, 433 (2021).</div>
+</div>
+<div id="ref-HPQC" class="csl-entry">
+<div class="csl-left-margin">[18] </div><div class="csl-right-inline">M. Troyer, <em><a href="https://www.youtube.com/watch?v=-fcQt5C2XGY&amp;list=PLkSK0hIHz-LnGheNnZ1Al7eSYs0_lkb2d&amp;index=7">High Performance Quantum Computing</a></em>, (2014).</div>
+</div>
+<div id="ref-Aaronson2015" class="csl-entry">
+<div class="csl-left-margin">[19] </div><div class="csl-right-inline">S. Aaronson, <em><a href="https://doi.org/10.1038/nphys3272"><span class="nocase">Read the fine print</span></a></em>, Nature Physics <strong>11</strong>, 291 (2015).</div>
+</div>
+<div id="ref-Tang2022" class="csl-entry">
+<div class="csl-left-margin">[20] </div><div class="csl-right-inline">E. Tang, <em><a href="https://doi.org/10.1038/s42254-022-00511-w"><span class="nocase">Dequantizing algorithms to understand quantum advantage in machine learning</span></a></em>, Nature Reviews Physics 2022 4:11 <strong>4</strong>, 692 (2022).</div>
+</div>
+<div id="ref-Arrazola" class="csl-entry">
+<div class="csl-left-margin">[21] </div><div class="csl-right-inline">J. M. Arrazola, <em><a href="https://medium.com/xanaduai/everything-you-always-wanted-to-know-about-quantum-inspired-algorithms-38ee1a0e30ef"><span class="nocase">Everything you always wanted to know about quantum-inspired algorithms | by Xanadu | XanaduAI | Medium</span></a></em>, (n.d.).</div>
+</div>
+<div id="ref-Liu2023" class="csl-entry">
+<div class="csl-left-margin">[22] </div><div class="csl-right-inline">J. Liu, M. Liu, J.-P. Liu, Z. Ye, Y. Alexeev, J. Eisert, and L. Jiang, <em><a href="https://arxiv.org/abs/2303.03428v2"><span class="nocase">Towards provably efficient quantum algorithms for large-scale machine-learning models</span></a></em>, (2023).</div>
+</div>
+<div id="ref-Daley2022" class="csl-entry">
+<div class="csl-left-margin">[23] </div><div class="csl-right-inline">A. J. Daley, I. Bloch, C. Kokail, S. Flannigan, N. Pearson, M. Troyer, and P. Zoller, <em><a href="https://doi.org/10.1038/s41586-022-04940-6"><span class="nocase">Practical quantum advantage in quantum simulation</span></a></em>, Nature 2022 607:7920 <strong>607</strong>, 667 (2022).</div>
+</div>
+<div id="ref-Lee2022" class="csl-entry">
+<div class="csl-left-margin">[24] </div><div class="csl-right-inline">S. Lee et al., <em><a href="http://arxiv.org/abs/2208.02199"><span class="nocase">Is there evidence for exponential quantum advantage in quantum chemistry?</span></a></em>, (2022).</div>
+</div>
+<div id="ref-Babbush2023" class="csl-entry">
+<div class="csl-left-margin">[25] </div><div class="csl-right-inline">R. Babbush, D. W. Berry, R. Kothari, R. D. Somma, and N. Wiebe, <em><a href="https://arxiv.org/abs/2303.13012v2"><span class="nocase">Exponential quantum speedup in simulating coupled classical oscillators</span></a></em>, (2023).</div>
+</div>
+<div id="ref-Huang2021" class="csl-entry">
+<div class="csl-left-margin">[26] </div><div class="csl-right-inline">H.-Y. Huang et al., <em><a href="https://doi.org/10.1126/science.abn7293"><span class="nocase">Quantum advantage in learning from experiments</span></a></em>, Science <strong>376</strong>, 1182 (2021).</div>
+</div>
+<div id="ref-TPQA" class="csl-entry">
+<div class="csl-left-margin">[27] </div><div class="csl-right-inline">M. Troyer, <em><a href="https://www.youtube.com/watch?v=WY3htdKUGsA&amp;t=1011s">High Performance Quantum Computing</a></em>, (2021).</div>
+</div>
+<div id="ref-BabbushTalk" class="csl-entry">
+<div class="csl-left-margin">[28] </div><div class="csl-right-inline">R. Babbush, <em><a href="https://www.youtube.com/watch?v=-fcQt5C2XGY">Google’s Perspective on the Viable Applications of Early Fault-Tolerant Quantum Computers</a></em>, (2021).</div>
+</div>
+<div id="ref-Sarma" class="csl-entry">
+<div class="csl-left-margin">[29] </div><div class="csl-right-inline">S. D. Sarma, <em><a href="https://www.technologyreview.com/2022/03/28/1048355/quantum-computing-has-a-hype-problem/">Quantum Computing Has a Hype Problem</a></em>, (2022).</div>
+</div>
+<div id="ref-LockwoodNISQ" class="csl-entry">
+<div class="csl-left-margin">[30] </div><div class="csl-right-inline">O. Lockwood, <em><a href="https://www.youtube.com/watch?v=bELTWdQDtPs&amp;list=PL91jA61XuCIBrPUVXwG_2gVNYMqA7hrgi&amp;index=3">The Next Era of Quantum Computing: The End of NISQ and the Beginning of a New Phase</a></em>, (2022).</div>
+</div>
+<div id="ref-LockwoodQML" class="csl-entry">
+<div class="csl-left-margin">[31] </div><div class="csl-right-inline">O. Lockwood, <em><a href="https://www.youtube.com/watch?v=ZDZc8bbe094&amp;list=PL91jA61XuCIBrPUVXwG_2gVNYMqA7hrgi&amp;index=2">What Is Quantum Machine Learning (QML) Good for Anyway? (OO)</a></em>, (2022).</div>
+</div>
+<div id="ref-Galitski" class="csl-entry">
+<div class="csl-left-margin">[32] </div><div class="csl-right-inline">V. Galitski, <em><a href="https://www.linkedin.com/pulse/quantum-computing-hype-bad-science-victor-galitski-1c/">Quantum Computing Hype Is Bad for Science</a></em>, (2021).</div>
+</div>
+<div id="ref-Preskill" class="csl-entry">
+<div class="csl-left-margin">[33] </div><div class="csl-right-inline">S. Carroll, <em><a href="https://www.youtube.com/watch?v=UYt4QG8iZ6U">Mindscape 153 | John Preskill on Quantum Computers and What They’re Good for</a></em>, (2022).</div>
+</div>
+</div></section></div> ]]></description>
+  <category>quantum concepts</category>
+  <category>paper review</category>
+  <guid>https://idnm.github.io/blog/posts/where_quantum_speedups_come_from/index.html</guid>
+  <pubDate>Mon, 17 Jul 2023 21:00:00 GMT</pubDate>
+  <media:content url="https://idnm.github.io/blog/posts/where_quantum_speedups_come_from/what_to_use_qc_for.svg" medium="image" type="image/svg+xml"/>
+</item>
 <item>
   <title>Introduction to Quantum Singular Value Transformation</title>
   <link>https://idnm.github.io/blog/posts/quantum_singular_value_transformation_intro/index.html</link>
