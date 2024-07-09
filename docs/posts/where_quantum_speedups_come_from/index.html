@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-07-18">
+<meta name="dcterms.date" content="2024-07-01">
 <meta name="description" content="What makes quantum computers powerful? Explained as simply as possible, but no simpler.">
 
 <title>Notes on Quantum Computing - Where do quantum speedups come from?</title>
@@ -160,7 +160,6 @@ window.MathJax = {
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">quantum concepts</div>
-                <div class="quarto-category">paper review</div>
               </div>
                   </div>
   </div>
@@ -172,7 +171,7 @@ window.MathJax = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">July 18, 2023</p>
+        <p class="date">July 1, 2024</p>
       </div>
     </div>
     
@@ -188,9 +187,45 @@ window.MathJax = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a></li>
+  <li><a href="#qubits-superposition-and-amplitudes" id="toc-qubits-superposition-and-amplitudes" class="nav-link" data-scroll-target="#qubits-superposition-and-amplitudes">Qubits, superposition, and amplitudes</a></li>
+  <li><a href="#probabilistic-interpretation-of-superposition" id="toc-probabilistic-interpretation-of-superposition" class="nav-link" data-scroll-target="#probabilistic-interpretation-of-superposition">Probabilistic interpretation of superposition</a></li>
+  <li><a href="#quantum-mechanics-is-a-theory-of-amplitudes" id="toc-quantum-mechanics-is-a-theory-of-amplitudes" class="nav-link" data-scroll-target="#quantum-mechanics-is-a-theory-of-amplitudes">Quantum mechanics is a theory of amplitudes</a>
+  <ul class="collapse">
+  <li><a href="#bit-flipping" id="toc-bit-flipping" class="nav-link" data-scroll-target="#bit-flipping">Bit flipping</a></li>
+  <li><a href="#qubit-flipping" id="toc-qubit-flipping" class="nav-link" data-scroll-target="#qubit-flipping">Qubit flipping</a></li>
+  <li><a href="#amplitudes-cancel-probabilities-do-not" id="toc-amplitudes-cancel-probabilities-do-not" class="nav-link" data-scroll-target="#amplitudes-cancel-probabilities-do-not">Amplitudes cancel, probabilities do not</a></li>
+  </ul></li>
+  <li><a href="#quantum-states-and-processes" id="toc-quantum-states-and-processes" class="nav-link" data-scroll-target="#quantum-states-and-processes">Quantum states and processes</a>
+  <ul class="collapse">
+  <li><a href="#i-dont-understand-your-h-gate" id="toc-i-dont-understand-your-h-gate" class="nav-link" data-scroll-target="#i-dont-understand-your-h-gate">I don’t understand your <span class="math inline">\(H\)</span> gate</a></li>
+  <li><a href="#states-of-many-qubits" id="toc-states-of-many-qubits" class="nav-link" data-scroll-target="#states-of-many-qubits">States of many qubits</a></li>
+  </ul></li>
+  <li><a href="#why-quantum-interference-defies-classical-simulation" id="toc-why-quantum-interference-defies-classical-simulation" class="nav-link" data-scroll-target="#why-quantum-interference-defies-classical-simulation">Why quantum interference defies classical simulation</a></li>
+  <li><a href="#why-quantum-interference-leads-to-quantum-speed-ups" id="toc-why-quantum-interference-leads-to-quantum-speed-ups" class="nav-link" data-scroll-target="#why-quantum-interference-leads-to-quantum-speed-ups">Why quantum interference leads to quantum speed ups</a>
+  <ul class="collapse">
+  <li><a href="#deutschs-algorithm" id="toc-deutschs-algorithm" class="nav-link" data-scroll-target="#deutschs-algorithm">Deutsch’s algorithm</a></li>
+  <li><a href="#grovers-algorithm" id="toc-grovers-algorithm" class="nav-link" data-scroll-target="#grovers-algorithm">Grover’s algorithm</a>
+  <ul class="collapse">
+  <li><a href="#quantum-search" id="toc-quantum-search" class="nav-link" data-scroll-target="#quantum-search">Quantum search</a></li>
+  <li><a href="#grovers-oracle" id="toc-grovers-oracle" class="nav-link" data-scroll-target="#grovers-oracle">Grover’s oracle</a></li>
+  <li><a href="#the-initial-state" id="toc-the-initial-state" class="nav-link" data-scroll-target="#the-initial-state">The initial state</a></li>
+  <li><a href="#reflections" id="toc-reflections" class="nav-link" data-scroll-target="#reflections">Reflections</a></li>
+  <li><a href="#two-dimensional-subspace" id="toc-two-dimensional-subspace" class="nav-link" data-scroll-target="#two-dimensional-subspace">Two-dimensional subspace</a></li>
+  <li><a href="#grovers-algorithm-is-a-sequence-of-small-rotations" id="toc-grovers-algorithm-is-a-sequence-of-small-rotations" class="nav-link" data-scroll-target="#grovers-algorithm-is-a-sequence-of-small-rotations">Grover’s algorithm is a sequence of small rotations</a></li>
+  <li><a href="#infinitesimal-quantum-speedup" id="toc-infinitesimal-quantum-speedup" class="nav-link" data-scroll-target="#infinitesimal-quantum-speedup">Infinitesimal quantum speedup</a></li>
+  <li><a href="#quantum-interference" id="toc-quantum-interference" class="nav-link" data-scroll-target="#quantum-interference">Quantum interference</a></li>
+  <li><a href="#moving-beyond-oracles" id="toc-moving-beyond-oracles" class="nav-link" data-scroll-target="#moving-beyond-oracles">Moving beyond oracles</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#faq" id="toc-faq" class="nav-link" data-scroll-target="#faq">FAQ</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a>
   <ul class="collapse">
   <li><a href="#why-can-quantum-computers-be-powerful" id="toc-why-can-quantum-computers-be-powerful" class="nav-link" data-scroll-target="#why-can-quantum-computers-be-powerful">Why can quantum computers be powerful?</a></li>
+  <li><a href="#qubits-and-p-bits" id="toc-qubits-and-p-bits" class="nav-link" data-scroll-target="#qubits-and-p-bits">Qubits and p-bits</a></li>
+  <li><a href="#quantum-mechanics-is-a-theory-of-amplitudes-1" id="toc-quantum-mechanics-is-a-theory-of-amplitudes-1" class="nav-link" data-scroll-target="#quantum-mechanics-is-a-theory-of-amplitudes-1">Quantum mechanics is a theory of amplitudes</a></li>
+  <li><a href="#the-hadamard-gate" id="toc-the-hadamard-gate" class="nav-link" data-scroll-target="#the-hadamard-gate">The Hadamard gate</a></li>
+  <li><a href="#but-why-cant-we-simulate-the-amplitudes" id="toc-but-why-cant-we-simulate-the-amplitudes" class="nav-link" data-scroll-target="#but-why-cant-we-simulate-the-amplitudes">But why can’t we simulate the amplitudes</a></li>
   <li><a href="#what-does-this-mean-exactly" id="toc-what-does-this-mean-exactly" class="nav-link" data-scroll-target="#what-does-this-mean-exactly">What does this mean, exactly?</a></li>
   <li><a href="#the-suspects" id="toc-the-suspects" class="nav-link" data-scroll-target="#the-suspects">The suspects</a></li>
   </ul></li>
@@ -215,6 +250,219 @@ window.MathJax = {
 
 
 
+<section id="intro" class="level1">
+<h1>Intro</h1>
+<p>In this post, I try to explain why quantum computers can be more powerful than classical. And I aim for an explanation “as simple as possible but no simpler”. I don’t think this is doable without any math, but I will only rely on a minimal background in linear algebra, basic probability, and elementary complexity theory (understanding why an algorithm taking <span class="math inline">\(\sqrt{N}\)</span> steps is better than the one taking <span class="math inline">\(N\)</span> steps suffices). There are two points to address.</p>
+<ol type="1">
+<li>Why a classical computer can not efficiently reproduce, i.e.&nbsp;<em>simulate</em>, an arbitrary quantum computation?</li>
+<li>Why some of these quantum computations solve useful problems?</li>
+</ol>
+<p>To make quantum computing of general interest, you really need both.</p>
+<p>Quantum computing is not really about physics. Rather, quantum mechanics can be understood as a generalization of the probability theory. Standard probability theory deals with probabilities, which are positive numbers. Quantum mechanics instead deals with probability <em>amplitudes</em>. Probability amplitudes, when squared, give proper probabilities. But amplitudes can be both positive or negative (or even complex numbers, but this won’t matter much). In a sense, all quantum weirdness can be attributed to this seemingly superficial distinction.</p>
+<p>There is more than one way to highlight the difference between classical and quantum. Comparing them head-to-head is tricky, simply because we usually use very different language to describe the two. Here, I will focus on comparing quantum mechanics with classical probability theory. Some features often perceived as unique to quantum systems, such as the exponentially large state space, are in fact present in probabilistic systems as well. Overall, it makes for a fairer apples-to-apples kind of comparison.</p>
+</section>
+<section id="qubits-superposition-and-amplitudes" class="level1">
+<h1>Qubits, superposition, and amplitudes</h1>
+<p>Classical computers manipulate classical <em>bits</em>, i.e.&nbsp;systems that can be in one of two states, <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>. Quantum computers manipulate quantum bits, or <em>qubits</em>. Similarly to a classical bit, a qubit can be in two states, denoted by <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span>. However, a qubit can also be in a state described by an (almost) arbitrary linear combination</p>
+<p><span class="math display">\[\begin{align}
+|\psi\rangle = a_0 |0\rangle+a_1 |1\rangle  \ .
+\end{align}\]</span></p>
+<p>The states <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span> should be thought of as two orthogonal two-dimensional vectors. For instance, in explicit computations one often sets <span class="math inline">\(|0\rangle = \begin{pmatrix} 1 \\ 0\end{pmatrix}, |1\rangle = \begin{pmatrix} 0 \\ 1\end{pmatrix}\)</span>. Also, notation <span class="math inline">\(|\cdot\rangle\)</span> is nothing more than an unusual notation for a vector. We could have just denoted the states of a qubit by <span class="math inline">\(\vec{0}\)</span> and <span class="math inline">\(\vec{1}\)</span>, but I’ll keep the fancy Dirac notation.</p>
+<p>In the quantum jargon, a linear combination of <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span> is called a <em>superposition</em>. The superposition principle states that (almost) any vector in the state space, i.e.&nbsp;any linear combination of <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span> is a valid state. The coefficients <span class="math inline">\(a_0\)</span> and <span class="math inline">\(a_1\)</span>, called <em>amplitudes</em>, can be positive or negative. (They can even be complex numbers, but negative amplitudes are sufficient to summon the quantum magic.)</p>
+</section>
+<section id="probabilistic-interpretation-of-superposition" class="level1">
+<h1>Probabilistic interpretation of superposition</h1>
+<p>Alright, but what does it mean for a qubit to be in a superposition of <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span>? In many ways, it is similar to saying that there is some probability that the qubit is in state <span class="math inline">\(|0\rangle\)</span>, and some probability it is in state <span class="math inline">\(|1\rangle\)</span>. Yet, there are crucial differences between a superposition, and a classical probability distribution, that eventually lead to the quantum speedups.</p>
+<p>Let’s first discuss the similarities. Given a qubit in state <span class="math inline">\(|\psi\rangle=a_0|0\rangle+a_1|1\rangle\)</span>, we can <em>measure</em> it. The measurement result is a simple definite state of the qubit, either <span class="math inline">\(|0\rangle\)</span> or <span class="math inline">\(|1\rangle\)</span>. But the outcome is probabilistic. We get state <span class="math inline">\(|0\rangle\)</span> with probability <span class="math inline">\(p_0=|a_0|^2\)</span>, and state <span class="math inline">\(|1\rangle\)</span> with probability <span class="math inline">\(p_1=|a_1|^2\)</span>. Naturally, a valid quantum state must have <span class="math inline">\(p_0+p_1=1\)</span>. Any two amplitudes <span class="math inline">\(a_0\)</span> and <span class="math inline">\(a_1\)</span> satisfying <span class="math inline">\(|a_0|^2+|a_1|^2=1\)</span> define a valid state of a qubit.</p>
+<p>If the only thing we do to state <span class="math inline">\(|\psi\rangle=a_0|0\rangle+a_1|1\rangle\)</span> is the measurement, then it is virtually indistinguishable from a probabilistic bit, which is <span class="math inline">\(0\)</span> with probability <span class="math inline">\(p_0\)</span> and <span class="math inline">\(1\)</span> with probability <span class="math inline">\(p_1\)</span>.</p>
+<p>Note also, that as far as only the measurement results are concerned, all four states of the form <span class="math inline">\(|\psi\rangle=\pm a_0|0\rangle\pm a_1|1\rangle\)</span> are also indistinguishable.</p>
+</section>
+<section id="quantum-mechanics-is-a-theory-of-amplitudes" class="level1">
+<h1>Quantum mechanics is a theory of amplitudes</h1>
+<p>Now for the differences between a superposition and a probability distribution. Quantum mechanics is fundamentally a theory of amplitudes. While amplitudes give rise to probabilities of measurement outcomes, the amplitudes are primary. Quantum computations, and more generally quantum processes, transform amplitudes. You can not reduce quantum amplitudes to the probabilities they represent. Here is an example illustrating the crucial difference.</p>
+<section id="bit-flipping" class="level2">
+<h2 class="anchored" data-anchor-id="bit-flipping">Bit flipping</h2>
+<p>Let’s call <span class="math inline">\(F\)</span> a procedure of taking a classical bit, and randomly flipping it. Say the bit was initially in <span class="math inline">\(0\)</span>. After flipping, it is <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span> with equal probability, i.e.&nbsp;<span class="math inline">\(p_0=p_1=\frac12\)</span>. Let’s apply <span class="math inline">\(F\)</span> once more, e.g.&nbsp;flip the bit the second time. This results in the following possibility tree.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/prob_tree.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>There are two ways that the final state of the bit can turn out <span class="math inline">\(1\)</span>. The first is that the bit transitioned <span class="math inline">\(0\to 0 \to 1\)</span> and the second is a through a sequence <span class="math inline">\(0 \to 1 \to 1\)</span>. Each “history” or <em>trajectory</em> has probability <span class="math inline">\(\frac14 =\frac12\times\frac12\)</span>, so that the total probability to find the bit in state <span class="math inline">\(1\)</span> after applying <span class="math inline">\(F\)</span> twice is <span class="math inline">\(\frac12=\frac14+\frac14\)</span>.</p>
+</section>
+<section id="qubit-flipping" class="level2">
+<h2 class="anchored" data-anchor-id="qubit-flipping">Qubit flipping</h2>
+<p>Here is a quantum version of this scenario. There is a process called the Hadamard gate, denoted by <span class="math inline">\(H\)</span>, which acts as follows</p>
+<p><span class="math display">\[\begin{align}
+H|0\rangle = |+\rangle := \frac1{\sqrt{2}}\left(|0\rangle + |1\rangle\right) \ , \\
+H|1\rangle = |-\rangle := \frac1{\sqrt{2}}\left(|0\rangle - |1\rangle\right) \ .
+\end{align}\]</span></p>
+<p>In words, <span class="math inline">\(H\)</span> takes state <span class="math inline">\(|0\rangle\)</span> to state <span class="math inline">\(|+\rangle\)</span>, proportional to the sum of <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span>, and takes <span class="math inline">\(|1\rangle\)</span> to <span class="math inline">\(|-\rangle\)</span>, the state proportional to their difference. The factors <span class="math inline">\(\frac1{\sqrt{2}}\)</span> ensure that amplitudes squared sum to one. I justify why consider this particular quantum operation in the next section. For now suffices to say, that <span class="math inline">\(H\)</span> is a valid and simple quantum process.</p>
+<p>If we simply measure them, the states <span class="math inline">\(|+\rangle\)</span> and <span class="math inline">\(|-\rangle\)</span> are indistinguishable from each other. Both yield <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span> with equal probabilities <span class="math inline">\(p_0=p_1=\frac12\)</span>. That’s why I say that <span class="math inline">\(H\)</span> is similar to our classical bit-flipping operation <span class="math inline">\(F\)</span>.</p>
+<p>However, when applied twice, <span class="math inline">\(H\)</span> maps <span class="math inline">\(|0\rangle\)</span> back onto itself, indeed <span class="math display">\[\begin{align}
+H^2 |0\rangle=H \frac1{\sqrt{2}}\left(|0\rangle + |1\rangle\right) = \frac1{\sqrt{2}}\left(\frac{|0\rangle+|1\rangle}{\sqrt{2}}+\frac{|0\rangle-|1\rangle}{\sqrt{2}}\right)=|0\rangle \ .
+\end{align}\]</span> There is <em>no chance</em> that the final state turns out <span class="math inline">\(|1\rangle\)</span>.</p>
+<p>Let’s illustrate this graphically, using the same tree of possible trajectories.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/amp_tree.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>Now the transitions are labeled by their amplitudes, instead of probabilities. As before, there are two ways to end up in state <span class="math inline">\(|1\rangle\)</span>, one going through intermediate state <span class="math inline">\(|0\rangle\)</span>, and one going through <span class="math inline">\(|1\rangle\)</span>. The amplitudes of these trajectories, however, have opposite signs, <span class="math inline">\(\frac12 = \frac1{\sqrt{2}}\times \frac1{\sqrt{2}}\)</span> and <span class="math inline">\(-\frac12=\frac1{\sqrt{2}}\times (-\frac1{\sqrt{2}})\)</span>, respectively. This makes the total amplitude, end hence the total probability, to end up in state <span class="math inline">\(|1\rangle\)</span> vanishing.</p>
+</section>
+<section id="amplitudes-cancel-probabilities-do-not" class="level2">
+<h2 class="anchored" data-anchor-id="amplitudes-cancel-probabilities-do-not">Amplitudes cancel, probabilities do not</h2>
+<p>This is <em>the key</em> difference between classical and quantum. For a classical probabilistic process, the probabilities of different trajectories sum up. In other words, if there are several possibilities to reach an end state, they reinforce each other. In a quantum process, it is the amplitudes that sum up, and they can <em>cancel</em> each other. The fact that there is some trajectory (with a non-zero amplitude) leading to some end state, does not mean that this end state is in fact reachable. The amplitude of this trajectory can be canceled by others. This is known as a <em>quantum interference</em>. (If you are familiar, this is what the famous two-slit experiment shows. Opening up a new slit for particles to pass through can <em>decrease</em> their chances of getting to a particular end point.)</p>
+</section>
+</section>
+<section id="quantum-states-and-processes" class="level1">
+<h1>Quantum states and processes</h1>
+<p>Before discussing why amplitude cancelling can lead to quantum speedups, I will address two technical points.</p>
+<section id="i-dont-understand-your-h-gate" class="level2">
+<h2 class="anchored" data-anchor-id="i-dont-understand-your-h-gate">I don’t understand your <span class="math inline">\(H\)</span> gate</h2>
+<p>You may find our discussion of the <span class="math inline">\(H\)</span> gate unmotivated or unnatural. Why is this gate defined the way it does? What does it mean?</p>
+<p>The <span class="math inline">\(H\)</span> gate was only used to give a simple illustration of quantum interference. We could have used almost any other quantum process instead. A probabilistic classical processes only needs to preserve the total probability, and the same is true for a quantum process. More precisely, a quantum process needs to be linear and preserve the property that the squares of the amplitudes sum up to one. The <span class="math inline">\(H\)</span> gate has this property, it is a simple and valid quantum process. Mathematically, it is a unitary matrix <span class="math inline">\(H=\frac1{\sqrt{2}}\begin{pmatrix}1 &amp; 1 \\ 1 &amp; -1\end{pmatrix}\)</span>. Conversely, any unitary matrix represents a quantum process. Almost all unitary matrices feature negative or complex entries, and hence exhibit the amplitude-cancelling behavior.</p>
+<p>Here is yet another way to introduce <span class="math inline">\(H\)</span> gate. Any classical boolean function (i.e.&nbsp;a classical computation) can be expressed as a sequence of simple gates. For example, NAND [ref] gate is universal, meaning that an arbitrary classical computation can be expressed as a sequence of NAND gates alone. Probably a less familiar option is the Toffoli gate [ref], which takes three bits as an input, and inverts the third bit if the first two bits are “on”. The Toffoli gate is universal for classical computation, and has the nice property that it is reversible (and in particular is its own inverse). Reversible classical gates can be easily implemented on a quantum computer. However, the Toffoli gate is not universal for <em>quantum</em> computation. Indeed, it merely shuffles the bitstings, and can not create a superposition like <span class="math inline">\(|+\rangle\)</span>. However, supplementing the Toffoli gate with (almost) any other quantum gate that <em>can</em> create superpositions makes for a universal gate set. In particular, Toffoli+H is a universal quantum gate set. So in a sense, <span class="math inline">\(H\)</span> gate can capture all the quantumness there is. (Note however, that this is true for almost any other choice of an additional gate.)</p>
+</section>
+<section id="states-of-many-qubits" class="level2">
+<h2 class="anchored" data-anchor-id="states-of-many-qubits">States of many qubits</h2>
+<p>A general state of three qubits can be written as</p>
+<p><span class="math display">\[\begin{align}
+|\psi\rangle = a_{000}|000\rangle + a_{001}|001\rangle+a_{010}|010\rangle+a_{011}|011\rangle+a_{100}|100\rangle + a_{101}|101\rangle+a_{110}|110\rangle+a_{111}|111\rangle \ .
+\end{align}\]</span></p>
+<p>Notation <span class="math inline">\(|x_1x_2x_3\rangle\)</span> is a shorthand for saying that the first qubit is in state <span class="math inline">\(|x_1\rangle\)</span>, the second in state <span class="math inline">\(|x_2\rangle\)</span>, and the third in state <span class="math inline">\(|x_3\rangle\)</span>. The amplitudes here have the same meaning as for a single qubit. For instance, <span class="math inline">\(|a_{101}|^2\)</span> is the probability to find the first and third qubits in state <span class="math inline">\(|1\rangle\)</span>, and the second qubit in state <span class="math inline">\(|0\rangle\)</span>, upon measuring. For three qubits there are <span class="math inline">\(8\)</span> possible states, and <span class="math inline">\(8\)</span> amplitudes. For <span class="math inline">\(n\)</span> qubits, there are <span class="math inline">\(2^n\)</span> possible bit-strings and <span class="math inline">\(2^n\)</span> amplitudes (subject to the total probability equals one condition). This exponential dimension of the state space is often cited as <em>the origin</em> of the quantum speedups. Yet, it is only a part of the story.</p>
+<p>Indeed, while the number of qubits <span class="math inline">\(n\)</span> is small enough, so that the dimension of the state space <span class="math inline">\(2^n\)</span> is manageable, any quantum process can be simulated. This is known as state-vector simulation, and it only requires being able to store and update a vector of dimension <span class="math inline">\(2^n\)</span> (currently, up to roughly <span class="math inline">\(n=50\)</span> qubits can be simulated by this brute-force approach.).</p>
+<p>However, the mere exponential growth of the state space is not sufficient. We have the same growth in classical probabilistic description. Indeed, to specify the probability distribution over <span class="math inline">\(n\)</span> classical bits, one needs to provide <span class="math inline">\(2^n\)</span> probabilities corresponding to each possible bit string. For instance, to describe a probability distribution over three bits, one needs to specify eight probabilities <span class="math inline">\(p_{000}\)</span> through <span class="math inline">\(p_{111}\)</span>.</p>
+</section>
+</section>
+<section id="why-quantum-interference-defies-classical-simulation" class="level1">
+<h1>Why quantum interference defies classical simulation</h1>
+<p>Now we are ready to explain why some quantum computations can not be efficiently simulated by a classical computer. Imagine a quantum computer that manipulates <span class="math inline">\(n\)</span> qubits. It runs a quantum algorithm that outputs a quantum state. This particular algorithm produces a quantum state that is not a superposition, but a particular bitstring such as <span class="math inline">\(|\psi\rangle=|00101\dots\rangle\)</span>. This bitstring <em>is</em> (or encodes) the solution to our problem. (Not all quantum algorithms are like that, but some are, to a good approximation.)</p>
+<p>You should also think of a quantum algorithm as consisting of a number of simple quantum operations. Say it is a sequence of <span class="math inline">\(H\)</span> and Toffoli gates, which are universal for quantum computation. Mathematically, you can get the output state by taking the initial state, representing it as a vector, and applying matrices of various quantum gates constituting the algorithm to this vector. As discussed, this works for <span class="math inline">\(n\)</span> sufficiently small, but eventually breaks down because the memory required scales exponentially.</p>
+<p>Let’s imagine a similar scenario in a classical probabilistic world. Someone comes up with a classical probabilistic algorithm that produces a correct result with probability 1. In fact, directly simulating this algorithm by keeping track of the probabilities of different bitstrings at all steps may be equally intractable, because the number of possible bitstrings is exponentially large. But we do not need to do that. We know that the algorithm outputs the correct solution with probability one, i.e.&nbsp;the correct solution is reached by <em>all</em> trajectories having a non-zero probability. We simply need to simulate a single such trajectory, and see where it ends up. Classical probabilities don’t cancel, they reinforce each other.</p>
+<p>This does not work for quantum amplitudes. We can certainly find a trajectory with non-zero amplitude. But there is no guarantee that this trajectory leads to the correct result, because its amplitude can get cancelled by other trajectories. Accounting for all possible trajectories, you can determine the true probability of reaching that particular end state. Of course, generally there are exponentially many trajectories, and this is not feasible. (Incidentally, this view gives a different simulation technique. Keeping track of the total state vector requires exponential memory, but is time-efficient. In contrast, the total amplitude for reaching a particular end state can be computed by summing trajectories one by one. This requires little memory, but an exponential number of steps.)</p>
+<p>A concluding remark is in order here. Neither quantum nor classical probabilistic algorithms need to produce a definite bitsting. In general, different runs produce different results, corresponding to some probability distribution. In that case, the simulation should only be capable of producing individual outcomes, or <em>samples</em>, that are described by the same distribution. This is easy to achieve in the classical probabilistic case. We simply sample one trajectory at a time, period. Ultimately, this works because though we <em>describe</em> our system as if it could be in different states at the same time step, this only makes sense for different runs of the algorithm. During a single run a classical system can really only be in a single state at a single time.</p>
+<p>This does not work for quantum processes. Here, it does not suffice to sample one trajectory at a time, because different trajectories can interfere. In a sense, quantum systems can really be in several states at once.</p>
+</section>
+<section id="why-quantum-interference-leads-to-quantum-speed-ups" class="level1">
+<h1>Why quantum interference leads to quantum speed ups</h1>
+<p>We saw how quantum interference is a hindrance to a classical simulation. But why is it useful? How can it lead to quantum speedups? As it is almost always the case, the best way to understand something is through examples. We will consider two quantum algorithms.</p>
+<section id="deutschs-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="deutschs-algorithm">Deutsch’s algorithm</h2>
+<p>Deutsch’s algorithm is one of the first and simplest, an archetypical quantum algorithm. It may look a bit fishy though, but we’ll discuss that later. So you have a boolean function of a single bit <span class="math inline">\(f(x)\)</span> (i.e.&nbsp;<span class="math inline">\(f\)</span> takes 0 or 1 and returns 0 or 1). There are two mutually exclusive possibilities, either <span class="math inline">\(f(0)=f(1)\)</span>, or <span class="math inline">\(f(0) != f(1)\)</span>. In the first case, we call the function <em>balanced</em>. The goal is to find out whether <span class="math inline">\(f(0)\)</span> is balanced.</p>
+<p>Here is the suspicious part. The inner workings of <span class="math inline">\(f\)</span>, its “source code”, is not available to us. We can only <em>query</em> this function, i.e.&nbsp;provide it with inputs and observe outputs. In complexity theory lingo we have <em>oracular access</em> to <span class="math inline">\(f\)</span>, i.e.&nbsp;we can query it, but can’t look inside.</p>
+<p>How many queries to <span class="math inline">\(f\)</span> should we make to figure out if <span class="math inline">\(f(0)\)</span> is the same as <span class="math inline">\(f(1)\)</span>? Right, two queries, one to find <span class="math inline">\(f(0)\)</span> and another to find <span class="math inline">\(f(1)\)</span>, there is no other way.</p>
+<p>Turns out, we can solve the problem with a <em>single</em> query on a quantum computer. For this we need a quantum version of the oracle, denoted by <span class="math inline">\(U_f\)</span>. It should work as follows</p>
+<p><span class="math display">\[\begin{align}
+U_f|x\rangle = (-1)^{f(x)}|x\rangle \ ,
+\end{align}\]</span></p>
+<p>i.e.&nbsp;the oracle reverses the sign of a state <span class="math inline">\(|x\rangle\)</span> if <span class="math inline">\(f(x)=1\)</span>. This definition might look a bit unnatural. A more obvious choice would be to say that the oracle acts by <span class="math inline">\(\widetilde{U}_f|x\rangle = |f(x)\rangle\)</span>. The problem is, if <span class="math inline">\(f(0)=f(1)\)</span> this <span class="math inline">\(\widetilde{U}_f\)</span> is not reversible, which is a problem for a quantum computer. <span class="math inline">\(U_f\)</span>, on the other hand, is always reversible. While the definition of <span class="math inline">\(U_f\)</span> may not be the first thing that comes to mind, it’s really the simplest way to define a transformation that treats states with <span class="math inline">\(f(x)=0\)</span> and <span class="math inline">\(f(x)=1\)</span> differently, while being reversible.</p>
+<p>One of the key properties of quantum mechanics that I may not have emphasized enough is linearity. If <span class="math inline">\(U_f\)</span> acts the way we specified on states <span class="math inline">\(|0\rangle\)</span> and <span class="math inline">\(|1\rangle\)</span>, it must act on a state in superposition as</p>
+<p><span class="math display">\[\begin{align}
+U_f\left(a_0 |0\rangle+a_1|1\rangle\right) = a_0 (-1)^{f(0)}|0\rangle+a_1 (-1)^{f(1)}|1\rangle \ .
+\end{align}\]</span></p>
+<p>We are done with preliminaries. Here is the Deutsh algorithm. Start with <span class="math inline">\(|0\rangle\)</span> and apply <span class="math inline">\(H\)</span> gate to it, to obtain <span class="math inline">\(|+\rangle\)</span>. Then, apply the oracle to get</p>
+<p><span class="math display">\[\begin{align}
+U_fH|0\rangle = U_f |+\rangle = \frac1{\sqrt{2}}\left((-1)^{f(0)}|0\rangle + (-1)^{f(1)}|1\rangle\right)
+\end{align}\]</span></p>
+<p>You see, this state sort of knows both <span class="math inline">\(f(0)\)</span> and <span class="math inline">\(f(1)\)</span>. But this information can not be extracted directly. Simply measuring this state will give <span class="math inline">\(|0\rangle\)</span> or <span class="math inline">\(|1\rangle\)</span> with equal probablities, and reveal nothing about <span class="math inline">\(f\)</span> whatsoever. The trick is to apply <span class="math inline">\(H\)</span> once again. With a little algebra, we find</p>
+<p><span class="math display">\[\begin{align}
+HU_fH|0\rangle = \frac12\left((-1)^{f(0)}+(-1)^{f(1)}\right)|0\rangle+\frac12\left((-1)^{f(0)}-(-1)^{f(1)}\right)|1\rangle \ .
+\end{align}\]</span></p>
+<p>This expression may look complicated, but is in fact trivial. For balanced functions only the first term survives, so that the final state is <span class="math inline">\(\pm|0\rangle\)</span>, while for unbalanced functions the first term disappears, leaving us with <span class="math inline">\(\pm |1\rangle\)</span>. Hence, measuring the final state allows us to decide whether the function is balanced or not. And the final state is produced using <em>a single query</em> to the quantum oracle <span class="math inline">\(U_f\)</span>. Note that the crucial part of the computation is quantum interference, the cancellation between different trajectories. For balanced functions <span class="math inline">\(U_f\)</span> is equivalent to the identity, and the amplitude of getting <span class="math inline">\(|1\rangle\)</span> in the end state is vanishing, just as we’ve seen before for <span class="math inline">\(H\)</span> gate applied twice. The twist is that for the unbalanced functions the situation is opposite.</p>
+<p>The Deutsch algorithm solves an artificial problem and has no applications. Hiding some trivial function <span class="math inline">\(f\)</span> (after all, there are only four one-bit boolean functions!) behind a magic oracle looks silly. The techniques used still have their point though, but this is best illustrated for a more realistic example, that we now turn to.</p>
+</section>
+<section id="grovers-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="grovers-algorithm">Grover’s algorithm</h2>
+<section id="quantum-search" class="level3">
+<h3 class="anchored" data-anchor-id="quantum-search">Quantum search</h3>
+<p><em>Grover’s</em> algorithm is one of the oldest, most famous, and simplest to explain quantum algorithms. It is often described as a <em>quantum search</em>.</p>
+<p>Suppose there is a problem with a very large yet finite number of potential solutions, and you know no better way to find the right one other than trying all available options one by one. An example often given is trying to find a name of a person in a phone book, only knowing the phone number.</p>
+<p>Mathematically, let <span class="math inline">\(f\)</span> be a boolean function of <span class="math inline">\(n\)</span> bits <span class="math inline">\(f(x_1, \dots, x_n)\)</span>. The goal is to find an assignment of bits that makes <span class="math inline">\(f(x_1,\dots, x_n)=1\)</span>. For simplicity, assume that such an assignment is unique, and call the corresponding solution <span class="math inline">\(m=(x_1,\dots, x_n)\)</span>, <span class="math inline">\(m\)</span> for marked state.</p>
+<p>In the standard setting of Grover’s algorithm we only have oracular access to <span class="math inline">\(f\)</span>, i.e.&nbsp;we can provide it with inputs and observe outputs. (We will move beyond oracles, eventually.) In that case, there is nothing better we can do except for trying all of <span class="math inline">\(2^n\)</span> possible bitstrings <span class="math inline">\((x_1,\dots, x_n)\)</span> one by one, and see which one works. Let’s denote the total number of bitstrings by <span class="math inline">\(N=2^n\)</span>. On average, classical brute-force search takes <span class="math inline">\(N/2\)</span> queries to <span class="math inline">\(f\)</span>.</p>
+</section>
+<section id="grovers-oracle" class="level3">
+<h3 class="anchored" data-anchor-id="grovers-oracle">Grover’s oracle</h3>
+<p>Grover’s algorithm allows solving this search problem with only <span class="math inline">\(\sim \sqrt{N}\)</span> queries to the quantum oracle, a quadratic speedup relative to the classical search. Recall that an oracle <span class="math inline">\(U_m\)</span> for state <span class="math inline">\(|m\rangle\)</span> is some function that differentiates this state from the rest. There may be different yet equivalent ways to define such an oracle. Perhaps, the most convenient one is</p>
+<p><span class="math display">\[\begin{align}
+U_m|x\rangle = (-1)^{f(x)} |x\rangle  = \begin{cases} -|m\rangle,\quad x=m \\ {\,\,\,\,\,}|x\rangle,\quad else \end{cases} \ ,
+\end{align}\]</span></p>
+<p>i.e.&nbsp;the oracle that reverses the sign of the marked stated <span class="math inline">\(|m\rangle\)</span>, does nothing to the rest. To be sure, there is no quantum magic at this step, just a simple definition.</p>
+</section>
+<section id="the-initial-state" class="level3">
+<h3 class="anchored" data-anchor-id="the-initial-state">The initial state</h3>
+<p>In the first step of Grover’s algorithm (and in fact in many others) we prepare a state</p>
+<p><span class="math display">\[\begin{align}
+|s\rangle = \frac1{\sqrt{N}}\sum_x |x\rangle \ ,
+\end{align}\]</span> which is a superposition of <em>all possible</em> bitstrings with equal amplitudes. Here are some examples. For <span class="math inline">\(n=1\)</span> state <span class="math inline">\(|s\rangle\)</span> is the same as state <span class="math inline">\(|+\rangle\)</span> we’ve met before. For <span class="math inline">\(n=2\)</span> we have <span class="math inline">\(|s\rangle = \frac12\left(|00\rangle+|01\rangle+|10\rangle+|11\rangle \right)\)</span>.</p>
+<p>State <span class="math inline">\(|s\rangle\)</span> may look complicated, but it is easy to prepare. Simply apply <span class="math inline">\(H\)</span> gate to all qubits initialized in <span class="math inline">\(|0\rangle\)</span>. For instance, for <span class="math inline">\(n=2\)</span> we have <span class="math inline">\(H|0\rangle H|0\rangle = \frac1{\sqrt{2}}\left(|0\rangle+|1\rangle\right)\frac1{\sqrt{2}}\left(|0\rangle+|1\rangle\right)=\frac12\left(|00\rangle+|01\rangle+|10\rangle+|11\rangle \right)=|s\rangle\)</span>. There is a simple probabilistic analog of this state – a state of <span class="math inline">\(n\)</span> classical bits with any bitstring configuration being equally likely. And this probabilistic version is equally simple to prepare, just flip <em>every</em> bit randomly.</p>
+</section>
+<section id="reflections" class="level3">
+<h3 class="anchored" data-anchor-id="reflections">Reflections</h3>
+<p>Grover’s oracle <span class="math inline">\(U_m\)</span> has a simple geometric interpretation. Acting on any state <span class="math inline">\(|\psi\rangle\)</span>, it inverts its component along the marked state <span class="math inline">\(|m\rangle\)</span>. This is nothing but a reflection with respect to the hyperplane orthogonal to <span class="math inline">\(|m\rangle\)</span>. Thus, Grover’s oracle is a reflection in state space.</p>
+<p>The final ingredient to Grover’s algorithm is a second reflection, around state <span class="math inline">\(|s\rangle\)</span>, which we denote by <span class="math inline">\(U_s\)</span>. I emhphasize that <span class="math inline">\(|s\rangle\)</span> is a known state, which is easy to prepare. I will omit the details, but applying the corresponding reflection operator <span class="math inline">\(U_s\)</span> is straightforward and efficient.</p>
+</section>
+<section id="two-dimensional-subspace" class="level3">
+<h3 class="anchored" data-anchor-id="two-dimensional-subspace">Two-dimensional subspace</h3>
+<p>A neat feature of the Grover algorithm is that although it formally operates in an exponentially large space, the state of a system never escapes a two-dimensional subspace spanned by vectors <span class="math inline">\(|m\rangle\)</span> and <span class="math inline">\(|s\rangle\)</span>. Note that states <span class="math inline">\(|m\rangle\)</span> and <span class="math inline">\(|s\rangle\)</span> are not completely orthogonal, as <span class="math inline">\(|s\rangle\)</span> contains a small component along <span class="math inline">\(|m\rangle\)</span> with amplitude <span class="math inline">\(a_m=\frac1{\sqrt{N}}\)</span>. It is convenient to define state <span class="math inline">\(|s_\perp\rangle\)</span>, which is equal to <span class="math inline">\(|s\rangle\)</span> minus the component along <span class="math inline">\(|m\rangle\)</span>, and normalized to have unit length</p>
+<p><span class="math display">\[\begin{align}
+|s_\perp\rangle = \sqrt{\frac{N}{N-1}}\left(|s\rangle - \frac{|m\rangle}{\sqrt{N}}\right) \ .
+\end{align}\]</span></p>
+</section>
+<section id="grovers-algorithm-is-a-sequence-of-small-rotations" class="level3">
+<h3 class="anchored" data-anchor-id="grovers-algorithm-is-a-sequence-of-small-rotations">Grover’s algorithm is a sequence of small rotations</h3>
+<p>So here is how Grover’s algorithm works. Start in state <span class="math inline">\(|s\rangle\)</span>, and apply two reflections, first <span class="math inline">\(U_m\)</span>, then <span class="math inline">\(U_s\)</span>. A combination of two reflections is a rotation, and turns out this is a rotation <em>towards</em> the marked state <span class="math inline">\(|m\rangle\)</span>, schematically illustrated at the following picture</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/grover.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+<p>(Here <span class="math inline">\(|s_1\rangle=U_sU_m|s\rangle\)</span> is the state after the first iteration of the algorithm).</p>
+<p>What is the angle <span class="math inline">\(\theta\)</span>, i.e.&nbsp;how much do we rotate during a single iteration? If <span class="math inline">\(U_sU_m\)</span> is indeed a rotation by angle <span class="math inline">\(\theta\)</span> in the basis <span class="math inline">\(|s_\perp\rangle, |m\rangle\)</span>, we have</p>
+<p><span class="math display">\[\begin{align}
+-U_sU_m |m\rangle  = \cos \theta |m\rangle +\sin \theta |s_\perp\rangle \ .
+\end{align}\]</span></p>
+<p>So, to find <span class="math inline">\(\theta\)</span> it suffices to apply <span class="math inline">\(U_sU_m\)</span> to <span class="math inline">\(|m\rangle\)</span>, and take the component along <span class="math inline">\(|m\rangle\)</span>. We get <span class="math inline">\(-U_s U_m |m\rangle = U_s|m\rangle = |m\rangle - \frac{2}{\sqrt{N}}|s\rangle\)</span>. In the last step we used that the scalar product (amplitude) between <span class="math inline">\(|m\rangle\)</span> and <span class="math inline">\(|s\rangle\)</span> is <span class="math inline">\(\frac{1}{\sqrt{N}}\)</span>. Using this property once again, we find the projection of the resulting state on <span class="math inline">\(|m\rangle\)</span></p>
+<p><span class="math display">\[\begin{align}
+\cos\theta = 1-\frac{2}{N},\qquad \theta \approx \frac{2}{\sqrt{N}} \qquad (\text{for large $N$}) \ .
+\end{align}\]</span></p>
+<p>That’s it! A single iteration of Grover’s algorithm rotates the initial state towards <span class="math inline">\(|m\rangle\)</span> by angle <span class="math inline">\(\theta\approx \frac{2}{\sqrt{N}}\)</span>. To reach the marked state <span class="math inline">\(|m\rangle\)</span>, we need to make the sequence of these small rotations that combine into a <span class="math inline">\(\frac{\pi}{2}\)</span> rotation, and the required number of iterations <span class="math inline">\(k\)</span>, which are all identical, is (roughly)</p>
+<p><span class="math display">\[\begin{align}
+k = \frac{\pi}{2 \theta} = \frac{\pi \sqrt{N}}{4} \ .
+\end{align}\]</span> You see the <span class="math inline">\(\sqrt{N}\)</span> dependence right there, and this is surely better asymptotically than any classical algorithm can do. (Incidentally, no quantum algorithm can beat <span class="math inline">\(\sqrt{N}\)</span> for unstructured search as well.)</p>
+<p>I glossed over many details here, such as explaining how to construct <span class="math inline">\(U_s\)</span>, proving why <span class="math inline">\(U_sU_m\)</span> is a rotation in 2d subspace, finding the exact value of <span class="math inline">\(k\)</span> which has edge-cases, etc. However, these are merely technical details, and if you followed along, you now understand the main idea behind Grover’s.</p>
+</section>
+<section id="infinitesimal-quantum-speedup" class="level3">
+<h3 class="anchored" data-anchor-id="infinitesimal-quantum-speedup">Infinitesimal quantum speedup</h3>
+<p>Let’s now try to trace the speedup provided by Grover’s algorithm to quantum interference. For this, I’ll look at a single iteration alone, which already provides a kind of quantum speedup.</p>
+<p>Here is what I mean. Suppose you are only allowed to call the oracle once. How much does that increases your chances of finding the marked element? Classically, the best thing you can do is to call the oracle on a random input. If it turns out to be the solution, which happends with probability <span class="math inline">\(\frac1N\)</span>, you are done. If not, which happens with probability <span class="math inline">\(\frac{N-1}{N}\)</span>, you make a guess at some other of <span class="math inline">\(N-1\)</span> remaining bitstrings, which succeeds with probability <span class="math inline">\(\frac{1}{N-1}\)</span>. The total probability of success is</p>
+<p><span class="math display">\[\begin{align}
+p = \frac1{N}+\frac{N-1}{N}\frac1{N-1}= \frac{2}{N} \ .
+\end{align}\]</span></p>
+<p>This is basically equivalent to being able to guess twice.</p>
+<p>Now, using a single call to the quantum oracle is equivalent to making 9 classical guesses! Indeed, recall that we begin in a state <span class="math inline">\(|s\rangle\)</span>, which contains every bitstring with amplitude <span class="math inline">\(\frac{1}{\sqrt{N}}\)</span>. Measuring <span class="math inline">\(|s\rangle\)</span> directly results it probability <span class="math inline">\(\frac{1}{N}\)</span> of finding the marked state <span class="math inline">\(m\)</span>, which is no better than a simple classical guess. The angle between <span class="math inline">\(|s\rangle\)</span> and <span class="math inline">\(|m\rangle\)</span> has <span class="math inline">\(\sin\theta_0=\frac{1}{\sqrt{N}}\)</span>, or <span class="math inline">\(\theta_0\approx \frac{1}{\sqrt{N}}\)</span> (you may wish to revisit the picture above). After a single iteration of Grover’s algorithm, the angle becomes <span class="math inline">\(\theta_0+\theta\approx \frac{3}{\sqrt{N}}\)</span>, which means that measuring this state now has probability <span class="math inline">\(\frac{9}{N}\)</span> to output the marked state.</p>
+</section>
+<section id="quantum-interference" class="level3">
+<h3 class="anchored" data-anchor-id="quantum-interference">Quantum interference</h3>
+</section>
+<section id="moving-beyond-oracles" class="level3">
+<h3 class="anchored" data-anchor-id="moving-beyond-oracles">Moving beyond oracles</h3>
+<p>States <span class="math inline">\(|m\rangle\)</span> and <span class="math inline">\(|s_\perp\rangle\)</span> are unknown to us, while <span class="math inline">\(|s\rangle\)</span> is a known and simple to prepare state. The final Grover’s speed up is modest but rock-solid.</p>
+</section>
+</section>
+</section>
+<section id="faq" class="level1">
+<h1>FAQ</h1>
+<ul>
+<li>So, why are quantum computers powerful</li>
+<li>Why no electrons</li>
+<li>Why no entanglement</li>
+<li>What are useful quantum algorithms</li>
+<li>Cost of error correction</li>
+<li>When quantum computers will be used to train LLM?</li>
+<li>Of course, I only argued why one particular way of simulating works for classical probabilistic processes, but does not apply to quantum computations. Rigorously proving that quantum systems can not be simulated by any classical method is beyond our scope [BQP?]</li>
+</ul>
+</section>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <section id="why-can-quantum-computers-be-powerful" class="level2">
@@ -222,6 +470,56 @@ window.MathJax = {
 <p>So there are quantum computers. At least there will be, we believe. And the reason to build them is an expectation that they will solve some problems intractable for the classical computers. It is a new way to process information, a new way to do computation.</p>
 <p>However, it is surprisingly difficult to pinpoint the exact mechanism underlying the capabilities of a quantum computer. Most of the simplistic explanations, referencing some unusual property of quantum systems such as entanglement, superposition etc, are incomplete at best. It is hard to compare classical and quantum head-to-head, because of the very different language used to describe them.</p>
 <p>In this post, I will try to make a fair comparison and zoom in on the essential differences. As an experiment, I will try to cover the topic in a way accessible for people outside the field, striving to provide an explanation that is “as simple as possible, but no simpler”. The discussion still won’t be entirely non-technical, though, and use some basic probability and linear algebra.</p>
+<p>So, why can’t an arbitrary quantum computation be efficiently simulated classically? And what does that even mean?</p>
+</section>
+<section id="qubits-and-p-bits" class="level2">
+<h2 class="anchored" data-anchor-id="qubits-and-p-bits">Qubits and p-bits</h2>
+<p>A classical bit can be either <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>. Similarly, a <em>qubit</em> (quantum bit) can be <span class="math inline">\(\bf{0}\)</span> or <span class="math inline">\(\bf{1}\)</span>. But crucially, a qubit can also be in any state of the form <span class="math display">\[\pmb{s}=a_0 \pmb{0}+a_1 \pmb{1} \ .\]</span></p>
+<p>Mathematically, states <span class="math inline">\(\pmb{0}\)</span> and <span class="math inline">\(\pmb{1}\)</span> are <em>vectors</em>, and (almost) any linear combination of them is a valid state of a qubit. In quantum mechanics a linear combination is called a <em>superposition</em>.</p>
+<p>What does it mean for a qubit to be in state <span class="math inline">\(\pmb{s}\)</span>? It means that if you look at it, or <em>make a measurement</em> in quantum-mechanical jargon, you will see <span class="math inline">\(\pmb{0}\)</span> with probability <span class="math inline">\(p_0=|a_0|^2\)</span> or <span class="math inline">\(\pmb{1}\)</span> with probability <span class="math inline">\(p_1=|a_1|^2\)</span>.</p>
+<p>From this point of view, a qubit in state <span class="math inline">\(\pmb{s}\)</span> is indistinguishable from a <em>pbit</em> (probabilistic) bit that is in the state <span class="math inline">\(0\)</span> with probability <span class="math inline">\(p_0\)</span> and state <span class="math inline">\(1\)</span> with probability <span class="math inline">\(p_1\)</span>.</p>
+<p>Comparison between p-bits and qubits is very natural, yet often overlooked. Compare qubits to normal determinisitc bits is more apples vs oranges, because the language used to describe them is so different. P-bits, instead, share many of the properties with qubits, such as an exponentially large state space.</p>
+</section>
+<section id="quantum-mechanics-is-a-theory-of-amplitudes-1" class="level2">
+<h2 class="anchored" data-anchor-id="quantum-mechanics-is-a-theory-of-amplitudes-1">Quantum mechanics is a theory of amplitudes</h2>
+<p>What is the difference between a qubit and a p-bit? Numbers <span class="math inline">\(a_0, a_1\)</span> defining a state <span class="math inline">\(\pmb{s}\)</span> are called <em>amplitudes</em>. They are similar to probabilities, yet can be <em>negative</em>. They can (and often are) be complex numbers, but the negative values to depart from classical computing.</p>
+<p>The fact that some quantity can be negative and it is the reason for quantum magic may sound a bit silly, but this is one of the ways to clearly state how quantum and classical differs. Eventually, it can be interpreted that quantum systems can be in <code>several plcaes at the same time</code> in a qualitatevly different way, compared with probabilistic classical systems.</p>
+</section>
+<section id="the-hadamard-gate" class="level2">
+<h2 class="anchored" data-anchor-id="the-hadamard-gate">The Hadamard gate</h2>
+<p>Quantum processes transform quantum states. Importantly, they operate on <em>amplitudes</em>, not on probabilities. Trying to interpret a quantum as something that simply changes an underlying probability distribution does not work.</p>
+<p>Here is a quantum operation, known as the Hadamard gate.</p>
+<p><span class="math display">\[\begin{align}
+\pmb{+}=H\circ \pmb{0} = \frac{1}{\sqrt{2}}\left(\pmb{0}+\pmb{1}\right) \ ,\\
+\pmb{-}=H\circ \pmb{1} = \frac{1}{\sqrt{2}}\left(\pmb{0}-\pmb{1}\right) \ .
+\end{align}\]</span></p>
+<p>In words, it is a linear operation that takes <span class="math inline">\(\pmb{0}\)</span> to sum <span class="math inline">\(\pmb{0}+\pmb{1}\)</span>, and takes <span class="math inline">\(\pmb{1}\)</span> to difference <span class="math inline">\(\pmb{0}-\pmb{1}\)</span>. The factors <span class="math inline">\(\frac1{\sqrt{2}}\)</span> are needed to ensure that the total probability is 1. If you measure the state <span class="math inline">\(|+\rangle\)</span> you get <span class="math inline">\(|0\rangle\)</span> or <span class="math inline">\(|1\rangle\)</span> with the same probability <span class="math inline">\(\frac12\)</span>. The same holds for <span class="math inline">\(|-\rangle\)</span>, i.e.&nbsp;states <span class="math inline">\(|\pm\rangle\)</span> are indistinguishable from this point of view.</p>
+<p>There is a simple classical analog to the Hadamard transformation – a coin flip, which I will cal <span class="math inline">\(C\)</span>! Indeed, independent of the initial state, a fair flip of a fair coin will produce a p-bit which is equally likely to be 0 and 1. Can you interpret the Hadamard transform in the same way? No, not really. If you apply the Hadamard transform twice, it will be very different from two coin flips.</p>
+<p>Indeed, applying <span class="math inline">\(C\)</span> the second time does nothing, and you are still maximally uncertain about the state of your bit. However, applying the Hadamard transform twice gives you back the original state! For instance</p>
+<p><span class="math display">\[H^2|0\rangle=H|+\rangle = \frac{1}{\sqrt{2}}\left(H|0\rangle+H|1\rangle\right)=\frac{1}{2}\left(|0\rangle+|1\rangle+|0\rangle-|1\rangle\right)= |0\rangle \ .\]</span></p>
+<p>Similarly, <span class="math inline">\(H^2 |1\rangle=|1\rangle\)</span>.</p>
+<p>This does not make sense if you try interpreting <span class="math inline">\(H\)</span> in purely probabilistic terms. Classically, if there is a probability to first go from A to B, and then there is a probability to go from B to C, there <em>must</em> be a probability to end up in C having started in A. This is because to get the probability <span class="math inline">\(p(A\to C)\)</span> you sum intermediate <em>probabilities</em>, which can not be negative, so <span class="math display">\[p(A\to C)=p(A\to B)p(B\to C)+\dots \ge p(A\to B)p(B\to C) \ . \]</span></p>
+</section>
+<section id="but-why-cant-we-simulate-the-amplitudes" class="level2">
+<h2 class="anchored" data-anchor-id="but-why-cant-we-simulate-the-amplitudes">But why can’t we simulate the amplitudes</h2>
+<p>One often hears that the state space of many qubits is exponentially large, and hence can not be simulated classically. While necessary, this is not sufficient.</p>
+<p>A state of <span class="math inline">\(n\)</span> qubits is described by <span class="math inline">\(2^n\)</span> (complex) numbers, each being an aplitude of a particular bit configuration. E.g. for three qubits there are 8 amplitudes</p>
+<p><span class="math display">\[|\psi\rangle = a_{000}|000\rangle + a_{001}|001\rangle+a_{010}|010\rangle+a_{011}|011\rangle+a_{100}|100\rangle + a_{101}|101\rangle+a_{110}|110\rangle+a_{111}|111\rangle\]</span></p>
+<p>However, the state space of probabilistic classical bits is exponentially large as well. There are <span class="math inline">\(2^n\)</span> possible configurations of <span class="math inline">\(n\)</span> classical bits, each having an associated probability. E.g. for three bits we need to specify <span class="math inline">\(p_{000}\)</span> trough <span class="math inline">\(p_{111}\)</span> to specify the probability distribution.</p>
+<p>Namely, if you have <span class="math inline">\(n\)</span> p-bits, to fully describe the state of the system you need to specify the probability of each configuration, such as <span class="math inline">\(p_{1010001\dots}\)</span>, and there are <span class="math inline">\(2^n\)</span> such probabilities (yes, there are only <span class="math inline">\(2^n-1\)</span> independent ones, as the total should be one, but don’t be picky). Yet, we can efficiently simulate probabilistic processes.</p>
+<p>By a probabilistic process I mean a series of transformation steps, each of which can have randomness to it. Say at first we randomly flip the first bit. Then we reverse the value of the second bit, but only if first bit is 1. While this is a deterministic operation, it will make the state of the second qubit uncertain, because it is now conditioned on the state of the first randomly flipped bit. And so on. While this does not look like a code in python, it is a valid model of probabilistic computation, which looks similar to gate-based quantum computation.</p>
+<p>Compose enough of such simple steps, and the complexity of the resulting probability distribution can be high. I.e. the probabilities of any</p>
+<p>This is because we do not need to keep track of the exponential number of trajectories to get from the initial to the final state. We can simply sample individual trajectories. You should think of a probabilistic process as a sequence of probabilistic changes to the state of the system. For example, if step number 100 requires flipping the last bit, it gives rise to two new possibilities (one where the last bit is 0, and another where it is 1). But we can simply choose 0 or 1 for the last bit at random, and ignore the other option. Doing this for all steps making up the probabilistic process, we obtain a final sample. Repeating this procedure many time over, produces samples of the whole process.</p>
+<p>This works because the classical probability simply reflects our ignorance about the exact state. But in each realization of a random process there was a single actual state at each moment, and we can simulate its transformation step by step, as described above.</p>
+<p>This does <em>not</em> work for quantum processes. Here is an extreme yet practical example. Many quantum algorithms work in such a way, that by the end of the procedure, the bit string corresponding encoding the correct answer has probability close to 1. Running such an algorithm a bunch of times on a real quantum computer will result in the correct answer with very high probability.</p>
+<p>We can sample a single trajectory and compute its <em>amplitude</em>, but this does not allow us to sample the from</p>
+<p>Let’s be more precise. Say a probabilistic process (or computation) is a sequence of steps <span class="math inline">\(S_1, S_2, \dots S_k\)</span>. If we can <em>sample</em> from the output of each step <span class="math inline">\(S_i\)</span> provided an input state, we can simulate the whole process. For example, say <span class="math inline">\(S_i\)</span> consists in randomly flipping the second bit. Then, an initial state <span class="math inline">\(s_0s_1s_2\dots\)</span> is transformed to <span class="math inline">\(s_0 0 s_1\dots\)</span> or to <span class="math inline">\(s_0 1 s_1\dots\)</span> with probability one half each.</p>
+<p>And say we can do the following, given an input state <span class="math inline">\(s_i\)</span> and a</p>
+<p>Why? Because we can sample individual trajectories. Say you started with state <span class="math inline">\(s_0\)</span></p>
+<p>in the end, each realization probabilistic process is a particular sequence of states.</p>
+<p>in each realization of the probabilistic process Suppose a probabilistic process consists of a sequence of steps <span class="math inline">\(S\)</span>, and for each process we know how to compute the probability of going from <span class="math inline">\(s_i\)</span> to <span class="math inline">\(s_j\)</span>.</p>
+<p>For instance, the famous Google’s quantum supremacy experiment [cite] is first without the second. There, a quantum processor was used to produce a certain type of random numbers, which is hard to generate with a classical computer (with some reservations), but no practical applications of this random sampling are known.</p>
+<p>On the other hand, simply coming up with a quantum algorithm that does solve some useful problem is not sufficient. It may well be that this algorithm <em>can</em> be efficiently simulated classically (or that a different classical algorithm solving the same problem exists).</p>
 <div class="callout callout-style-simple callout-note">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
