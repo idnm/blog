@@ -6,66 +6,18 @@
   </url>
   <url>
     <loc>https://idnm.github.io/blog/posts/qutrit_gate/2022-11-15-Qutrit.html</loc>
-<<<<<<< HEAD
-    <lastmod>2023-09-18T07:50:30.030Z</lastmod>
-=======
-    <lastmod>2024-05-24T18:48:48.341Z</lastmod>
->>>>>>> speedup2
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/machine_learning_compilation_experiments/2021-12-13-machine learning compilation of quantum circuits -- experiments.html</loc>
-    <lastmod>2023-06-09T11:33:51.928Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/what_to_do_with_a_quantum_computer/what_to_do_with_a_quantum_computer.html</loc>
-    <lastmod>2023-08-30T11:04:24.382Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/classiq_toffoli/2022-06-21-classiq toffoli.html</loc>
-    <lastmod>2023-06-09T11:34:05.988Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/entanglement/2021-07-12-entanglement.html</loc>
-    <lastmod>2023-06-09T11:34:07.688Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/machine_learning_quantum_ecc/2022-06-16-machine learning error correction codes.html</loc>
-    <lastmod>2023-06-09T11:34:09.772Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/how_was_this_blog_setup/2021-07-11-how this blog was set up.html</loc>
-    <lastmod>2023-06-09T11:34:11.456Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/machine_learning_compilation_of_qunatum_circuits/2021-07-22-machine learning compilation of quantum circuits.html</loc>
-    <lastmod>2023-06-09T11:34:14.028Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/some_analytic_facts_about_vqa/2022-05-17-some analytic facts about variational algorithms.html</loc>
-    <lastmod>2023-06-09T11:34:16.184Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/quantum_singular_value_transformation_intro/index.html</loc>
-    <lastmod>2023-08-30T11:04:43.707Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/posts/classiq_state_preparation/2022-06-21-classiq lognormal.html</loc>
-    <lastmod>2023-06-09T11:34:28.209Z</lastmod>
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/index.html</loc>
-<<<<<<< HEAD
-    <lastmod>2023-09-18T07:50:31.682Z</lastmod>
-=======
-    <lastmod>2024-07-10T20:00:13.131Z</lastmod>
->>>>>>> speedup2
-  </url>
-  <url>
-    <loc>https://idnm.github.io/blog/about.html</loc>
-    <lastmod>2023-06-09T11:34:30.845Z</lastmod>
+    <lastmod>2024-07-10T20:03:43.506Z</lastmod>
   </url>
   <url>
     <loc>https://idnm.github.io/blog/posts/where_quantum_speedups_come_from/index.html</loc>
-    <lastmod>2024-07-10T20:00:27.955Z</lastmod>
+    <lastmod>2024-07-10T20:03:49.774Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/index.html</loc>
+    <lastmod>2024-07-10T20:03:51.998Z</lastmod>
+  </url>
+  <url>
+    <loc>https://idnm.github.io/blog/posts/how_was_this_blog_setup/2021-07-11-how this blog was set up.html</loc>
+    <lastmod>2024-07-10T20:04:26.084Z</lastmod>
   </url>
 </urlset>
